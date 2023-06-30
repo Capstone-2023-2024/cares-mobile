@@ -1,108 +1,6 @@
-import * as React from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
+import {StyleSheet} from 'react-native';
 
-const Stack = createNativeStackNavigator();
-
-import Home from './HomeScreen';
-import Schedule from './University Schedule';
-import Announcements from './Announcements';
-
-
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="HomeScreen"
-          component={Home}
-          options={{
-            headerStyle: styles.header,
-            headerTitleStyle: styles.headerTitle,
-            headerLeft: () => (
-              <Image
-                source={require('./Pics/CICS.png')}
-                style={styles.logoright}
-                resizeMode="contain"
-              />
-            ),
-            header: () => <CustomHeaderHome />,
-          }}
-        />
-
-        <Stack.Screen name="UniversitySchedule" component={Schedule} 
-        options={{
-            headerStyle: styles.header,
-            headerTitleStyle: styles.headerTitle,
-            headerLeft: () => (
-              <Image
-                source={require('./Pics/right-arrow.png')}
-                style={styles.logoleft}
-                resizeMode="contain"
-              />
-            ),
-            header: () => <CustomHeaderUniv />,
-          }}/>
-
-<Stack.Screen name="Announcements" component={Announcements} 
-        options={{
-            headerStyle: styles.header,
-            headerTitleStyle: styles.headerTitle,
-            headerLeft: () => (
-              <Image
-                source={require('./Pics/right-arrow.png')}
-                style={styles.logoleft}
-                resizeMode="contain"
-              />
-            ),
-            header: () => <CustomHeaderUniv />,
-          }}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
-
-function CustomHeaderHome() {
-  return (
-    <View style={styles.header}>
-      <Image
-        source={require('./Pics/CICS.png')}
-        style={styles.logoright}
-        resizeMode="contain" />
-      <Text style={styles.BSU}>CICS</Text>
-      <TouchableOpacity style={styles.userIcon}>
-        <Image source={require('./Pics/user.png')} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.messagesIcon}>
-        <Image source={require('./Pics/messages.png')} />
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function CustomHeaderUniv() {
-  const navigation = useNavigation();
-
-  const handleGoBack = () => {
-    navigation.goBack(); // Perform the navigation action to go back to the HomeScreen
-  };
-
-  return (
-    <View style={styles.headerU}>
-      <TouchableOpacity onPress={handleGoBack}>
-        <Image
-          source={require('./Pics/right-arrow.png')}
-          style={styles.logoleft}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
-
-    </View>
-  );
-}
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   header: {
     height: 75,
     flexDirection: 'row',
@@ -131,21 +29,21 @@ const styles = StyleSheet.create({
   logoright: {
     width: 100,
     height: '75%',
-    borderColor:'black',
-    left:'-30%',
+    borderColor: 'black',
+    left: '-30%',
   },
   logoleft: {
-    transform: [{ rotate: '180deg' }],
+    transform: [{rotate: '180deg'}],
     width: 35,
-    marginRight:'2%',
-    marginLeft:'2%',
+    marginRight: '2%',
+    marginLeft: '2%',
     height: '75%',
   },
   BSU: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 25,
-    left:'-45%',
+    left: '-45%',
   },
   userIcon: {
     top: -5,
@@ -163,13 +61,13 @@ const styles = StyleSheet.create({
     height: 35,
   },
   containerWelcome: {
-    position:'relative',
+    position: 'relative',
     borderBottomColor: 'gray',
     borderBottomWidth: 3,
-    marginTop:'5%',
+    marginTop: '5%',
   },
-  iconBG: { 
-    width:100,
+  iconBG: {
+    width: 100,
     height: 100,
     borderColor: 'black',
     borderRadius: 100,
@@ -180,13 +78,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     marginLeft: '32%',
-    marginTop:'-18%',
+    marginTop: '-18%',
     color: 'black',
   },
   ellipsisButton: {
     marginLeft: '85%',
-    marginTop:'-8%',
-    marginBottom:'10%',
+    marginTop: '-8%',
+    marginBottom: '10%',
     width: 35,
     height: 35,
   },
@@ -195,7 +93,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   containerUS: {
-    marginTop:'5%',
+    marginTop: '5%',
     borderBottomWidth: 3,
     marginBottom: 10,
     borderBottomColor: 'gray',
@@ -224,7 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(118, 52, 53, 1)',
     justifyContent: 'center',
     alignItems: 'flex-start',
-
   },
   ovalContent: {
     flexDirection: 'row',
@@ -241,8 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   containerAnnc: {
-    
-    marginTop:'5%',
+    marginTop: '5%',
     borderBottomWidth: 3,
     marginBottom: 10,
     borderBottomColor: 'gray',
@@ -277,15 +173,15 @@ const styles = StyleSheet.create({
   ovalTextAnnc: {
     marginTop: '3%',
     marginBottom: '3%',
-    textAlign:'center',
+    textAlign: 'center',
     color: 'black',
     fontSize: 15,
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
 
   containerNotif: {
     width: '95%',
-    height:'auto',
+    height: 'auto',
     marginLeft: '3%',
     marginTop: '5%',
     backgroundColor: 'rgb(211, 211, 211)',
@@ -304,15 +200,15 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     marginTop: '5%',
-    marginBottom:'5%',
-    right:'-88%',
+    marginBottom: '5%',
+    right: '-88%',
   },
   ovalNotif: {
     width: '95%',
     marginLeft: '2%',
     marginTop: '3%',
     marginBottom: '3%',
-    marginEnd:'10%',
+    marginEnd: '10%',
     borderRadius: 55,
     borderWidth: 1,
     backgroundColor: 'white',
@@ -339,8 +235,4 @@ const styles = StyleSheet.create({
     height: 35,
     marginLeft: '2%',
   },
-
-
 });
-
-export default App;
