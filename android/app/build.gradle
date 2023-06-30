@@ -73,9 +73,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.hitessample"
+    namespace "com.cics"
     defaultConfig {
-        applicationId "com.hitessample"
+        applicationId "com.cics"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
