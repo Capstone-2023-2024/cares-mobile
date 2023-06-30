@@ -14,9 +14,9 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <View><Text className='text-green-300'>asd</Text></View>
-      <Stack.Navigator>
+    // <NavigationContainer>
+      <View className='items-center h-screen'>
+      {/* <Stack.Navigator>
         <Stack.Screen
           name="Home"
           component={Home}
@@ -67,8 +67,9 @@ const App = () => {
             header: () => <CustomHeaderUniv />,
           }}
         />
-      </Stack.Navigator>
-    </NavigationContainer>
+      </Stack.Navigator> */}
+      <Text className='text-green-300'>asd</Text></View>
+    // </NavigationContainer>
   );
 };
 
