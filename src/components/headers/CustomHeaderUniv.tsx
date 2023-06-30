@@ -10,11 +10,11 @@ function CustomHeaderUniv() {
   };
 
   return (
-    <View style={styles.headerU}>
+    <View className='flex-row items-center px-2 h-16'>
       <TouchableOpacity onPress={handleGoBack}>
         <Image
           source={require('~/assets/right-arrow.png')}
-          style={styles.logoleft}
+          className='rotate-180 w-9 mx-[2%] h-3/4'
           resizeMode="contain"
         />
       </TouchableOpacity>

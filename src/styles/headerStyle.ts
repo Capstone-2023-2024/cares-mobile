@@ -2,17 +2,12 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   header: {
-    height: 75,
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'gray',
-    paddingHorizontal: 10,
-  },
-  headerU: {
-    height: 75,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
+    height: 64,
   },
   headerTitle: {
     color: 'white',
@@ -24,41 +19,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
-  },
-
-  logoright: {
-    width: 100,
-    height: '75%',
-    borderColor: 'black',
-    left: '-30%',
-  },
-  logoleft: {
-    transform: [{rotate: '180deg'}],
-    width: 35,
-    marginRight: '2%',
-    marginLeft: '2%',
-    height: '75%',
-  },
-  BSU: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 25,
-    left: '-45%',
-  },
-  userIcon: {
-    top: -5,
-    alignItems: 'center',
-    marginLeft: 'auto',
-    marginRight: 10,
-    width: 35,
-    height: 35,
-  },
-  messagesIcon: {
-    top: -5,
-    alignItems: 'center',
-    marginRight: 10,
-    width: 35,
-    height: 35,
   },
   containerWelcome: {
     position: 'relative',

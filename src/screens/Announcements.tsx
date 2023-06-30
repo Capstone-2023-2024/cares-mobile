@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
+import {View, Text, ScrollView, Image} from 'react-native';
 
 const Announcements = () => {
   const Anncs = () => {
@@ -7,13 +7,13 @@ const Announcements = () => {
 
     for (let l = 0; l < 3; l++) {
       ovalsAnnc.push(
-        <View style={styles.containerInfo} key={l}>
+        <View className='mb-[5%] border-b-2' key={l}>
           <Image
-            style={styles.AnncImage}
+            className='top-[2%] w-full h-64'
             source={require('~/assets/Image.png')}
           />
-          <Text style={styles.TextTitle}> Faculty Evaluation{'\n'}</Text>
-          <Text style={styles.TextParagraph}>
+          <Text className='font-bold text-xl text-red-900 mt-[10%] mx-[5%]'> Faculty Evaluation{'\n'}</Text>
+          <Text className='text-sm text-black -mt-[3%] ml-[6%] mr-[5%] mb-[5%]'>
             Heads up, future engineers!As per Office Memorandum from the Office
             of the Director for Administrative and Management Services Division.
             {'\n'}
@@ -50,44 +50,10 @@ const Announcements = () => {
 
   return (
     <ScrollView>
-      <Text style={styles.Text}>Announcements</Text>
+      <Text className='text-4xl text-black items-center'>Announcements</Text>
       {Anncs()}
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  containerInfo: {
-    borderBottomWidth: 3,
-    marginBottom: '5%',
-  },
-  Text: {
-    fontSize: 40,
-    color: 'black',
-    textAlign: 'center',
-  },
-  AnncImage: {
-    top: '2%',
-    width: '100%',
-    height: 250,
-  },
-
-  TextTitle: {
-    fontSize: 25,
-    color: 'maroon',
-    fontWeight: 'bold',
-    marginTop: '10%',
-    marginLeft: '5%',
-    marginRight: '5%',
-  },
-  TextParagraph: {
-    fontSize: 15,
-    color: 'black',
-    marginTop: '-3%',
-    marginLeft: '6%',
-    marginRight: '5%',
-    marginBottom: '5%',
-  },
-});
 
 export default Announcements;
