@@ -1,35 +1,22 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image } from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import CustomHeaderHome from '~/components/headers/CustomHeaderHome';
 import CustomHeaderUniv from '~/components/headers/CustomHeaderUniv';
 import Home from '~/screens/Home';
 import UniversitySchedule from '~/screens/UniversitySchedule';
-import { styles } from '~/styles/headerStyle';
 import Announcements from './screens/Announcements';
-import {View, Text} from 'react-native'
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    // <NavigationContainer>
-      <View className='items-center h-screen'>
-      {/* <Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator>
         <Stack.Screen
           name="Home"
           component={Home}
           options={{
-            // headerStyle: styles.header,
-            // headerTitleStyle: styles.headerTitle,
-            // headerLeft: () => (
-            //   <Image
-            //     source={require('~/assets/CICS.png')}
-            //     className='w-24 h-3/4 border border-black -left-1/4'
-            //     resizeMode="contain"
-            //   />
-            // ),
             header: () => <CustomHeaderHome />,
           }}
         />
@@ -38,15 +25,6 @@ const App = () => {
           name="UniversitySchedule"
           component={UniversitySchedule}
           options={{
-            headerStyle: styles.header,
-            headerTitleStyle: styles.headerTitle,
-            headerLeft: () => (
-              <Image
-                source={require('~/assets/right-arrow.png')}
-                className='rotate-180 w-9 mx-[2%] h-3/4'
-                resizeMode="contain"
-              />
-            ),
             header: () => <CustomHeaderUniv />,
           }}
         />
@@ -55,21 +33,11 @@ const App = () => {
           name="Announcements"
           component={Announcements}
           options={{
-            headerStyle: styles.header,
-            headerTitleStyle: styles.headerTitle,
-            headerLeft: () => (
-              <Image
-                source={require('~/assets/right-arrow.png')}
-                className='rotate-180 w-9 mx-[2%] h-3/4'
-                resizeMode="contain"
-              />
-            ),
             header: () => <CustomHeaderUniv />,
           }}
         />
-      </Stack.Navigator> */}
-      <Text className='text-green-300'>asd</Text></View>
-    // </NavigationContainer>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

@@ -2,18 +2,19 @@ import {View, Image, Text, TouchableOpacity} from 'react-native';
 
 function CustomHeaderHome() {
   return (
-    <View className='flex-row items-center bg-gray-300 px-2 h-16'>
-      <View className='w-2 h-3/4 border border-black -left-1/4'>
+    <View className="h-16 flex-row items-center bg-gray-500 px-2">
+      <View className="mr-2 h-12 w-12">
         <Image
           source={require('~/assets/CICS.png')}
-          resizeMode="contain"
+          className="h-full w-full"
+          resizeMode="center"
         />
       </View>
-      <Text className='text-white font-bold text-xl -left-1/2'>CICS</Text>
-      <TouchableOpacity className='-top-1 items-center ml-auto mr-2 w-9 h-9'>
+      <Text className="text-xl font-bold text-white">CICS</Text>
+      <TouchableOpacity className="-top-1 ml-auto mr-2 h-9 w-9 items-center">
         <Image source={require('~/assets/user.png')} />
       </TouchableOpacity>
-      <TouchableOpacity className='-top-1 items-center mr-2 w-9 h-9'>
+      <TouchableOpacity className="-top-1 mr-2 h-9 w-9 items-center">
         <Image source={require('~/assets/messages.png')} />
       </TouchableOpacity>
     </View>
