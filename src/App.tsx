@@ -6,6 +6,7 @@ import CustomHeaderUniv from '~/components/headers/CustomHeaderUniv';
 import Home from '~/screens/Home';
 import UniversitySchedule from '~/screens/UniversitySchedule';
 import Announcements from './screens/Announcements';
+import Debug from './screens/Debug';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +14,14 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="Debug"
+          component={Debug}
+          options={{
+            headerShown: false,
+            // header: () => <CustomHeaderHome />,
+          }}
+        />
         <Stack.Screen
           name="Home"
           component={Home}
