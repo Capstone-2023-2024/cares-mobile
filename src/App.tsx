@@ -1,51 +1,71 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import CustomHeaderHome from '~/components/headers/CustomHeaderHome';
-import CustomHeaderUniv from '~/components/headers/CustomHeaderUniv';
-import Home from '~/screens/Home';
-import UniversitySchedule from '~/screens/UniversitySchedule';
-import Announcements from './screens/Announcements';
-import Debug from './screens/Debug';
+import DefaultHeader from '~/components/headers/DefaultHeader';
+import BackHeader from '~/components/headers/BackHeader';
+import {
+  Home,
+  UniSched,
+  Announcements,
+  Application,
+  ReqPage,
+  Takers,
+} from '~/screens';
+import NavigationProvider from './contexts/NavigationContext';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Debug"
-          component={Debug}
-          options={{
-            headerShown: false,
-            // header: () => <CustomHeaderHome />,
-          }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{
-            header: () => <CustomHeaderHome />,
-          }}
-        />
+      <NavigationProvider>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Dashboard Home"
+            component={Home}
+            options={{
+              header: () => <DefaultHeader />,
+            }}
+          />
 
-        <Stack.Screen
-          name="UniversitySchedule"
-          component={UniversitySchedule}
-          options={{
-            header: () => <CustomHeaderUniv />,
-          }}
-        />
+          <Stack.Screen
+            name="Dashboard University Schedule"
+            component={UniSched}
+            options={{
+              header: () => <BackHeader />,
+            }}
+          />
 
-        <Stack.Screen
-          name="Announcements"
-          component={Announcements}
-          options={{
-            header: () => <CustomHeaderUniv />,
-          }}
-        />
-      </Stack.Navigator>
+          <Stack.Screen
+            name="Dashboard Announcements"
+            component={Announcements}
+            options={{
+              header: () => <BackHeader />,
+            }}
+          />
+          <Stack.Screen
+            name="Special Class Application"
+            component={Application}
+            options={{
+              header: () => <DefaultHeader />,
+            }}
+          />
+          <Stack.Screen
+            name="Special Class Request Page"
+            component={ReqPage}
+            options={{
+              header: () => <DefaultHeader />,
+            }}
+          />
+          <Stack.Screen
+            name="Special Class Takers"
+            component={Takers}
+            options={{
+              header: () => <DefaultHeader />,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationProvider>
     </NavigationContainer>
   );
 };

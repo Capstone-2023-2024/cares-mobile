@@ -1,11 +1,40 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Image,
+} from 'react-native';
+import {useNav} from '~/contexts/NavigationContext';
 
-const SpecialClassTakers = ({ navigation }) => {
-  const subjects = ['IT302', 'CAP301', 'IT308', 'IT309', 'IT310', 'IT311', 'IT312'];
+const bsu = '~/assets/bsu.png';
+const user = '~/assets/user.png';
+const messages = '~/assets/messages.png';
+
+const Takers = () => {
+  const {navigateTo} = useNav();
+  const subjects = [
+    'IT302',
+    'CAP301',
+    'IT308',
+    'IT309',
+    'IT310',
+    'IT311',
+    'IT312',
+  ];
 
   const [students, setStudents] = useState([
-    ['Jolly Bee', 'Pogi Ko', '', '', 'Quack Frog', 'Kroak Goose', 'Johnny Shawty'], // Row 1
+    [
+      'Jolly Bee',
+      'Pogi Ko',
+      '',
+      '',
+      'Quack Frog',
+      'Kroak Goose',
+      'Johnny Shawty',
+    ], // Row 1
     ['Joy Yang', 'Kuala Express', '', '', '', '', ''], // Row 2
     ['', 'Meow Dog', '', '', '', '', ''], // Row 3
     ['', '', '', '', '', '', ''], // Row 4
@@ -14,8 +43,8 @@ const SpecialClassTakers = ({ navigation }) => {
     ['', '', '', '', '', '', ''], // Row 7
   ]);
 
-  const renderHeader = () => (
-   
+  const Header = () => {
+    return (
       <View style={styles.subjectHeader}>
         {subjects.map((subject, index) => (
           <View key={index} style={styles.subjectCell}>
@@ -23,52 +52,44 @@ const SpecialClassTakers = ({ navigation }) => {
           </View>
         ))}
       </View>
-    
-  );
+    );
+  };
 
-  const renderTable = () => (
-    <View style={styles.table}>
-      {students.map((row, rowIndex) => (
-        <View key={rowIndex} style={styles.row}>
-          {row.map((student, columnIndex) => (
-            <View key={columnIndex} style={styles.cell}>
-              <Text style={styles.cellText}>{student}</Text>
-            </View>
-          ))}
-        </View>
-      ))}
-    </View>
-  );
-
-  const handleApplyNow = () => {
-    navigation.navigate('SpecialClassApplication');
+  const Table = () => {
+    return (
+      <View style={styles.table}>
+        {students.map((row, rowIndex) => (
+          <View key={rowIndex} style={styles.row}>
+            {row.map((student, columnIndex) => (
+              <View key={columnIndex} style={styles.cell}>
+                <Text style={styles.cellText}>{student}</Text>
+              </View>
+            ))}
+          </View>
+        ))}
+      </View>
+    );
   };
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-         <Image
-          source={require('./bsu.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+      {/* <View style={styles.header}>
+        <Image source={require(bsu)} style={styles.logo} resizeMode="contain" />
         <Text style={styles.BSU}>HITES</Text>
         <TouchableOpacity style={styles.userIcon}>
-          <Image
-            source={require('./user.png')}
-          />
+          <Image source={require(user)} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.messagesIcon}>
-          <Image
-            source={require('./messages.png')}
-          />
+          <Image source={require(messages)} />
         </TouchableOpacity>
-      </View>
-  
-      {renderHeader()}
-      {renderTable()}
+      </View> */}
 
-      <TouchableOpacity style={styles.applyNowButton} onPress={handleApplyNow}>
+      <Header />
+      <Table />
+
+      <TouchableOpacity
+        style={styles.applyNowButton}
+        onPress={() => navigateTo('SpecialClassApplication')}>
         <Text style={styles.applyNowButtonText}>Apply Now</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -165,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SpecialClassTakers;
+export default Takers;

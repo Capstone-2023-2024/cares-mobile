@@ -1,8 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {View, TouchableOpacity, Image} from 'react-native';
-import {styles} from '~/styles/headerStyle';
 
-function CustomHeaderUniv() {
+function BackHeader() {
   const navigation = useNavigation();
 
   const handleGoBack = () => {
@@ -10,16 +9,18 @@ function CustomHeaderUniv() {
   };
 
   return (
-    <View className='flex-row items-center px-2 h-16'>
+    <View className="h-16 flex-row items-center px-2">
       <TouchableOpacity onPress={handleGoBack}>
-        <Image
-          source={require('~/assets/right-arrow.png')}
-          className='rotate-180 w-9 mx-[2%] h-3/4'
-          resizeMode="contain"
-        />
+        <View className="h-3/4 w-9 rotate-180 p-2">
+          <Image
+            source={require('~/assets/right-arrow.png')}
+            className="h-full w-full"
+            resizeMode="center"
+          />
+        </View>
       </TouchableOpacity>
     </View>
   );
 }
 
-export default CustomHeaderUniv;
+export default BackHeader;
