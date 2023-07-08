@@ -14,27 +14,11 @@ const user = '~/assets/user.png';
 const messages = '~/assets/messages.png';
 
 const Takers = () => {
-  const {navigateTo} = useNav();
-  const subjects = [
-    'IT302',
-    'CAP301',
-    'IT308',
-    'IT309',
-    'IT310',
-    'IT311',
-    'IT312',
-  ];
+  const { navigateTo } = useNav();
+  const subjects = ['IT302', 'CAP301', 'IT308', 'IT309', 'IT310', 'IT311', 'IT312'];
 
   const [students, setStudents] = useState([
-    [
-      'Jolly Bee',
-      'Pogi Ko',
-      '',
-      '',
-      'Quack Frog',
-      'Kroak Goose',
-      'Johnny Shawty',
-    ], // Row 1
+    ['Jolly Bee', 'Pogi Ko', '', '', 'Quack Frog', 'Kroak Goose', 'Johnny Shawty'], // Row 1
     ['Joy Yang', 'Kuala Express', '', '', '', '', ''], // Row 2
     ['', 'Meow Dog', '', '', '', '', ''], // Row 3
     ['', '', '', '', '', '', ''], // Row 4
@@ -73,23 +57,14 @@ const Takers = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* <View style={styles.header}>
-        <Image source={require(bsu)} style={styles.logo} resizeMode="contain" />
-        <Text style={styles.BSU}>HITES</Text>
-        <TouchableOpacity style={styles.userIcon}>
-          <Image source={require(user)} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.messagesIcon}>
-          <Image source={require(messages)} />
-        </TouchableOpacity>
-      </View> */}
-
+      <Text style={styles.title}>List of Students for Special Class</Text>
       <Header />
       <Table />
 
       <TouchableOpacity
         style={styles.applyNowButton}
-        onPress={() => navigateTo('SpecialClassApplication')}>
+        onPress={() => navigateTo('Special Class Application')}
+      >
         <Text style={styles.applyNowButtonText}>Apply Now</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -100,6 +75,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 10,
   },
   header: {
     height: 75,

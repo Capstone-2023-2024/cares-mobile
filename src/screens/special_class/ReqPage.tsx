@@ -1,22 +1,41 @@
-import {View, Image, Text} from 'react-native';
+import React from 'react';
+import { View, Image, Text, StyleSheet } from 'react-native';
 
-const fileSent = '~/assets/filesent.png';
+const fileSent = require('~/assets/filesent.png');
 
 const ReqPage = () => {
   return (
-    <View>
-      <View className="mr-2 h-12 w-12">
-        <Image
-          source={require(fileSent)}
-          className="h-full w-full"
-          resizeMode="center"
-        />
-      </View>
-      <Text className="text-xl font-bold text-white">
+    <View style={styles.container}>
+      <Image
+        source={fileSent}
+        style={styles.image}
+        resizeMode="contain"
+      />
+      <Text style={styles.text}>
         Special Class request submitted
       </Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000000',
+    textAlign: 'center',
+  },
+});
 
 export default ReqPage;
