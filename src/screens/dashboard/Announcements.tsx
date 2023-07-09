@@ -1,19 +1,21 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from 'react-native';
 
+const image = '~/assets/Image.png';
+
 const Announcements = () => {
   const Anncs = () => {
     const ovalsAnnc = [];
 
     for (let l = 0; l < 3; l++) {
       ovalsAnnc.push(
-        <View className='mb-[5%] border-b-2' key={l}>
-          <Image
-            className='top-[2%] w-full h-64'
-            source={require('~/assets/Image.png')}
-          />
-          <Text className='font-bold text-xl text-red-900 mt-[10%] mx-[5%]'> Faculty Evaluation{'\n'}</Text>
-          <Text className='text-sm text-black -mt-[3%] ml-[6%] mr-[5%] mb-[5%]'>
+        <View className="mb-[5%] border-b-2" key={l}>
+          <Image className="top-[2%] h-64 w-full" source={require(image)} />
+          <Text className="mx-[5%] mt-[10%] text-xl font-bold text-red-900">
+            {' '}
+            Faculty Evaluation{'\n'}
+          </Text>
+          <Text className="-mt-[3%] mb-[5%] ml-[6%] mr-[5%] text-sm text-black">
             Heads up, future engineers!As per Office Memorandum from the Office
             of the Director for Administrative and Management Services Division.
             {'\n'}
@@ -50,7 +52,7 @@ const Announcements = () => {
 
   return (
     <ScrollView>
-      <Text className='text-4xl text-black items-center'>Announcements</Text>
+      <Text className="items-center text-4xl text-black">Announcements</Text>
       {Anncs()}
     </ScrollView>
   );
