@@ -27,7 +27,6 @@ const App = () => {
               header: () => <DefaultHeader />,
             }}
           />
-
           <Stack.Screen
             name="Dashboard University Schedule"
             component={UniSched}
