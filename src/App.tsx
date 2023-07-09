@@ -15,14 +15,6 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Debug"
-          component={Debug}
-          options={{
-            headerShown: false,
-            // header: () => <CustomHeaderHome />,
-          }}
-        />
-        <Stack.Screen
           name="Home"
           component={Home}
           options={{
