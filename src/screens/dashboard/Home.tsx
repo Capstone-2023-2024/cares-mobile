@@ -308,11 +308,11 @@ const styles = StyleSheet.create({
   containerNotif: {
     width: '95%',
     height: 'auto',
-    marginLeft: '3%',
+    marginLeft: '2.5%',
     marginTop: '5%',
     backgroundColor: 'rgb(211, 211, 211)',
     borderRadius: 50,
-    marginBottom: '10%',
+    marginBottom: '5%',
   },
   Notifications: {
     fontWeight: 'bold',

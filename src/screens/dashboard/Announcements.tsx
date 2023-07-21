@@ -1,16 +1,17 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from 'react-native';
 
-const image = '~/assets/Image.png';
-
 const Announcements = () => {
-  const Anncs = () => {
+  const renderAnnouncements = () => {
     const ovalsAnnc = [];
 
     for (let l = 0; l < 3; l++) {
       ovalsAnnc.push(
         <View className="mb-[5%] border-b-2" key={l}>
-          <Image className="top-[2%] h-64 w-full" source={require(image)} />
+          <Image
+            className="top-[2%] h-64 w-full"
+            source={require('~/assets/Image.png')}
+          />
           <Text className="mx-[5%] mt-[10%] text-xl font-bold text-red-900">
             {' '}
             Faculty Evaluation{'\n'}
@@ -52,8 +53,10 @@ const Announcements = () => {
 
   return (
     <ScrollView>
-      <Text className="items-center text-4xl text-black">Announcements</Text>
-      {Anncs()}
+      <Text className="mt-3 items-center text-center text-4xl text-black">
+        Announcements
+      </Text>
+      {renderAnnouncements()}
     </ScrollView>
   );
 };
