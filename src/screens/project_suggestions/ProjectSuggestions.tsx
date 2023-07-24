@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import BackHeader from '~/components/headers/BackHeader';
 import FooterNav from '~/components/FooterProjectS';
 
@@ -11,12 +11,17 @@ const votes = require('~/assets/icons/vote.png');
 const message = require('~/assets/icons/Message.png');
 const menudots = require('~/assets/icons/MenuDots.png');
 const write = require('~/assets/writesuggest.png');
+const bsu = '~/assets/BSUBACKGROUND.png';
 
 const SuggestionPage = () => {
     
     return (
       <View className="flex-1">
         <ScrollView>
+        <ImageBackground
+      source={require(bsu)} // Replace with your background image path
+      imageStyle={{opacity:0.7 }} // Set the opacity of the background image
+    >
           <BackHeader />
   
           {/* Project Suggestions Section */}
@@ -35,6 +40,7 @@ const SuggestionPage = () => {
         <Suggestion/>
         <Suggestion/>
         <Suggestion/>
+        </ImageBackground>
         </ScrollView>
         <View><FooterNav /></View>
         </View>

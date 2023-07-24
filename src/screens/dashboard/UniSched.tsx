@@ -4,6 +4,7 @@ import {Calendar} from 'react-native-calendars';
 
 const UniSched = () => {
   return (
+    
     <ScrollView>
       <View style={styles.containerInfo}>
         <Text style={styles.Text}>University Schedule</Text>

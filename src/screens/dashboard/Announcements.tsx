@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from 'react-native';
 
+const bsu = '~/assets/BSUBACKGROUND.png';
+
 const Announcements = () => {
   const renderAnnouncements = () => {
     const ovalsAnnc = [];

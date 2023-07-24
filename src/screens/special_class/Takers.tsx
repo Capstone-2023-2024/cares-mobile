@@ -1,17 +1,12 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Image,
-} from 'react-native';
-import {useNav} from '~/contexts/NavigationContext';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native';
+import { useNav } from '~/contexts/NavigationContext';
+import BackHeader from '~/components/headers/BackHeader';
 
 const bsu = '~/assets/bsu.png';
 const user = '~/assets/user.png';
 const messages = '~/assets/messages.png';
+const bsu1 = '~/assets/BSUBACKGROUND.png';
 
 const Takers = () => {
   const { navigateTo } = useNav();
@@ -56,65 +51,35 @@ const Takers = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>List of Students for Special Class</Text>
-      <Header />
-      <Table />
+    <ImageBackground
+      source={require(bsu1)}
+      style={styles.backgroundImage}
+      imageStyle={{ opacity: 0.5 }}
+    >
+      <BackHeader />
+      <ScrollView>
+        <Text style={styles.title}>List of Students for Special Class</Text>
+        <Header />
+        <Table />
 
-      <TouchableOpacity
-        style={styles.applyNowButton}
-        onPress={() => navigateTo('Special Class Application')}
-      >
-        <Text style={styles.applyNowButtonText}>Apply Now</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity
+          style={styles.applyNowButton}
+          onPress={() => navigateTo('Special Class Application')}
+        >
+          <Text style={styles.applyNowButtonText}>Apply Now</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 0,
     marginBottom: 10,
-  },
-  header: {
-    height: 75,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'gray',
-    paddingHorizontal: 10,
-    zIndex: 1,
-  },
-  logo: {
-    width: 75,
-    height: '75%',
-  },
-  BSU: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 25,
-    marginLeft: 10,
-  },
-  userIcon: {
-    top: -5,
-    alignItems: 'center',
-    marginLeft: 'auto',
-    marginRight: 10,
-    width: 35,
-    height: 35,
-  },
-  messagesIcon: {
-    top: -5,
-    alignItems: 'center',
-    marginRight: 10,
-    width: 35,
-    height: 35,
   },
   subjectHeader: {
     flexDirection: 'row',
@@ -165,6 +130,10 @@ const styles = StyleSheet.create({
   applyNowButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
   },
 });
 

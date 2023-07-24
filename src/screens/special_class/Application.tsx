@@ -8,9 +8,13 @@ import {
   Text,
   ScrollView,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
+import BackHeader from '~/components/headers/BackHeader';
 
+
+const bsu1 = '~/assets/BSUBACKGROUND.png';
 const bsu = '~/assets/bsu.png';
 const user = '~/assets/user.png';
 const messages = '~/assets/messages.png';
@@ -55,6 +59,11 @@ const SpecialClassApplication = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <ImageBackground
+    source={require(bsu1)} // Replace with your background image path
+    imageStyle={{ opacity: 0.5 }} // Set the opacity of the background image
+  >
+    <BackHeader />
       <View style={styles.content}>
         <Text style={styles.title}>Special Class Application</Text>
 
@@ -199,6 +208,7 @@ const SpecialClassApplication = () => {
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
       </View>
+      </ImageBackground>
     </ScrollView>
   );
 };
@@ -242,6 +252,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
+    marginTop:7,
   },
   title: {
     fontSize: 24,

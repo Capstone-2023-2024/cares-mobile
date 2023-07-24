@@ -1,4 +1,5 @@
 import {CommonActions, useNavigation} from '@react-navigation/native';
+import { ImageBackground } from 'react-native';
 import {
   View,
   StyleSheet,
@@ -15,6 +16,9 @@ const ellipsis = '~/assets/ellipsis.png';
 const rightArrow = '~/assets/right-arrow.png';
 const pin = '~/assets/pin.png';
 const idea = '~/assets/idea.png';
+const anncImage = '~/assets/Image2.png';
+const cics = '~/assets/CICS.png';
+const bsu = '~/assets/BSUBACKGROUND.png';
 
 const Home = () => {
   const {navigateTo} = useNav();
@@ -25,8 +29,14 @@ const Home = () => {
   // }
 
   return (
+    
     <View className="flex-1">
+      
       <ScrollView>
+      <ImageBackground
+      source={require(bsu)} // Replace with your background image path
+      imageStyle={{opacity:0.4 }} // Set the opacity of the background image
+    >
         <View style={styles.containerWelcome}>
           <Image source={require(user)} style={styles.iconBG} />
           <Text style={styles.Welcome}>Welcome, {'\n'}Andrei!</Text>
@@ -75,13 +85,15 @@ const Home = () => {
           <NotifContainer />
           <NotifContainer />
           <NotifContainer />
-          <Image source={require(rightArrow)} style={styles.arrowImageNotif} />
         </View>
+        </ImageBackground>
       </ScrollView>
       <View>
         <FooterNav />
       </View>
+ 
     </View>
+    
   );
 };
 
@@ -117,15 +129,20 @@ const AnnouncementContainer = () => {
       style={styles.ovalAnnc}
       onPress={() => navigateTo('Dashboard Announcements')}>
       <View style={styles.ovalContent}>
+        <View style={styles.anncTitle}>
+          <Image source={require(cics)} style={styles.CicsImageAnnc} />
+          <Text style={{color:'black', fontSize:18, fontWeight:'bold', alignSelf:'center',textAlign:'center'}}>CICS {'\n'} DEPARTMENT</Text>
+      </View>
         <Text style={styles.ovalTextAnnc}>
-          <Image source={require(pin)} style={styles.pinImage} />
-          CITE DEPARTMENT {'\n'}
+           {'\n'}
           {'\n'}
           Heads up, future engineers!As per Office Memorandum from the Office of
           the Director for Administrative and Management Services Division...{' '}
           {'\n'}
-          {'\n'}(Read More)
+          {'\n'}
         </Text>
+        <Text style={styles.readMore}>Read More</Text>
+        <Image source={require(anncImage)} style={styles.anncImage} />
       </View>
     </TouchableOpacity>
   );
@@ -184,7 +201,7 @@ const styles = StyleSheet.create({
   },
   containerWelcome: {
     position: 'relative',
-    borderBottomColor: 'gray',
+    borderBottomColor: 'black',
     borderBottomWidth: 3,
     marginTop: '5%',
   },
@@ -218,7 +235,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     borderBottomWidth: 3,
     marginBottom: 10,
-    borderBottomColor: 'gray',
+    borderBottomColor: 'black',
   },
   UniversitySchedule1: {
     fontWeight: 'bold',
@@ -241,7 +258,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom: '5%',
     borderRadius: 75,
-    borderWidth: 1,
+    borderWidth: 2,
     backgroundColor: 'rgba(118, 52, 53, 1)',
     justifyContent: 'center',
     alignItems: 'flex-start',
@@ -264,7 +281,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     borderBottomWidth: 3,
     marginBottom: 10,
-    borderBottomColor: 'gray',
+    borderBottomColor: 'black',
   },
   Announcements: {
     fontWeight: 'bold',
@@ -278,32 +295,55 @@ const styles = StyleSheet.create({
     top: '-13%',
   },
   ovalAnnc: {
-    width: 320,
+    width: 470,
     height: 'auto',
     marginLeft: 20,
-    marginBottom: '5%',
+    marginBottom: '2%',
     borderRadius: 55,
-    borderWidth: 1,
+    borderWidth: 2,
     backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: 'black',
-    shadowOffset: {
-      width: 10,
-      height: 4,
-    },
-    shadowOpacity: 1, // Changed to 1 for a hard black shadow
-    shadowRadius: 4,
-    elevation: 10, // Needed for Android shadow
+    alignContent:'center'// Needed for Android shadow
   },
   ovalTextAnnc: {
-    marginTop: '3%',
+    width:'60%',
+    marginTop: '8%',
     marginBottom: '3%',
-    textAlign: 'center',
+    marginLeft:'5%',
+  
     color: 'black',
     fontSize: 15,
     fontWeight: 'bold',
   },
+  anncTitle:{
+    flexDirection:'row',
+    position:'absolute',
+    top:'6%',
+    fontWeight:'bold',
+    left:'8%',
+  },
+  readMore:{
+    color:'black',
+    fontWeight:'bold',
+    position:'absolute',
+    top:'83%',
+    left:'24%',
+    borderWidth:2,
+    borderRadius:25,
+    textAlign:'center',
+    width:'20%'
+  },
+  anncImage:{
+    width:120,
+    height:180,
+    marginLeft:'65%',
+    position:'absolute'
+  },
+  CicsImageAnnc: {
+    width: 50,
+    height: 50,
+    marginRight:10
+  },
+  
 
   containerNotif: {
     width: '95%',
@@ -311,6 +351,7 @@ const styles = StyleSheet.create({
     marginLeft: '2.5%',
     marginTop: '5%',
     backgroundColor: 'rgb(211, 211, 211)',
+    borderWidth:2,
     borderRadius: 50,
     marginBottom: '5%',
   },
@@ -332,11 +373,9 @@ const styles = StyleSheet.create({
   ovalNotif: {
     width: '95%',
     marginLeft: '2%',
-    marginTop: '3%',
     marginBottom: '3%',
-    marginEnd: '10%',
-    borderRadius: 55,
-    borderWidth: 1,
+    borderRadius: 50,
+    borderWidth: 2,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',

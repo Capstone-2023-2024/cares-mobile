@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, ImageBackground, ScrollView, Dimensions } from 'react-native';
 import BackHeader from '~/components/headers/BackHeader';
 import { useNav } from '~/contexts/NavigationContext';
 
 const write = require('~/assets/icons/writing.png');
+const bsu = require('~/assets/BSUBACKGROUND.png');
 
 const SuggestionPage = () => {
   const { navigateTo } = useNav();
@@ -28,60 +29,78 @@ const SuggestionPage = () => {
   };
 
   return (
-    <View>
-      <BackHeader />
-      <View style={styles.suggestionContainer}>
-        <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-          <Image style={{ width: 40, height: 40, alignSelf: 'center' }} source={write} />
-          <Text style={{
-            alignSelf: 'center',
-            fontSize: 30,
-            fontWeight: '800',
-            color: 'rgb(118, 52, 53)',
-          }}>
-            Write your suggestion
-          </Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="What's on your mind?"
-            textAlignVertical="top"
-            multiline={true}
-            value={inputValue}
-            onChangeText={handleInputChange}
-            maxLength={150} // Set the maximum character limit to 150
-          />
-          <View style={styles.characterCountContainer}>
-            <Text style={styles.characterCountText}>
-              {inputValue.length}/150
+    <View style={{ flex: 1 }}>
+      <ImageBackground
+        source={bsu} // Replace with your background image path
+        style={styles.backgroundImage}
+        imageStyle={{ opacity: 0.7 }} // Set the opacity of the background image
+      >
+        <BackHeader />
+        <View style={styles.suggestionContainer}>
+          <View style={{ flexDirection: 'row', alignSelf: 'center', backgroundColor: 'white', borderRadius:25, width:'90%', padding:10 }}>
+            <Image style={{ width: 40, height: 40, alignSelf: 'center' }} source={write} />
+            <Text style={{
+              textAlign: 'center',
+              fontSize: 30,
+              fontWeight: '800',
+              color: 'rgb(118, 52, 53)',
+            }}>
+              Write your suggestion
             </Text>
           </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="What's on your mind?"
+              textAlignVertical="top"
+              multiline={true}
+              value={inputValue}
+              onChangeText={handleInputChange}
+              maxLength={150} // Set the maximum character limit to 150
+            />
+            <View style={styles.characterCountContainer}>
+              <Text style={styles.characterCountText}>
+                {inputValue.length}/150
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmission}>
+            <Text style={{ textAlign: 'center', color: 'white', fontWeight: 'bold', padding: 7 }}>Submit</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmission}>
-          <Text style={{ textAlign: 'center', color: 'white', fontWeight: 'bold', padding: 7 }}>Submit</Text>
-        </TouchableOpacity>
-      </View>
+      </ImageBackground>
     </View>
   );
 };
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    width: windowWidth,
+    height: windowHeight,
+  },
   suggestionContainer: {
     marginTop: '3%',
+    padding: 10,
   },
   input: {
-    width: 400,
+    width: '100%',
     height: 200,
     fontSize: 18,
     borderWidth: 1,
     borderRadius: 15,
     padding: 10,
     color: 'black',
+    backgroundColor: 'white',
   },
   inputContainer: {
     marginTop: '5%',
     alignSelf: 'center',
+    width: '95%', // Adjust the width as needed
   },
   characterCountContainer: {
     position: 'absolute',
