@@ -2,7 +2,8 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 
-const pin = '~/assets/pin.png';
+import {Pin} from '~/utils/svgIcons';
+// const pin = '~/assets/pin.png';
 
 const UniSched = () => {
   return (
@@ -15,7 +16,8 @@ const UniSched = () => {
       </View>
       <View>
         <Text style={styles.TextTitle}>
-          <Image style={styles.pinImage} source={require(pin)} /> Final
+          <Pin />
+          {/* <Image style={styles.pinImage} source={require(pin)} /> Final */}
           Examination (Non-graduating Students)
         </Text>
         <Text style={styles.TextParagraph}>

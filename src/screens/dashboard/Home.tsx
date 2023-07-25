@@ -10,11 +10,12 @@ import {
 import FooterNav from '~/components/FooterNav';
 import {useNav} from '~/contexts/NavigationContext';
 
-const user = '~/assets/user1.jpg';
-const ellipsis = '~/assets/ellipsis.png';
-const rightArrow = '~/assets/right-arrow.png';
-const pin = '~/assets/pin.png';
-const idea = '~/assets/idea.png';
+import {user} from '~/utils/imagePaths';
+// const user = '~/assets/user1.jpg';
+// const ellipsis = '~/assets/ellipsis.png';
+// const rightArrow = '~/assets/right-arrow.png';
+// const pin = '~/assets/pin.png';
+// const idea = '~/assets/idea.png';
 
 const Home = () => {
   const {navigateTo} = useNav();
@@ -28,10 +29,12 @@ const Home = () => {
     <View className="flex-1">
       <ScrollView>
         <View style={styles.containerWelcome}>
-          <Image source={require(user)} style={styles.iconBG} />
+          <Text>{user}</Text>
+          {/* <Image source={require(user)} style={styles.iconBG} /> */}
           <Text style={styles.Welcome}>Welcome, {'\n'}Andrei!</Text>
           <TouchableOpacity style={styles.ellipsisButton}>
-            <Image source={require(ellipsis)} style={styles.ellipsisIcon} />
+            <Text>Ellipses Icon</Text>
+            {/* <Image source={require(ellipsis)} style={styles.ellipsisIcon} /> */}
           </TouchableOpacity>
         </View>
 
@@ -42,7 +45,8 @@ const Home = () => {
           <TouchableOpacity
             style={styles.arrowButton}
             onPress={() => navigateTo('Dashboard University Schedule')}>
-            <Image source={require(rightArrow)} style={styles.arrowImage} />
+            <Text>Right Arrow Icon</Text>
+            {/* <Image source={require(rightArrow)} style={styles.arrowImage} /> */}
           </TouchableOpacity>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
             <UniSchedContainer />
@@ -58,7 +62,8 @@ const Home = () => {
           <TouchableOpacity
             style={styles.arrowButtonAnnc}
             onPress={() => navigateTo('Dashboard Announcements')}>
-            <Image source={require(rightArrow)} style={styles.arrowImage} />
+            <Text>Right Arrow Icon</Text>
+            {/* <Image source={require(rightArrow)} style={styles.arrowImage} /> */}
           </TouchableOpacity>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
@@ -75,7 +80,8 @@ const Home = () => {
           <NotifContainer />
           <NotifContainer />
           <NotifContainer />
-          <Image source={require(rightArrow)} style={styles.arrowImageNotif} />
+          <Text>Right Arrow Icon</Text>
+          {/* <Image source={require(rightArrow)} style={styles.arrowImageNotif} /> */}
         </View>
       </ScrollView>
       <View>
@@ -97,7 +103,8 @@ const UniSchedContainer = () => {
       // className='h-16 w-64 '
       onPress={() => navigateTo('Dashboard University Schedule')}>
       <View style={styles.ovalContent}>
-        <Image source={require(pin)} style={styles.pinImage} />
+        <Text>Pin Icon</Text>
+        {/* <Image source={require(pin)} style={styles.pinImage} /> */}
         <Text style={styles.ovalText}>
           Final Examination (Non-graduating Students) in 7 days
         </Text>
@@ -118,7 +125,8 @@ const AnnouncementContainer = () => {
       onPress={() => navigateTo('Dashboard Announcements')}>
       <View style={styles.ovalContent}>
         <Text style={styles.ovalTextAnnc}>
-          <Image source={require(pin)} style={styles.pinImage} />
+          <Text>Pin Icon</Text>
+          {/* <Image source={require(pin)} style={styles.pinImage} /> */}
           CITE DEPARTMENT {'\n'}
           {'\n'}
           Heads up, future engineers!As per Office Memorandum from the Office of
@@ -135,7 +143,8 @@ const NotifContainer = () => {
   return (
     <TouchableOpacity style={styles.ovalNotif}>
       <View style={styles.ovalContent}>
-        <Image source={require(idea)} style={styles.NotifBulb} />
+        <Text>Idea Icon</Text>
+        {/* <Image source={require(idea)} style={styles.NotifBulb} /> */}
         <Text style={styles.ovalTextNotif}>
           Final Examination (Non-graduating Students) in 7 days Final
           Examination (Non-graduating Students) in 7 days

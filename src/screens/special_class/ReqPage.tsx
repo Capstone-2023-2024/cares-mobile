@@ -1,19 +1,18 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
+import {View, Image, Text, StyleSheet} from 'react-native';
 
-const fileSent = require('~/assets/filesent.png');
+// const fileSent = require('~/assets/filesent.png');
 
 const ReqPage = () => {
   return (
     <View style={styles.container}>
-      <Image
+      <Text>File Sent</Text>
+      {/* <Image
         source={fileSent}
         style={styles.image}
         resizeMode="contain"
-      />
-      <Text style={styles.text}>
-        Special Class request submitted
-      </Text>
+      /> */}
+      <Text style={styles.text}>Special Class request submitted</Text>
     </View>
   );
 };

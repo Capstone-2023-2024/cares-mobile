@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from 'react-native';
 
-const image = '~/assets/Image.png';
+// const image = '~/assets/Image.png';
 
 const Announcements = () => {
   const Anncs = () => {
@@ -10,7 +10,8 @@ const Announcements = () => {
     for (let l = 0; l < 3; l++) {
       ovalsAnnc.push(
         <View className="mb-[5%] border-b-2" key={l}>
-          <Image className="top-[2%] h-64 w-full" source={require(image)} />
+          <Text>Image</Text>
+          {/* <Image className="top-[2%] h-64 w-full" source={require(image)} /> */}
           <Text className="mx-[5%] mt-[10%] text-xl font-bold text-red-900">
             {' '}
             Faculty Evaluation{'\n'}

@@ -9,16 +9,33 @@ import {
 } from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
 
-const bsu = '~/assets/bsu.png';
-const user = '~/assets/user.png';
-const messages = '~/assets/messages.png';
+// import { user } from '~/utils/imagePaths';
+
+// const bsu = '~/assets/bsu.png';
+// const messages = '~/assets/messages.png';
 
 const Takers = () => {
-  const { navigateTo } = useNav();
-  const subjects = ['IT302', 'CAP301', 'IT308', 'IT309', 'IT310', 'IT311', 'IT312'];
+  const {navigateTo} = useNav();
+  const subjects = [
+    'IT302',
+    'CAP301',
+    'IT308',
+    'IT309',
+    'IT310',
+    'IT311',
+    'IT312',
+  ];
 
   const [students, setStudents] = useState([
-    ['Jolly Bee', 'Pogi Ko', '', '', 'Quack Frog', 'Kroak Goose', 'Johnny Shawty'], // Row 1
+    [
+      'Jolly Bee',
+      'Pogi Ko',
+      '',
+      '',
+      'Quack Frog',
+      'Kroak Goose',
+      'Johnny Shawty',
+    ], // Row 1
     ['Joy Yang', 'Kuala Express', '', '', '', '', ''], // Row 2
     ['', 'Meow Dog', '', '', '', '', ''], // Row 3
     ['', '', '', '', '', '', ''], // Row 4
@@ -63,8 +80,7 @@ const Takers = () => {
 
       <TouchableOpacity
         style={styles.applyNowButton}
-        onPress={() => navigateTo('Special Class Application')}
-      >
+        onPress={() => navigateTo('Special Class Application')}>
         <Text style={styles.applyNowButtonText}>Apply Now</Text>
       </TouchableOpacity>
     </ScrollView>

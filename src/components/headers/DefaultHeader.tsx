@@ -19,10 +19,12 @@ function DefaultHeader() {
         <Text className="text-xl font-bold text-white">CICS</Text>
       </TouchableOpacity>
       <TouchableOpacity className="-top-1 ml-auto mr-2 h-9 w-9 items-center">
-        <Image source={require('~/assets/user.png')} />
+        <Text>User</Text>
+        {/* <Image source={require('~/assets/user.png')} /> */}
       </TouchableOpacity>
       <TouchableOpacity className="-top-1 mr-2 h-9 w-9 items-center">
-        <Image source={require('~/assets/messages.png')} />
+        <Text>Messages Icn</Text>
+        {/* <Image source={require('~/assets/messages.png')} /> */}
       </TouchableOpacity>
     </View>
   );
