@@ -1,21 +1,7 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Image,
-} from 'react-native';
-import {useNav} from '~/contexts/NavigationContext';
-
-// import { user } from '~/utils/imagePaths';
-
-// const bsu = '~/assets/bsu.png';
-// const messages = '~/assets/messages.png';
+import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 
 const Takers = () => {
-  const {navigateTo} = useNav();
   const subjects = [
     'IT302',
     'CAP301',
@@ -26,30 +12,16 @@ const Takers = () => {
     'IT312',
   ];
 
-  const [students, setStudents] = useState([
-    [
-      'Jolly Bee',
-      'Pogi Ko',
-      '',
-      '',
-      'Quack Frog',
-      'Kroak Goose',
-      'Johnny Shawty',
-    ], // Row 1
-    ['Joy Yang', 'Kuala Express', '', '', '', '', ''], // Row 2
-    ['', 'Meow Dog', '', '', '', '', ''], // Row 3
-    ['', '', '', '', '', '', ''], // Row 4
-    ['', '', '', '', '', '', ''], // Row 5
-    ['', '', '', '', '', '', ''], // Row 6
-    ['', '', '', '', '', '', ''], // Row 7
+  const [students, setStudents] = useState<string[][]>([
+    // Student data rows here
   ]);
 
   const Header = () => {
     return (
-      <View style={styles.subjectHeader}>
+      <View className="mt-10 flex flex-row justify-between bg-white px-10">
         {subjects.map((subject, index) => (
-          <View key={index} style={styles.subjectCell}>
-            <Text style={styles.subjectHeaderText}>{subject}</Text>
+          <View key={index} className="flex-1">
+            <Text className="text-center text-base font-bold">{subject}</Text>
           </View>
         ))}
       </View>
@@ -58,12 +30,16 @@ const Takers = () => {
 
   const Table = () => {
     return (
-      <View style={styles.table}>
+      <View className="mx-10 mt-10 border-2 border-black">
         {students.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.row}>
+          <View
+            key={rowIndex}
+            className="flex flex-row border-b border-gray-300">
             {row.map((student, columnIndex) => (
-              <View key={columnIndex} style={styles.cell}>
-                <Text style={styles.cellText}>{student}</Text>
+              <View
+                key={columnIndex}
+                className="flex-1 items-center justify-center border border-black py-4">
+                <Text className="text-center">{student}</Text>
               </View>
             ))}
           </View>
@@ -72,116 +48,25 @@ const Takers = () => {
     );
   };
 
+  function navigateTo(arg0: string): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>List of Students for Special Class</Text>
+    <ScrollView className="flex-1 bg-white">
+      <Text className="mb-10 mt-20 text-center text-4xl font-bold">
+        List of Students for Special Class
+      </Text>
       <Header />
       <Table />
 
       <TouchableOpacity
-        style={styles.applyNowButton}
+        className="mt-20 self-center rounded-md bg-gray-600 px-8 py-4"
         onPress={() => navigateTo('Special Class Application')}>
-        <Text style={styles.applyNowButtonText}>Apply Now</Text>
+        <Text className="font-bold text-white">Apply Now</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  header: {
-    height: 75,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'gray',
-    paddingHorizontal: 10,
-    zIndex: 1,
-  },
-  logo: {
-    width: 75,
-    height: '75%',
-  },
-  BSU: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 25,
-    marginLeft: 10,
-  },
-  userIcon: {
-    top: -5,
-    alignItems: 'center',
-    marginLeft: 'auto',
-    marginRight: 10,
-    width: 35,
-    height: 35,
-  },
-  messagesIcon: {
-    top: -5,
-    alignItems: 'center',
-    marginRight: 10,
-    width: 35,
-    height: 35,
-  },
-  subjectHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-    backgroundColor: 'white',
-    paddingHorizontal: 10,
-  },
-  subjectCell: {
-    flex: 1,
-  },
-  subjectHeaderText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  table: {
-    marginHorizontal: 10,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-  row: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-  },
-  cell: {
-    flex: 1,
-    paddingVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-  cellText: {
-    textAlign: 'center',
-    flexWrap: 'wrap',
-  },
-  applyNowButton: {
-    backgroundColor: 'gray',
-    alignSelf: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  applyNowButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
 
 export default Takers;
