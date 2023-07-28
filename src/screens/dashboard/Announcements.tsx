@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, ScrollView, Image} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 
 // const image = '~/assets/Image.png';
 

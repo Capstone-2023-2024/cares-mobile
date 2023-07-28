@@ -12,60 +12,63 @@ import {
   Takers,
 } from '~/screens';
 import NavigationProvider from './contexts/NavigationContext';
+import ImagePathProvider from './contexts/ImagePathsContext';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <NavigationProvider>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Dashboard Home"
-            component={Home}
-            options={{
-              header: () => <DefaultHeader />,
-            }}
-          />
-          <Stack.Screen
-            name="Dashboard University Schedule"
-            component={UniSched}
-            options={{
-              header: () => <BackHeader />,
-            }}
-          />
+    <ImagePathProvider>
+      <NavigationContainer>
+        <NavigationProvider>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Dashboard Home"
+              component={Home}
+              options={{
+                header: () => <DefaultHeader />,
+              }}
+            />
+            <Stack.Screen
+              name="Dashboard University Schedule"
+              component={UniSched}
+              options={{
+                header: () => <BackHeader />,
+              }}
+            />
 
-          <Stack.Screen
-            name="Dashboard Announcements"
-            component={Announcements}
-            options={{
-              header: () => <BackHeader />,
-            }}
-          />
-          <Stack.Screen
-            name="Special Class Application"
-            component={Application}
-            options={{
-              header: () => <DefaultHeader />,
-            }}
-          />
-          <Stack.Screen
-            name="Special Class Request Page"
-            component={ReqPage}
-            options={{
-              header: () => <DefaultHeader />,
-            }}
-          />
-          <Stack.Screen
-            name="Special Class Takers"
-            component={Takers}
-            options={{
-              header: () => <DefaultHeader />,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationProvider>
-    </NavigationContainer>
+            <Stack.Screen
+              name="Dashboard Announcements"
+              component={Announcements}
+              options={{
+                header: () => <BackHeader />,
+              }}
+            />
+            <Stack.Screen
+              name="Special Class Application"
+              component={Application}
+              options={{
+                header: () => <DefaultHeader />,
+              }}
+            />
+            <Stack.Screen
+              name="Special Class Request Page"
+              component={ReqPage}
+              options={{
+                header: () => <DefaultHeader />,
+              }}
+            />
+            <Stack.Screen
+              name="Special Class Takers"
+              component={Takers}
+              options={{
+                header: () => <DefaultHeader />,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationProvider>
+      </NavigationContainer>
+    </ImagePathProvider>
   );
 };
 
