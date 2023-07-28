@@ -1,52 +1,46 @@
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import {
   View,
-  StyleSheet,
   Image,
   TouchableOpacity,
   Text,
   ScrollView,
+  StyleSheet,
 } from 'react-native';
 import FooterNav from '~/components/FooterNav';
 import {useNav} from '~/contexts/NavigationContext';
 
-import {user} from '~/utils/imagePaths';
-// const user = '~/assets/user1.jpg';
-// const ellipsis = '~/assets/ellipsis.png';
-// const rightArrow = '~/assets/right-arrow.png';
-// const pin = '~/assets/pin.png';
-// const idea = '~/assets/idea.png';
-
 const Home = () => {
   const {navigateTo} = useNav();
-  // const navigation = useNavigation();
-
-  // function navigateTo(name: string) {
-  //   navigation.dispatch(CommonActions.navigate({name}));
-  // }
 
   return (
     <View className="flex-1">
       <ScrollView>
-        <View style={styles.containerWelcome}>
-          <Text>{user}</Text>
-          {/* <Image source={require(user)} style={styles.iconBG} /> */}
-          <Text style={styles.Welcome}>Welcome, {'\n'}Andrei!</Text>
-          <TouchableOpacity style={styles.ellipsisButton}>
-            <Text>Ellipses Icon</Text>
-            {/* <Image source={require(ellipsis)} style={styles.ellipsisIcon} /> */}
+        <View className="containerWelcome">
+          <Image
+            source={require('path/to/your/user-image.jpg')}
+            className="iconBG w-100 h-100 rounded-full border-2 border-black"
+          />
+          <Text className="Welcome">Welcome,{'\n'}Andrei!</Text>
+          <TouchableOpacity className="ellipsisButton mb-10 ml-auto mt-2 h-10 w-10">
+            <Image
+              source={require('path/to/your/ellipsis-icon.png')}
+              className="h-full w-full"
+            />
           </TouchableOpacity>
         </View>
 
         {/* UNIVERSITY SCHEDULE */}
-        <View style={styles.containerUS}>
-          <Text style={styles.UniversitySchedule1}>University Schedule</Text>
+        <View className="containerUS">
+          <Text className="UniversitySchedule1">University Schedule</Text>
 
           <TouchableOpacity
-            style={styles.arrowButton}
+            className="arrowButton"
             onPress={() => navigateTo('Dashboard University Schedule')}>
-            <Text>Right Arrow Icon</Text>
-            {/* <Image source={require(rightArrow)} style={styles.arrowImage} /> */}
+            <Image
+              source={require('path/to/your/right-arrow-icon.png')}
+              className="h-6 w-6"
+            />
           </TouchableOpacity>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
             <UniSchedContainer />
@@ -55,15 +49,16 @@ const Home = () => {
           </ScrollView>
         </View>
 
-        {/* 
-        ANNOUNCEMENTS */}
-        <View style={styles.containerAnnc}>
-          <Text style={styles.Announcements}>Announcements</Text>
+        {/* ANNOUNCEMENTS */}
+        <View className="containerAnnc">
+          <Text className="Announcements">Announcements</Text>
           <TouchableOpacity
-            style={styles.arrowButtonAnnc}
+            className="arrowButtonAnnc"
             onPress={() => navigateTo('Dashboard Announcements')}>
-            <Text>Right Arrow Icon</Text>
-            {/* <Image source={require(rightArrow)} style={styles.arrowImage} /> */}
+            <Image
+              source={require('path/to/your/right-arrow-icon.png')}
+              className="h-6 w-6"
+            />
           </TouchableOpacity>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
@@ -74,14 +69,18 @@ const Home = () => {
         </View>
 
         {/* NOTIFICATIONS */}
-        <View style={styles.containerNotif}>
-          <Text style={styles.Notifications}>Notificatons</Text>
+        <View className="containerNotif">
+          <Text className="Notifications">Notifications</Text>
 
           <NotifContainer />
           <NotifContainer />
           <NotifContainer />
-          <Text>Right Arrow Icon</Text>
-          {/* <Image source={require(rightArrow)} style={styles.arrowImageNotif} /> */}
+          <TouchableOpacity>
+            <Image
+              source={require('path/to/your/right-arrow-icon.png')}
+              className="h-6 w-6"
+            />
+          </TouchableOpacity>
         </View>
       </ScrollView>
       <View>
@@ -90,6 +89,8 @@ const Home = () => {
     </View>
   );
 };
+
+// Rest of the components remain the same
 
 const UniSchedContainer = () => {
   const navigation = useNavigation();
