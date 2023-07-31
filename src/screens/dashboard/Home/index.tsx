@@ -1,3 +1,4 @@
+import React from 'react';
 import {ScrollView, View} from 'react-native';
 import FooterNav from '~/components/FooterNav';
 import Announcements from './Announcements';

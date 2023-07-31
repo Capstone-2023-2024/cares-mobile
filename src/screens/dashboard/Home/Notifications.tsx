@@ -1,35 +1,33 @@
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {Text, TouchableOpacity, View} from 'react-native';
+import SvgContainer from '~/components/SvgContainer';
+import {idea} from '~/utils/svgIcons';
+import {HeadingTemplate} from './Usertab';
 
 const Notifications = () => {
-  const NotifContainer = () => {
-    return (
-      <TouchableOpacity className="m-2 w-full items-center justify-center rounded-lg border bg-white">
-        <View className="flex-row items-center">
-          <Text>Idea Icon</Text>
-          {/* <Image source={require(idea)} className='w-12 h-12 ml-2' /> */}
-          <Text className="m-2 w-3/4 text-left text-base font-bold text-black">
-            Final Examination (Non-graduating Students) in 7 days Final
-            Examination (Non-graduating Students) in 7 days
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
   return (
-    <View className="shadow-sm">
-      <Text className="my-2 ml-5 text-lg font-bold text-black">
-        Notifications
-      </Text>
+    <View className="m-4 rounded-3xl bg-primary/20 p-4 shadow-md">
+      <HeadingTemplate navigation="Dashboard Home" title="Notifications" />
       <NotifContainer />
       <NotifContainer />
       <NotifContainer />
-      <TouchableOpacity>
-        {/* <Image
-          source={require('path/to/your/right-arrow-icon.png')}
-          className="h-6 w-6"
-        /> */}
-      </TouchableOpacity>
     </View>
+  );
+};
+
+const NotifContainer = () => {
+  return (
+    <TouchableOpacity className="mx-auto mb-1 w-11/12 rounded-full bg-white">
+      <View className="flex-row p-2 text-left">
+        <SvgContainer uri={idea} size="sm" />
+        <View className="ml-2 ">
+          <Text className="text-left text-xs font-bold text-black">
+            Final Examination
+          </Text>
+          <Text>(Non-graduating Students) in 7 days</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 

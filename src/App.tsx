@@ -5,13 +5,14 @@ import DefaultHeader from '~/components/headers/DefaultHeader';
 import BackHeader from '~/components/headers/BackHeader';
 import {
   Home,
-  UniSched,
+  UniversitySchedule,
   Announcements,
   Application,
   ReqPage,
   Takers,
 } from '~/screens';
 import NavigationProvider from './contexts/NavigationContext';
+import UserInfo from './screens/dashboard/UserInfo';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,8 +29,15 @@ const App = () => {
             }}
           />
           <Stack.Screen
+            name="Dashboard User Info"
+            component={UserInfo}
+            options={{
+              header: () => <BackHeader />,
+            }}
+          />
+          <Stack.Screen
             name="Dashboard University Schedule"
-            component={UniSched}
+            component={UniversitySchedule}
             options={{
               header: () => <BackHeader />,
             }}

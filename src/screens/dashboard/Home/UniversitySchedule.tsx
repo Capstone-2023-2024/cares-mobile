@@ -1,44 +1,43 @@
-import {useNav} from '~/contexts/NavigationContext';
-import {TouchableOpacity, View, Text, Image, ScrollView} from 'react-native';
-import {Pin} from '~/utils/svgIcons';
+import React from 'react';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import SvgContainer from '~/components/SvgContainer';
+import {useNav} from '~/contexts/NavigationContext';
+import {pin} from '~/utils/svgIcons';
+import {HeadingTemplate, TabContainer} from './Usertab';
+
+interface ContainerType {
+  title: string;
+}
 
 const UniversitySchedule = () => {
-  const arrowUri = 'https://www.svgrepo.com/show/533621/arrow-sm-right.svg';
-  const pin = 'https://www.svgrepo.com/show/527843/pin.svg';
-  const {navigateTo} = useNav();
-  const UniSchedContainer = () => {
-    return (
-      <TouchableOpacity
-        className="m-2 w-64 items-start justify-center rounded-full bg-primary px-2 py-4"
-        onPress={() => navigateTo('Dashboard University Schedule')}>
-        <View className="flex-row items-center">
-          <SvgContainer uri={pin} size="sm" />
-          <View className="ml-2">
-            <Text className="text-xs text-white">Final Examination</Text>
-            <Text className="text-xs text-white">
-              (Non-graduating Students) in 7 days
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
   return (
-    <View className="py-6 shadow-sm">
-      <View className="flex-row justify-around">
-        <Text className="text-lg text-black">University Schedule</Text>
-        <TouchableOpacity
-          onPress={() => navigateTo('Dashboard University Schedule')}>
-          <SvgContainer uri={arrowUri} size="sm" />
-        </TouchableOpacity>
-      </View>
+    <TabContainer>
+      <HeadingTemplate
+        title="university schedule"
+        navigation="Dashboard University Schedule"
+      />
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
-        <UniSchedContainer />
-        <UniSchedContainer />
-        <UniSchedContainer />
+        <Container title="Final Examination" />
+        <Container title="Final Examination" />
+        <Container title="Final Examination" />
       </ScrollView>
-    </View>
+    </TabContainer>
+  );
+};
+
+const Container = (props: ContainerType) => {
+  const {navigateTo} = useNav();
+  const {title} = props;
+
+  return (
+    <TouchableOpacity
+      className="m-2 w-64 items-start justify-center rounded-full bg-primary px-2 py-4"
+      onPress={() => navigateTo('Dashboard University Schedule')}>
+      <View className="flex-row items-center">
+        <SvgContainer uri={pin} size="sm" />
+        <Text className="ml-2 w-1/2 text-xs text-white">{title}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 

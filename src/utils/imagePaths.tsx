@@ -1,4 +1,4 @@
-import {ImageSourcePropType} from 'react-native';
+import {type ImageSourcePropType} from 'react-native';
 
 const assetBasePath = '~/assets';
 export const announcementPreview1: ImageSourcePropType = require(`${assetBasePath}/announce-preview-1.png`);
