@@ -16,7 +16,7 @@ const Notifications = () => {
     );
   };
   return (
-    <View className="mb-5 ml-1 mt-2 h-auto w-full rounded-lg bg-slate-400">
+    <View className="shadow-sm">
       <Text className="my-2 ml-5 text-lg font-bold text-black">
         Notifications
       </Text>
@@ -24,10 +24,10 @@ const Notifications = () => {
       <NotifContainer />
       <NotifContainer />
       <TouchableOpacity>
-        <Image
+        {/* <Image
           source={require('path/to/your/right-arrow-icon.png')}
           className="h-6 w-6"
-        />
+        /> */}
       </TouchableOpacity>
     </View>
   );

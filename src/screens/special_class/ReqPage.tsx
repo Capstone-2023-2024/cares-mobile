@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Image, Text} from 'react-native';
 
-const fileSent = require('~/assets/filesent.png');
+import {fileSent} from '~/utils/imagePaths';
 
 const ReqPage = () => {
   return (

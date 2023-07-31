@@ -6,7 +6,7 @@ const Announcements = () => {
   const AnnouncementContainer = () => {
     return (
       <TouchableOpacity
-        className="mb-2 ml-2 h-auto w-[320] items-center justify-center rounded-lg border bg-white shadow-md"
+        className="mb-2 ml-2 h-auto w-[320] items-center justify-center rounded-lg border bg-white shadow-sm"
         onPress={() => navigateTo('Dashboard Announcements')}>
         <View className="flex-row items-center">
           <Text className="mb-2 mt-2 text-center text-base font-bold text-black">
@@ -24,17 +24,17 @@ const Announcements = () => {
     );
   };
   return (
-    <View className="mb-2 mt-2 border-b-2 border-slate-400">
+    <View className="shadow-sm">
       <Text className="mb-2 ml-2 text-xl font-bold text-black">
         Announcements
       </Text>
       <TouchableOpacity
         className="-right-[85%] -top-[13%]"
         onPress={() => navigateTo('Dashboard Announcements')}>
-        <Image
+        {/* <Image
           source={require('path/to/your/right-arrow-icon.png')}
           className="h-6 w-6"
-        />
+        /> */}
       </TouchableOpacity>
 
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
