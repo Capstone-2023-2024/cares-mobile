@@ -1,118 +1,31 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import AccRegistered from "./src/screens/AccRegistered"
+import Chats from "./src/screens/Chats"
+import AccountSetting from "./src/screens/AccountSetting"
+import Dashboard from "./src/screens/Dashboard"
+import VerificationCode from "./src/screens/VerificationCode"
+import CreatePassword from "./src/screens/CreatePass"
+import Forgot from "./src/screens/Forgot"
+import Register from "./src/screens/Register"
+import LoginForm from "./src/screens/Login"
+import { NavigationContainer } from "@react-navigation/native"
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const Index =() => {
+    const Stack = createNativeStackNavigator()
+  return <NavigationContainer>
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+  <Stack.Navigator>
+      <Stack.Screen name="LoginForm" component={LoginForm} />
+      <Stack.Screen name="Dashboard" component={Dashboard} />
+      <Stack.Screen name="AccountSetting" component={AccountSetting} />
+      <Stack.Screen name="Chats" component={Chats} />
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="CreatePass" component={CreatePassword} />
+      <Stack.Screen name="AccRegistered" component={AccRegistered} />
+      <Stack.Screen name="Forgot" component={Forgot} />
+      <Stack.Screen name="VerificationCode" component={VerificationCode} />
+    </Stack.Navigator>
+  </NavigationContainer> 
 }
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
+export default Index

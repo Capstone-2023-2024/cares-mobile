@@ -1,7 +1,11 @@
-import React from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import auth from '@react-native-firebase/auth';
 
-const LoginForm = ({ navigation }: { navigation: any }) => {
+const Login = ({ navigation }: { navigation: any }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const handleRegisterPress = () => {
     navigation.navigate('Register');
   };
@@ -11,7 +15,23 @@ const LoginForm = ({ navigation }: { navigation: any }) => {
   };
 
   const handleLoginPress = () => {
-    navigation.navigate('Dashboard');
+    if (!email || !password) {
+      Alert.alert('Empty Fields', 'Please enter your email and password.');
+      return;
+    }
+
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // User logged in successfully
+        console.log('User logged in:', userCredential.user);
+        navigation.navigate('Dashboard');
+      })
+      .catch((error) => {
+        // Handle login errors
+        console.log('Login error:', error);
+        Alert.alert('Login Failed', 'Invalid email or password.');
+      });
   };
 
   return (
@@ -19,8 +39,19 @@ const LoginForm = ({ navigation }: { navigation: any }) => {
       <Image source={require('../assets/bsu_logo.png')} style={styles.logo} />
       <Text style={styles.title}>C  I   C   S</Text>
       <Text style={styles.subTitle}>LOGIN</Text>
-      <TextInput style={styles.input} placeholder="Email Address" />
-      <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+      <TextInput
+        style={styles.input}
+        placeholder="Email Address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
       <TouchableOpacity style={styles.buttonContainer} onPress={handleLoginPress}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
@@ -30,9 +61,7 @@ const LoginForm = ({ navigation }: { navigation: any }) => {
       <TouchableOpacity onPress={handleForgotPasswordPress}>
         <Text style={styles.forgotPasswordLink}>Forgot password?</Text>
       </TouchableOpacity>
-      <Text style={styles.infoText}>
-        For assistance, please contact the BSU - Bustos Campus IT Department.
-      </Text>
+      <Text style={styles.infoText}>hello guys</Text>
     </View>
   );
 };
@@ -102,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginForm;
+export default Login;

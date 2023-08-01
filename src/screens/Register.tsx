@@ -1,9 +1,27 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 
-const Register = ({ navigation }: {navigation:any}) => {
+const Register = ({ navigation }: { navigation: any }) => {
+  const [email, setEmail] = useState('');
+
   const handleRegisterPress = () => {
-    navigation.navigate('CreatePass');
+    if (!email) {
+      Alert.alert('Empty Email', 'Please enter your email address.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+
+    navigation.navigate('CreatePass', { email });
+  };
+
+  const validateEmail = (email: string) => {
+    // Email validation with domain check
+    const emailRegex = /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*@bulsu\.edu\.ph$/
+    return emailRegex.test(email);
   };
 
   return (
@@ -15,6 +33,8 @@ const Register = ({ navigation }: {navigation:any}) => {
         style={styles.input}
         placeholder="Email"
         keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
       />
       <TouchableOpacity style={styles.logoContainer}>
         <Image
