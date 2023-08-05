@@ -1,3 +1,4 @@
+import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
 import {cics} from '~/utils/imagePaths';

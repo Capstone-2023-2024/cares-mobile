@@ -9,9 +9,6 @@ import {
 } from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
 
-const bsu = '~/assets/bsu.png';
-const user = '~/assets/user.png';
-const messages = '~/assets/messages.png';
 const remove = '~/assets/remove.png';
 const file = '~/assets/file.png';
 

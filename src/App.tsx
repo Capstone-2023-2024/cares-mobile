@@ -1,15 +1,15 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import DefaultHeader from '~/components/headers/DefaultHeader';
+import React from 'react';
 import BackHeader from '~/components/headers/BackHeader';
+import DefaultHeader from '~/components/headers/DefaultHeader';
 import {
-  Home,
-  UniversitySchedule,
   Announcements,
   Application,
+  Home,
   ReqPage,
   Takers,
+  UniversitySchedule,
 } from '~/screens';
 import NavigationProvider from './contexts/NavigationContext';
 import UserInfo from './screens/dashboard/UserInfo';
@@ -25,21 +25,21 @@ const App = () => {
             name="Dashboard Home"
             component={Home}
             options={{
-              header: () => <DefaultHeader />,
+              header: MHeader,
             }}
           />
           <Stack.Screen
             name="Dashboard User Info"
             component={UserInfo}
             options={{
-              header: () => <BackHeader />,
+              header: BHeader,
             }}
           />
           <Stack.Screen
             name="Dashboard University Schedule"
             component={UniversitySchedule}
             options={{
-              header: () => <BackHeader />,
+              header: BHeader,
             }}
           />
 
@@ -47,34 +47,42 @@ const App = () => {
             name="Dashboard Announcements"
             component={Announcements}
             options={{
-              header: () => <BackHeader />,
+              header: BHeader,
             }}
           />
           <Stack.Screen
             name="Special Class Application"
             component={Application}
             options={{
-              header: () => <DefaultHeader />,
+              header: MHeader,
             }}
           />
           <Stack.Screen
             name="Special Class Request Page"
             component={ReqPage}
             options={{
-              header: () => <DefaultHeader />,
+              header: MHeader,
             }}
           />
           <Stack.Screen
             name="Special Class Takers"
             component={Takers}
             options={{
-              header: () => <DefaultHeader />,
+              header: MHeader,
             }}
           />
         </Stack.Navigator>
       </NavigationProvider>
     </NavigationContainer>
   );
+};
+
+const BHeader = () => {
+  return <BackHeader />;
+};
+
+const MHeader = () => {
+  return <DefaultHeader />;
 };
 
 export default App;
