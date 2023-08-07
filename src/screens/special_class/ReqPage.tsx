@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 import { View, Image, Text, StyleSheet, ImageBackground } from 'react-native';
 import BackHeader from '~/components/headers/BackHeader';
 
@@ -23,10 +24,29 @@ const ReqPage = () => {
           <Text style={styles.text}>Special Class request submitted</Text>
         </View>
       </ImageBackground>
+=======
+import {View, Image, Text} from 'react-native';
+
+import {fileSent} from '~/utils/imagePaths';
+
+const ReqPage = () => {
+  return (
+    <View className="flex-1 items-center justify-center bg-white">
+      <Text className="mb-6 text-xl font-bold">File Sent</Text>
+      <Image
+        source={fileSent}
+        className="mb-6 h-48 w-48"
+        resizeMode="contain"
+      />
+      <Text className="text-center text-2xl font-bold text-black">
+        Special Class request submitted
+      </Text>
+>>>>>>> main
     </View>
   );
 };
 
+<<<<<<< HEAD
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -54,4 +74,6 @@ const styles = StyleSheet.create({
   },
 });
 
+=======
+>>>>>>> main
 export default ReqPage;

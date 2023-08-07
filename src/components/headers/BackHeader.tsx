@@ -1,5 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
-import {View, TouchableOpacity, Image} from 'react-native';
+import {View, TouchableOpacity, Image, Text} from 'react-native';
+import SvgContainer from '../SvgContainer';
+import {arrowUri} from '~/utils/svgIcons';
 
 function BackHeader() {
   const navigation = useNavigation();
@@ -9,15 +11,9 @@ function BackHeader() {
   };
 
   return (
-    <View className="h-16 flex-row items-center px-2">
-      <TouchableOpacity onPress={handleGoBack}>
-        <View className="h-3/4 w-9 rotate-180 p-2">
-          <Image
-            source={require('~/assets/right-arrow.png')}
-            className="h-full w-full"
-            resizeMode="center"
-          />
-        </View>
+    <View className="bg-paper h-16 flex-row items-center px-2">
+      <TouchableOpacity className="rotate-180" onPress={handleGoBack}>
+        <SvgContainer uri={arrowUri} size="sm" />
       </TouchableOpacity>
     </View>
   );

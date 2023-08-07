@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native';
 import { useNav } from '~/contexts/NavigationContext';
@@ -7,27 +8,32 @@ const bsu = '~/assets/bsu.png';
 const user = '~/assets/user.png';
 const messages = '~/assets/messages.png';
 const bsu1 = '~/assets/BSUBACKGROUND.png';
+=======
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+>>>>>>> main
 
 const Takers = () => {
-  const { navigateTo } = useNav();
-  const subjects = ['IT302', 'CAP301', 'IT308', 'IT309', 'IT310', 'IT311', 'IT312'];
+  const subjects = [
+    'IT302',
+    'CAP301',
+    'IT308',
+    'IT309',
+    'IT310',
+    'IT311',
+    'IT312',
+  ];
 
-  const [students, setStudents] = useState([
-    ['Jolly Bee', 'Pogi Ko', '', '', 'Quack Frog', 'Kroak Goose', 'Johnny Shawty'], // Row 1
-    ['Joy Yang', 'Kuala Express', '', '', '', '', ''], // Row 2
-    ['', 'Meow Dog', '', '', '', '', ''], // Row 3
-    ['', '', '', '', '', '', ''], // Row 4
-    ['', '', '', '', '', '', ''], // Row 5
-    ['', '', '', '', '', '', ''], // Row 6
-    ['', '', '', '', '', '', ''], // Row 7
+  const [students, setStudents] = useState<string[][]>([
+    // Student data rows here
   ]);
 
   const Header = () => {
     return (
-      <View style={styles.subjectHeader}>
+      <View className="mt-10 flex flex-row justify-between bg-white px-10">
         {subjects.map((subject, index) => (
-          <View key={index} style={styles.subjectCell}>
-            <Text style={styles.subjectHeaderText}>{subject}</Text>
+          <View key={index} className="flex-1">
+            <Text className="text-center text-base font-bold">{subject}</Text>
           </View>
         ))}
       </View>
@@ -36,12 +42,16 @@ const Takers = () => {
 
   const Table = () => {
     return (
-      <View style={styles.table}>
+      <View className="mx-10 mt-10 border-2 border-black">
         {students.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.row}>
+          <View
+            key={rowIndex}
+            className="flex flex-row border-b border-gray-300">
             {row.map((student, columnIndex) => (
-              <View key={columnIndex} style={styles.cell}>
-                <Text style={styles.cellText}>{student}</Text>
+              <View
+                key={columnIndex}
+                className="flex-1 items-center justify-center border border-black py-4">
+                <Text className="text-center">{student}</Text>
               </View>
             ))}
           </View>
@@ -50,7 +60,12 @@ const Takers = () => {
     );
   };
 
+  function navigateTo(arg0: string): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
+<<<<<<< HEAD
     <ImageBackground
       source={require(bsu1)}
       style={styles.backgroundImage}
@@ -137,4 +152,22 @@ const styles = StyleSheet.create({
   },
 });
 
+=======
+    <ScrollView className="flex-1 bg-white">
+      <Text className="mb-10 mt-20 text-center text-4xl font-bold">
+        List of Students for Special Class
+      </Text>
+      <Header />
+      <Table />
+
+      <TouchableOpacity
+        className="mt-20 self-center rounded-md bg-gray-600 px-8 py-4"
+        onPress={() => navigateTo('Special Class Application')}>
+        <Text className="font-bold text-white">Apply Now</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
+};
+
+>>>>>>> main
 export default Takers;
