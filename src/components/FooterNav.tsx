@@ -14,7 +14,6 @@ const FooterNav = () => {
         </TouchableOpacity>
       </View>
     </View>
-    </View>
   );
 };
 
