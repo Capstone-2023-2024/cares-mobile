@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import BackHeader from '~/components/headers/BackHeader';
 import DefaultHeader from '~/components/headers/DefaultHeader';
+import HeaderNoChat from '~/components/headers/HeaderNoChat';
 import {
   Announcements,
   Application,
@@ -10,6 +11,9 @@ import {
   ReqPage,
   Takers,
   UniversitySchedule,
+  Chats,
+  ProjectSuggestions,
+  WriteSuggestion,
 } from '~/screens';
 import NavigationProvider from './contexts/NavigationContext';
 import UserInfo from './screens/dashboard/UserInfo';
@@ -69,6 +73,27 @@ const App = () => {
             component={Takers}
             options={{
               header: MHeader,
+            }}
+          />
+          <Stack.Screen
+            name="Chats"
+            component={Chats}
+            options={{
+              header: () => <HeaderNoChat />,
+            }}
+          />
+          <Stack.Screen
+            name="ProjectSuggestions"
+            component={ProjectSuggestions}
+            options={{
+              header: () => <DefaultHeader />,
+            }}
+          />
+          <Stack.Screen
+            name="WriteSuggestion"
+            component={WriteSuggestion}
+            options={{
+              header: () => <DefaultHeader />,
             }}
           />
         </Stack.Navigator>
