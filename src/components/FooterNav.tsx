@@ -1,8 +1,8 @@
-import {Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
+import {TouchableOpacity, View} from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
-import SvgContainer from './SvgContainer';
 import {specialClass} from '~/utils/svgIcons';
+import SvgContainer from './SvgContainer';
 
 const FooterNav = () => {
   const {navigateTo} = useNav();
