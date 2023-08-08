@@ -69,4 +69,5 @@ yarn-error.log
 .env
 .env.local
 
+*.log
 .eslintcache

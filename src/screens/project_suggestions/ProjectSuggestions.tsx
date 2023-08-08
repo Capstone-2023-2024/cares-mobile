@@ -9,19 +9,19 @@ import {
 } from 'react-native';
 import FooterNav from '~/components/FooterProjectS';
 import BackHeader from '~/components/headers/BackHeader';
+import {bsuBg} from '~/utils/imagePaths';
 
 const suggest = require('~/assets/icons/image-project_suggest.png');
 const sov = require('~/assets/icons/saved-or-votes.png');
 const votes = require('~/assets/icons/vote.png');
 const message = require('~/assets/icons/Message.png');
 const menudots = require('~/assets/icons/MenuDots.png');
-const bsu = '~/assets/BSUBACKGROUND.png';
 
 const SuggestionPage = () => {
   return (
     <View className="flex-1">
       <ScrollView>
-        <ImageBackground source={require(bsu)}>
+        <ImageBackground source={bsuBg}>
           <BackHeader />
           <View>
             <View>

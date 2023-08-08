@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import BackHeader from '~/components/headers/BackHeader';
 import {useNav} from '~/contexts/NavigationContext';
+import {bsuBg} from '~/utils/imagePaths';
 
-const bsu1 = '~/assets/BSUBACKGROUND.png';
 const subjects = [
   'IT302',
   'CAP301',
@@ -24,7 +24,7 @@ const Takers = () => {
   const {navigateTo} = useNav();
 
   return (
-    <ImageBackground source={require(bsu1)}>
+    <ImageBackground source={bsuBg}>
       <BackHeader />
       <ScrollView className="flex-1 bg-white">
         <Text className="mb-10 mt-20 text-center text-4xl font-bold">

@@ -10,9 +10,9 @@ import {
 } from 'react-native';
 import BackHeader from '~/components/headers/BackHeader';
 import {useNav} from '~/contexts/NavigationContext';
+import {bsuBg} from '~/utils/imagePaths';
 
 const write = require('~/assets/icons/writing.png');
-const bsu = require('~/assets/BSUBACKGROUND.png');
 
 const SuggestionPage = () => {
   const {navigateTo} = useNav();
@@ -40,7 +40,7 @@ const SuggestionPage = () => {
 
   return (
     <View>
-      <ImageBackground source={bsu}>
+      <ImageBackground source={bsuBg}>
         <BackHeader />
         <View>
           <View>
