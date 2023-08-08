@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from 'react-native';
 
 const VerificationCode = () => {
   return (
@@ -7,10 +14,14 @@ const VerificationCode = () => {
       <Text style={styles.title}>Verification Code</Text>
       <Image source={require('../assets/picture.png')} style={styles.image} />
       <Text style={styles.timer}>4:59</Text>
-      <Text style={styles.infoText}>We have sent a verification code to your email address.</Text>
+      <Text style={styles.infoText}>
+        We have sent a verification code to your email address.
+      </Text>
       <TextInput style={styles.input} placeholder="Verification Code" />
       <TouchableOpacity style={styles.resendLink}>
-        <Text style={styles.resendText}>Didn't receive the code? Resend the code</Text>
+        <Text style={styles.resendText}>
+          Didn't receive the code? Resend the code
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.submitButton}>
         <Text style={styles.submitButtonText}>Submit</Text>

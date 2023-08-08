@@ -1,5 +1,6 @@
 import {View, Image, Text, TouchableOpacity} from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
+import React from 'react';
 
 function DefaultHeader() {
   const {navigateTo} = useNav();

@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 
-const Register = ({ navigation }: { navigation: any }) => {
+const Register = ({navigation}: {navigation: any}) => {
   const [email, setEmail] = useState('');
 
   const handleRegisterPress = () => {
@@ -15,20 +23,21 @@ const Register = ({ navigation }: { navigation: any }) => {
       return;
     }
 
-    navigation.navigate('CreatePass', { email });
+    navigation.navigate('CreatePass', {email});
   };
 
-  const validateEmail = (email: string) => {
-    // Email validation with domain check
-    const emailRegex = /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*@bulsu\.edu\.ph$/
-    return emailRegex.test(email);
+  const validateEmail = (enteredEmail: string) => {
+    const emailRegex = /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*@bulsu\.edu\.ph$/;
+    return emailRegex.test(enteredEmail);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
       <Text style={styles.subtitle}>Use your BULSU Email</Text>
-      <Text style={styles.emailExample}>(e.g. juan.delacruz.xyz@bulsu.edu.ph)</Text>
+      <Text style={styles.emailExample}>
+        (e.g. juan.delacruz.xyz@bulsu.edu.ph)
+      </Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -42,11 +51,15 @@ const Register = ({ navigation }: { navigation: any }) => {
           style={styles.logo}
         />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.registerButton} onPress={handleRegisterPress}>
+      <TouchableOpacity
+        style={styles.registerButton}
+        onPress={handleRegisterPress}>
         <Text style={styles.registerButtonText}>REGISTER</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.loginLink}>
-        <Text style={styles.loginText}>Already have an account? Login here</Text>
+        <Text style={styles.loginText}>
+          Already have an account? Login here
+        </Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 
-const Forgot = ({ navigation }: { navigation: any }) => {
+const Forgot = ({navigation}: {navigation: any}) => {
   const [email, setEmail] = useState('');
 
   const handleSendCodePress = () => {
@@ -18,13 +26,13 @@ const Forgot = ({ navigation }: { navigation: any }) => {
     const verificationCode = generateVerificationCode();
 
     // Navigate to VerificationCode screen with email and verification code
-    navigation.navigate('VerificationCode', { email, verificationCode });
+    navigation.navigate('VerificationCode', {email, verificationCode});
   };
 
-  const validateEmail = (email: string) => {
+  const validateEmail = (enteredEmail: string) => {
     // Email validation with domain check
     const emailRegex = /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*@bulsu\.edu\.ph$/;
-    return emailRegex.test(email);
+    return emailRegex.test(enteredEmail);
   };
 
   const generateVerificationCode = () => {
@@ -40,7 +48,10 @@ const Forgot = ({ navigation }: { navigation: any }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Forgot Password</Text>
-      <Image source={require('../assets/forgot_picture.png')} style={styles.picture} />
+      <Image
+        source={require('../assets/forgot_picture.png')}
+        style={styles.picture}
+      />
       <TextInput
         style={styles.input}
         placeholder="Email Address"
@@ -48,7 +59,9 @@ const Forgot = ({ navigation }: { navigation: any }) => {
         value={email}
         onChangeText={setEmail}
       />
-      <TouchableOpacity style={styles.sendCodeButton} onPress={handleSendCodePress}>
+      <TouchableOpacity
+        style={styles.sendCodeButton}
+        onPress={handleSendCodePress}>
         <Text style={styles.sendCodeButtonText}>Send Code</Text>
       </TouchableOpacity>
     </View>

@@ -79,21 +79,21 @@ const App = () => {
             name="Chats"
             component={Chats}
             options={{
-              header: () => <HeaderNoChat />,
+              header: NoChatHeader,
             }}
           />
           <Stack.Screen
             name="ProjectSuggestions"
             component={ProjectSuggestions}
             options={{
-              header: () => <DefaultHeader />,
+              header: MHeader,
             }}
           />
           <Stack.Screen
             name="WriteSuggestion"
             component={WriteSuggestion}
             options={{
-              header: () => <DefaultHeader />,
+              header: MHeader,
             }}
           />
         </Stack.Navigator>
@@ -108,6 +108,10 @@ const BHeader = () => {
 
 const MHeader = () => {
   return <DefaultHeader />;
+};
+
+const NoChatHeader = () => {
+  return <HeaderNoChat />;
 };
 
 export default App;

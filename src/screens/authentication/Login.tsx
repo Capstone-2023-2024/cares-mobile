@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
 
-const Login = ({ navigation }: { navigation: any }) => {
+const Login = ({navigation}: {navigation: any}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,12 +30,12 @@ const Login = ({ navigation }: { navigation: any }) => {
 
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
+      .then(userCredential => {
         // User logged in successfully
         console.log('User logged in:', userCredential.user);
         navigation.navigate('Dashboard');
       })
-      .catch((error) => {
+      .catch(error => {
         // Handle login errors
         console.log('Login error:', error);
         Alert.alert('Login Failed', 'Invalid email or password.');
@@ -37,7 +45,7 @@ const Login = ({ navigation }: { navigation: any }) => {
   return (
     <View style={styles.container}>
       <Image source={require('../assets/bsu_logo.png')} style={styles.logo} />
-      <Text style={styles.title}>C  I   C   S</Text>
+      <Text style={styles.title}>C I C S</Text>
       <Text style={styles.subTitle}>LOGIN</Text>
       <TextInput
         style={styles.input}
@@ -52,11 +60,15 @@ const Login = ({ navigation }: { navigation: any }) => {
         value={password}
         onChangeText={setPassword}
       />
-      <TouchableOpacity style={styles.buttonContainer} onPress={handleLoginPress}>
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={handleLoginPress}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleRegisterPress}>
-        <Text style={styles.registerLink}>Don't have an account? Register here</Text>
+        <Text style={styles.registerLink}>
+          Don't have an account? Register here
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleForgotPasswordPress}>
         <Text style={styles.forgotPasswordLink}>Forgot password?</Text>

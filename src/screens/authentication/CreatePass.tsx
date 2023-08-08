@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
 
-const CreatePass = ({ navigation, route }: { navigation: any, route: any }) => {
-  const { email } = route.params;
+const CreatePass = ({navigation, route}: {navigation: any; route: any}) => {
+  const {email} = route.params;
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -12,27 +20,34 @@ const CreatePass = ({ navigation, route }: { navigation: any, route: any }) => {
       if (validatePassword(password)) {
         auth()
           .createUserWithEmailAndPassword(email, password)
-          .then((userCredential) => {
+          .then(userCredential => {
             // Password set and user registered successfully
             console.log('User registered:', userCredential.user);
             navigation.navigate('AccRegistered');
           })
-          .catch((error) => {
+          .catch(error => {
             // Handle registration errors
             console.log('Registration error:', error);
             // You can display an error message to the user here
           });
       } else {
-        Alert.alert('Invalid Password', 'Password must be 8 characters long and contain at least one lowercase letter, one uppercase letter, and one special character.');
+        Alert.alert(
+          'Invalid Password',
+          'Password must be 8 characters long and contain at least one lowercase letter, one uppercase letter, and one special character.',
+        );
       }
     } else {
-      Alert.alert('Password Mismatch', 'Passwords do not match. Please enter the same password in both fields.');
+      Alert.alert(
+        'Password Mismatch',
+        'Passwords do not match. Please enter the same password in both fields.',
+      );
     }
   };
 
-  const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}$/;
-    return passwordRegex.test(password);
+  const validatePassword = (enteredPassword: string) => {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}$/;
+    return passwordRegex.test(enteredPassword);
   };
 
   return (
@@ -57,7 +72,8 @@ const CreatePass = ({ navigation, route }: { navigation: any, route: any }) => {
         onChangeText={setConfirmPassword}
       />
       <Text style={styles.passwordInfoText}>
-        Create an 8-character long password with at least one combination of lowercase, uppercase, and a special character.
+        Create an 8-character long password with at least one combination of
+        lowercase, uppercase, and a special character.
       </Text>
       <TouchableOpacity style={styles.allSetButton} onPress={handleAllSetPress}>
         <Text style={styles.allSetText}>All Set</Text>

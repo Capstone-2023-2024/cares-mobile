@@ -12,4 +12,3 @@ export {default as Takers} from '~/screens/special_class/Takers';
 // PROJECT SUGGESTIONS
 export {default as ProjectSuggestions} from '~/screens/project_suggestions/ProjectSuggestions';
 export {default as WriteSuggestion} from '~/screens/project_suggestions/WriteSuggestion';
-

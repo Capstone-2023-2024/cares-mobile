@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native';
-import { useNav } from '~/contexts/NavigationContext';
+import React, {useState} from 'react';
+import {
+  ImageBackground,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BackHeader from '~/components/headers/BackHeader';
+import {useNav} from '~/contexts/NavigationContext';
 
 const bsu1 = '~/assets/BSUBACKGROUND.png';
 const subjects = [
@@ -18,23 +24,18 @@ const Takers = () => {
   const {navigateTo} = useNav();
 
   return (
-
-    <ImageBackground
-      source={require(bsu1)}
-      // style={styles.backgroundImage}
-      imageStyle={{ opacity: 0.5 }}
-    >
+    <ImageBackground source={require(bsu1)}>
       <BackHeader />
       <ScrollView className="flex-1 bg-white">
-      <Text className="mb-10 mt-20 text-center text-4xl font-bold">
-          List of Students for Special Class</Text>
+        <Text className="mb-10 mt-20 text-center text-4xl font-bold">
+          List of Students for Special Class
+        </Text>
         <Header />
         <Table />
 
         <TouchableOpacity
           className="mt-20 self-center rounded-md bg-gray-600 px-8 py-4"
-          onPress={() => navigateTo('Special Class Application')}
-        >
+          onPress={() => navigateTo('Special Class Application')}>
           <Text className="font-bold text-white">Apply Now</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -51,8 +52,8 @@ const Header = () => {
         </View>
       ))}
     </View>
-  )
-}
+  );
+};
 
 const Table = () => {
   const [students] = useState<string[][]>([
