@@ -9,6 +9,7 @@ import {arrowUri, menuDots, userSvg} from '~/utils/svgIcons';
 interface HeadingTemplateType {
   navigation: string;
   title: string;
+  disabled?: boolean;
 }
 
 const Usertab = () => {
@@ -42,13 +43,16 @@ const Usertab = () => {
 
 export const HeadingTemplate = (props: HeadingTemplateType) => {
   const {navigateTo} = useNav();
-  const {navigation, title} = props;
+  const {navigation, title, disabled} = props;
 
   return (
     <View className="flex-row justify-between px-8">
       <Text className="text-lg capitalize text-black">{title}</Text>
-      <TouchableOpacity onPress={() => navigateTo(navigation)}>
-        <SvgContainer uri={arrowUri} size="sm" />
+      <TouchableOpacity
+        className={disabled ? 'text-gray-400' : ''}
+        disabled={disabled}
+        onPress={() => navigateTo(navigation)}>
+        <SvgContainer disabled={disabled} uri={arrowUri} size="sm" />
       </TouchableOpacity>
     </View>
   );

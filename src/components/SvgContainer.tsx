@@ -6,10 +6,11 @@ interface SvgContainerType {
   uri: string;
   size: 'sm' | 'base' | 'lg';
   isCircle?: boolean;
+  disabled?: boolean;
 }
 
 const SvgContainer = (props: SvgContainerType) => {
-  const {uri, size, isCircle} = props;
+  const {uri, size, isCircle, disabled} = props;
   const style = () => {
     let baseStyle = '';
     if (isCircle) {
@@ -27,7 +28,12 @@ const SvgContainer = (props: SvgContainerType) => {
 
   return (
     <View className={style()}>
-      <SvgUri uri={uri} width="100%" height="100%" />
+      <SvgUri
+        className={disabled ? 'opacity-0.5' : 'fill-black'}
+        uri={uri}
+        width="100%"
+        height="100%"
+      />
     </View>
   );
 };

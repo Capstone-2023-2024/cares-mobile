@@ -1,28 +1,53 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
 import {announcementPreview1, cics} from '~/utils/imagePaths';
 import {HeadingTemplate, TabContainer} from './Usertab';
+import {firestoreApp} from '~/utils/firebase';
+import {PlaceHolder} from '.';
 
 interface ContainerType {
   department: 'CITE';
   message: string;
   src: string;
+  date: number;
 }
 
 const Announcements = () => {
-  const message =
-    'Heads up, future engineers!As per Office Memorandum from the Office of the Director for Administrative and Management Services Division...';
+  const [state, setState] = useState<ContainerType[]>([]);
+  const stateLengthEmpty = state.length === 0;
+
+  useEffect(
+    () =>
+      firestoreApp.collection('announcements').onSnapshot(snapshot => {
+        let holder: ContainerType[] = [];
+        if (snapshot.docs.length > 0) {
+          snapshot.docs.forEach(doc => {
+            holder.push(doc.data() as ContainerType);
+          });
+        }
+        setState(holder);
+      }),
+    [],
+  );
+
   return (
     <TabContainer>
       <HeadingTemplate
+        disabled={stateLengthEmpty}
         navigation="Dashboard Announcements"
         title="announcements"
       />
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
-        <Container department="CITE" message={message} src="" />
-        <Container department="CITE" message={message} src="" />
-        <Container department="CITE" message={message} src="" />
+      <ScrollView
+        horizontal={!stateLengthEmpty}
+        showsHorizontalScrollIndicator={!stateLengthEmpty}>
+        {stateLengthEmpty ? (
+          <PlaceHolder text="Currently no Announcements" />
+        ) : (
+          state.map((props, i) => {
+            return <Container {...props} key={i} />;
+          })
+        )}
       </ScrollView>
     </TabContainer>
   );
@@ -30,7 +55,8 @@ const Announcements = () => {
 
 const Container = (props: ContainerType) => {
   const {navigateTo} = useNav();
-  const {department, message, src} = props;
+  const {department, message, src, date} = props;
+  console.log(date);
   return (
     <View className="mr-2 items-center justify-center overflow-hidden rounded-3xl bg-white p-4 px-6 shadow-xl">
       <View className="flex-row">
