@@ -6,24 +6,19 @@ import {HeadingTemplate, TabContainer} from './Usertab';
 import {firestoreApp} from '~/utils/firebase';
 import {PlaceHolder} from '.';
 
-interface ContainerType {
-  department: 'CITE';
-  message: string;
-  src: string;
-  date: number;
-}
+import {type AnnouncementType} from '../../../../../shared/types';
 
 const Announcements = () => {
-  const [state, setState] = useState<ContainerType[]>([]);
+  const [state, setState] = useState<AnnouncementType[]>([]);
   const stateLengthEmpty = state.length === 0;
 
   useEffect(
     () =>
       firestoreApp.collection('announcements').onSnapshot(snapshot => {
-        let holder: ContainerType[] = [];
+        let holder: AnnouncementType[] = [];
         if (snapshot.docs.length > 0) {
           snapshot.docs.forEach(doc => {
-            holder.push(doc.data() as ContainerType);
+            holder.push(doc.data() as AnnouncementType);
           });
         }
         setState(holder);
@@ -53,10 +48,10 @@ const Announcements = () => {
   );
 };
 
-const Container = (props: ContainerType) => {
+const Container = (props: AnnouncementType) => {
   const {navigateTo} = useNav();
-  const {department, message, src, date} = props;
-  console.log(date);
+  const {department, message, bannerSrc} = props;
+  // console.log(dateCreated);
   return (
     <View className="mr-2 items-center justify-center overflow-hidden rounded-3xl bg-white p-4 px-6 shadow-xl">
       <View className="flex-row">
@@ -85,7 +80,7 @@ const Container = (props: ContainerType) => {
           <Image
             className="h-full w-full "
             source={announcementPreview1}
-            src={src}
+            src={bannerSrc}
             resizeMode="center"
           />
         </View>
