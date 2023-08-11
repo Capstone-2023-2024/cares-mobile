@@ -1,18 +1,20 @@
 import React from 'react';
 import {
-  View,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
-  StyleSheet,
+  View,
 } from 'react-native';
 
 const VerificationCode = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Verification Code</Text>
-      <Image source={require('../assets/picture.png')} style={styles.image} />
+      {/* <Image source={require('/picture.png')} style={styles.image} /> */}
+      <View style={styles.image}>
+        <Text>Image</Text>
+      </View>
       <Text style={styles.timer}>4:59</Text>
       <Text style={styles.infoText}>
         We have sent a verification code to your email address.

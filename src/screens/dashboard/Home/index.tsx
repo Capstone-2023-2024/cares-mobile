@@ -5,7 +5,6 @@ import Announcements from './Announcements';
 import Notifications from './Notifications';
 import UniversitySchedule from './UniversitySchedule';
 import Usertab from './Usertab';
-import {Text} from 'react-native';
 
 const Home = () => {
   return (
@@ -19,14 +18,6 @@ const Home = () => {
       <View>
         <FooterNav />
       </View>
-    </View>
-  );
-};
-
-export const PlaceHolder = ({text}: {text: string}) => {
-  return (
-    <View className="my-2 min-h-max w-full items-center px-[0.6rem] py-5">
-      <Text className="text-xl">{text}</Text>
     </View>
   );
 };

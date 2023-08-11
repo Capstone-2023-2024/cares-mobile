@@ -1,15 +1,14 @@
 import React, {useState} from 'react';
 import {
-  View,
+  Alert,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
-  StyleSheet,
-  Alert,
+  View,
 } from 'react-native';
 
-const Forgot = ({navigation}: {navigation: any}) => {
+const ForgotPass = ({navigation}: {navigation: any}) => {
   const [email, setEmail] = useState('');
 
   const handleSendCodePress = () => {
@@ -48,10 +47,10 @@ const Forgot = ({navigation}: {navigation: any}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Forgot Password</Text>
-      <Image
-        source={require('../assets/forgot_picture.png')}
-        style={styles.picture}
-      />
+      {/* <Image source={require('/forgot_picture.png')}  /> */}
+      <View style={styles.picture}>
+        <Text>Image</Text>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Email Address"
@@ -110,4 +109,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Forgot;
+export default ForgotPass;

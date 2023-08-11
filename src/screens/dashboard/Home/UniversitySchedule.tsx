@@ -5,7 +5,6 @@ import {useNav} from '~/contexts/NavigationContext';
 import {pin} from '~/utils/svgIcons';
 import {HeadingTemplate, TabContainer} from './Usertab';
 import {firestoreApp} from '~/utils/firebase';
-import {PlaceHolder} from '.';
 // import piin from '~/assets/icons/Pin.svg';
 
 interface ContainerType {
@@ -66,6 +65,14 @@ const Container = (props: ContainerType) => {
         <Text className="ml-2 w-1/2 text-xs text-white">{title}</Text>
       </View>
     </TouchableOpacity>
+  );
+};
+
+const PlaceHolder = ({text}: {text: string}) => {
+  return (
+    <View className="my-2 min-h-max w-full items-center px-[0.6rem] py-5">
+      <Text className="text-xl">{text}</Text>
+    </View>
   );
 };
 

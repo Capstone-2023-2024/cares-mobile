@@ -1,35 +1,21 @@
 import React, {useState} from 'react';
 import {
-  View,
+  Alert,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
-  StyleSheet,
-  Alert,
+  View,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
 
-const CreatePass = ({navigation, route}: {navigation: any; route: any}) => {
-  const {email} = route.params;
+const CreatePass = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleAllSetPress = () => {
     if (password === confirmPassword) {
       if (validatePassword(password)) {
-        auth()
-          .createUserWithEmailAndPassword(email, password)
-          .then(userCredential => {
-            // Password set and user registered successfully
-            console.log('User registered:', userCredential.user);
-            navigation.navigate('AccRegistered');
-          })
-          .catch(error => {
-            // Handle registration errors
-            console.log('Registration error:', error);
-            // You can display an error message to the user here
-          });
+        console.log('first');
       } else {
         Alert.alert(
           'Invalid Password',
@@ -53,10 +39,13 @@ const CreatePass = ({navigation, route}: {navigation: any; route: any}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Password</Text>
-      <Image
-        source={require('../assets/create_password_picture.png')}
-        style={styles.picture}
-      />
+      {/* <Image
+        source={require('/create_password_picture.png')}
+
+      /> */}
+      <View style={styles.picture}>
+        <Text>Image</Text>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="New Password"

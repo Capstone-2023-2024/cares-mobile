@@ -1,128 +1,70 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import {Alert, Text, TouchableOpacity, View} from 'react-native';
+import {Button, Link} from '~/components/Button';
+import {Heading} from '~/components/Heading';
+import {Textfield} from '~/components/Textfield';
+import {useNav} from '~/contexts/NavigationContext';
+import {validateEmail} from '~/utils/firebase';
 
-const Register = ({navigation}: {navigation: any}) => {
+const Register = () => {
+  const {navigateTo} = useNav();
   const [email, setEmail] = useState('');
 
-  const handleRegisterPress = () => {
+  const handleRegisterPress = async () => {
+    // try {
+    //   console.log(path);
+    //   RNFS.writeFile(path, 'asdasdasdasdasd', 'utf8').then(val =>
+    //     console.log(val),
+    //   );
+    // } catch (err) {
+    //   console.log(err);
+    // }
     if (!email) {
       Alert.alert('Empty Email', 'Please enter your email address.');
       return;
     }
-
     if (!validateEmail(email)) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address.');
-      return;
+      return Alert.alert(
+        'Invalid Email',
+        'Please enter a valid email address.',
+      );
     }
-
-    navigation.navigate('CreatePass', {email});
-  };
-
-  const validateEmail = (enteredEmail: string) => {
-    const emailRegex = /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*@bulsu\.edu\.ph$/;
-    return emailRegex.test(enteredEmail);
+    navigateTo('CreatePass');
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
-      <Text style={styles.subtitle}>Use your BULSU Email</Text>
-      <Text style={styles.emailExample}>
-        (e.g. juan.delacruz.xyz@bulsu.edu.ph)
-      </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TouchableOpacity style={styles.logoContainer}>
-        <Image
-          source={require('../assets/upload_logo.png')}
-          style={styles.logo}
+    <View className="h-2/3 justify-center">
+      <Heading>Sign Up</Heading>
+      <View className="mb-2 w-2/3 self-center">
+        <Textfield
+          placeholder="Email Address"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
         />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.registerButton}
-        onPress={handleRegisterPress}>
-        <Text style={styles.registerButtonText}>REGISTER</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.loginLink}>
-        <Text style={styles.loginText}>
-          Already have an account? Login here
+      </View>
+      <View className="mb-2 flex-row justify-center gap-2">
+        <Text className="text-xs text-black">Use your BULSU Email</Text>
+        <Text className="text-xs text-black">
+          (e.g. juan.delacruz.xyz@bulsu.edu.ph)
         </Text>
+      </View>
+      <TouchableOpacity className="mx-auto mb-2 w-2/3 rounded-xl border-2 border-dashed py-12">
+        <Text className="text-center">Upload your COR here</Text>
       </TouchableOpacity>
+      <View className="mb-2 w-1/3 self-center">
+        <Button onPress={handleRegisterPress}>Register</Button>
+      </View>
+      <View className="flex-row justify-center gap-2">
+        <Text className="text-center text-xs">Already have an account? </Text>
+        <Link
+          textStyle="text-primary/60 text-center"
+          onPress={() => navigateTo('Login')}>
+          Login here
+        </Link>
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5F5F5', // Light gray background color
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#424242', // Dark gray text color
-  },
-  logoContainer: {
-    marginBottom: 20,
-  },
-  logo: {
-    width: 220,
-    height: 150,
-  },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#616161', // Medium gray text color
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: '#757575', // Medium gray border color
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
-  emailExample: {
-    marginBottom: 20,
-    color: '#616161', // Medium gray text color
-  },
-  registerButton: {
-    backgroundColor: '#757575', // Medium gray button color
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
-  registerButtonText: {
-    color: '#FFFFFF', // White text color
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  loginLink: {
-    marginTop: 20,
-  },
-  loginText: {
-    color: '#388E3C', // Dark green text color
-    textDecorationLine: 'underline',
-  },
-});
 
 export default Register;

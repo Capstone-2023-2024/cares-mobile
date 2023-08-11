@@ -10,10 +10,10 @@ const path = require('path');
 
 const watchFolders = [
   //Relative path to packages directory
-  path.resolve(__dirname + '/../../node_modules'), // References `package_name/node_modules`
-  path.resolve(__dirname + '/../../node_modules/react-native'),
-  path.resolve(__dirname + '/../../node_modules/nativewind/tailwind'), // References `css`
-  path.resolve(__dirname + '/../shared/types'),
+  path.resolve(`${__dirname}/../../node_modules`), // References `package_name/node_modules`
+  path.resolve(`${__dirname}/../../node_modules/react-native`),
+  path.resolve(`${__dirname}/../../node_modules/nativewind/tailwind`), // References `css`
+  path.resolve(`${__dirname}/../shared/types`),
 ];
 
 const config = {

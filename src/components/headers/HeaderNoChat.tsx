@@ -6,7 +6,7 @@ function DefaultHeader() {
   const {navigateTo} = useNav();
 
   return (
-    <View className="h-16 flex-row items-center bg-gray-500 px-2">
+    <View className="h-16 flex-row items-center bg-primary px-2">
       <TouchableOpacity
         className="flex-row items-center"
         onPress={() => navigateTo('Dashboard Home')}>

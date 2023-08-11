@@ -4,7 +4,6 @@ import {useNav} from '~/contexts/NavigationContext';
 import {announcementPreview1, cics} from '~/utils/imagePaths';
 import {HeadingTemplate, TabContainer} from './Usertab';
 import {firestoreApp} from '~/utils/firebase';
-import {PlaceHolder} from '.';
 
 import {type AnnouncementType} from '../../../../../shared/types';
 
@@ -85,6 +84,14 @@ const Container = (props: AnnouncementType) => {
           />
         </View>
       </View>
+    </View>
+  );
+};
+
+const PlaceHolder = ({text}: {text: string}) => {
+  return (
+    <View className="my-2 min-h-max w-full items-center px-[0.6rem] py-5">
+      <Text className="text-xl">{text}</Text>
     </View>
   );
 };
