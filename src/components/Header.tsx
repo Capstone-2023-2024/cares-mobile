@@ -1,12 +1,12 @@
+import {useNavigation} from '@react-navigation/native';
+import {projectName} from 'cics-mobile-client/../../shared/names';
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {cics} from '~/utils/imagePaths';
-import {arrowUri, inbox} from '~/utils/svgIcons';
+import {arrowUri} from '~/utils/svgIcons';
 import SvgContainer from './SvgContainer';
-import {useAuth} from '~/contexts/AuthContext';
-import {projectName} from 'cics-mobile-client/../../shared/names';
-import {useNavigation} from '@react-navigation/native';
 
 function Header({withBack}: {withBack?: boolean}) {
   const {navigateTo} = useNav();

@@ -40,7 +40,7 @@ const Container = (props: ContainerType) => {
   return (
     <View className={`${viewStyle} bg-green-300 shadow-sm`}>
       {!photoUrl ? (
-        <View className="h-32 w-full bg-primary"></View>
+        <View className="h-32 w-full bg-primary" />
       ) : (
         <Image className="h-2/3" source={announcementPreview1} src={photoUrl} />
       )}

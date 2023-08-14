@@ -3,7 +3,6 @@ import {Alert, Image, View} from 'react-native';
 import {Button} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
-import {imageDimension} from 'cics-mobile-client/../../shared/images';
 
 const ForgotPass = ({navigation}: {navigation: any}) => {
   const [email, setEmail] = useState('');

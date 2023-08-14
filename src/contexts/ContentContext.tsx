@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useState,
   type ReactNode,
+  useCallback,
 } from 'react';
 import {firestoreApp} from '~/utils/firebase';
 import {AnnouncementType, UniversityScheduleType} from '../../../shared/types';
@@ -33,7 +34,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     setState(prevState => ({...prevState, [name]: value}));
   }
 
-  function handleSnapshot(name: keyof InitialStateType) {
+  const handleSnapshot = useCallback((name: keyof InitialStateType) => {
     return firestoreApp.collection(name).onSnapshot(snapshot => {
       let holder: HolderType[] = [];
       if (snapshot.docs.length > 0) {
@@ -46,16 +47,16 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
         holder.sort((a, b) => b.dateCreated - a.dateCreated),
       );
     });
-  }
+  }, []);
 
   useEffect(() => {
     const unsub = handleSnapshot('announcements');
     return () => unsub();
-  }, []);
+  }, [handleSnapshot]);
   useEffect(() => {
     const unsub = handleSnapshot('schedules');
     return () => unsub();
-  }, []);
+  }, [handleSnapshot]);
 
   const values = {
     ...state,

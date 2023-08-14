@@ -1,16 +1,15 @@
+import {projectName} from 'cics-mobile-client/../../shared/names';
 import React from 'react';
 import {
   Image,
-  ImageBackground,
   ImageSourcePropType,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import FooterNav from '~/components/FooterNav';
-import {projectName} from 'cics-mobile-client/../../shared/names';
 import Background from '~/components/Background';
+import FooterNav from '~/components/FooterNav';
 
 const suggest = require('~/assets/icons/image-project_suggest.png');
 const sov = require('~/assets/icons/saved-or-votes.png');
