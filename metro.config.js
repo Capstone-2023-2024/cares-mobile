@@ -14,6 +14,8 @@ const watchFolders = [
   path.resolve(`${__dirname}/../../node_modules/react-native`),
   path.resolve(`${__dirname}/../../node_modules/nativewind/tailwind`), // References `css`
   path.resolve(`${__dirname}/../shared/types`),
+  path.resolve(`${__dirname}/../shared/names`),
+  path.resolve(`${__dirname}/../shared/images`),
 ];
 
 const config = {

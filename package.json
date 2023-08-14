@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "build": "cd \"./android\" && gradlew.bat assembleRelease --info",
     "rmdircmd": "rmdir /s /q node_modules",
     "prune": "git remote prune origin",
     "android": "react-native run-android",
@@ -11,7 +12,7 @@
     "start": "react-native start --reset-cache",
     "test": "jest",
     "prepare": "husky install",
-    "emulator": "emulator @Pixel_4_API_33 -netdelay none -netspeed full"
+    "emulator": "emulator -avd Pixel_4_API_33 -netdelay none -netspeed full"
   },
   "dependencies": {
     "@react-native-firebase/app": "^18.1.0",

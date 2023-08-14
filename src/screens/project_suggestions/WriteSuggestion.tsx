@@ -1,16 +1,9 @@
 import React, {useState} from 'react';
-import {
-  Alert,
-  Image,
-  ImageBackground,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import BackHeader from '~/components/headers/BackHeader';
+import {Alert, Image, Text, TextInput, View} from 'react-native';
+import Background from '~/components/Background';
+import {Button} from '~/components/Button';
+import {Heading} from '~/components/Heading';
 import {useNav} from '~/contexts/NavigationContext';
-import {bsuBg} from '~/utils/imagePaths';
 
 const write = require('~/assets/icons/writing.png');
 
@@ -40,15 +33,15 @@ const SuggestionPage = () => {
 
   return (
     <View>
-      <ImageBackground source={bsuBg}>
-        <BackHeader />
+      <Background>
         <View>
-          <View>
-            <Image source={write} />
-            <Text>Write your suggestion</Text>
+          <View className="mb-2">
+            <Image className="h-8 w-8" source={write} />
+            <Heading>Write your suggestion</Heading>
           </View>
-          <View>
+          <View className="mb-2">
             <TextInput
+              className="rounded-full bg-white"
               placeholder="What's on your mind?"
               textAlignVertical="top"
               multiline={true}
@@ -60,11 +53,11 @@ const SuggestionPage = () => {
               <Text>{inputValue.length}/150</Text>
             </View>
           </View>
-          <TouchableOpacity onPress={handleSubmission}>
-            <Text>Submit</Text>
-          </TouchableOpacity>
+          <View className="w-1/3 self-center">
+            <Button onPress={handleSubmission}>Submit</Button>
+          </View>
         </View>
-      </ImageBackground>
+      </Background>
     </View>
   );
 };

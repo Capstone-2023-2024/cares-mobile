@@ -1,18 +1,14 @@
 import React, {useState} from 'react';
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Image, Text, View} from 'react-native';
+import {Button} from '~/components/Button';
+import {Heading} from '~/components/Heading';
+import {Textfield} from '~/components/Textfield';
 
 const CreatePass = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleAllSetPress = () => {
+  const handleSet = () => {
     if (password === confirmPassword) {
       if (validatePassword(password)) {
         console.log('first');
@@ -37,84 +33,38 @@ const CreatePass = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Password</Text>
-      {/* <Image
-        source={require('/create_password_picture.png')}
-
-      /> */}
-      <View style={styles.picture}>
-        <Text>Image</Text>
+    <View className="h-2/3 justify-center">
+      <Heading>Create Password</Heading>
+      <View className="mb-2 h-40 w-40 self-center">
+        <Image
+          className="h-full w-full"
+          source={require('~/assets/create_password.png')}
+          alt=""
+        />
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="New Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-      <Text style={styles.passwordInfoText}>
+      <View className="mb-2 w-2/3 self-center">
+        <Textfield
+          placeholder="New Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
+      <View className="mb-2 w-2/3 self-center">
+        <Textfield
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+      </View>
+      <Text className="mx-auto mb-2 w-64 text-center text-xs">
         Create an 8-character long password with at least one combination of
         lowercase, uppercase, and a special character.
       </Text>
-      <TouchableOpacity style={styles.allSetButton} onPress={handleAllSetPress}>
-        <Text style={styles.allSetText}>All Set</Text>
-      </TouchableOpacity>
+      <Button onPress={handleSet}>All Set</Button>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5F5F5', // Light gray background color
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#424242', // Dark gray text color
-  },
-  picture: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: '#757575', // Medium gray border color
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
-  passwordInfoText: {
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#616161', // Medium gray text color
-  },
-  allSetButton: {
-    backgroundColor: '#757575', // Medium gray button color
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  allSetText: {
-    color: '#FFFFFF', // White text color
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-});
 
 export default CreatePass;

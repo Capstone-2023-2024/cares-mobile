@@ -22,7 +22,7 @@ const UserInfo = () => {
     }
   }
   return (
-    <View className="bg-paper">
+    <View className="my-auto h-5/6 bg-paper">
       <Hero />
       <Text className="m-8 text-3xl font-semibold text-black">
         Student details

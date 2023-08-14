@@ -6,7 +6,7 @@ import {HeadingTemplate} from './Usertab';
 
 const Notifications = () => {
   return (
-    <View className="m-4 rounded-3xl bg-primary/20 p-4 shadow-md">
+    <View className="m-4 rounded-3xl bg-primary/20 p-4 shadow-sm">
       <HeadingTemplate navigation="Dashboard Home" title="Notifications" />
       <NotifContainer />
       <NotifContainer />

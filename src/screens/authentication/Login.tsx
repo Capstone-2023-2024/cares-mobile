@@ -37,10 +37,10 @@ const Login = () => {
     }
     try {
       await signInWithEmail(email, password);
-      // console.log(currentUser);
     } catch (err) {
       const {code} = err as Error;
-      return Alert.alert(code);
+      return Alert.alert(code); // Debug only
+      // return Alert.alert('Invalid email or password');
     }
   }
 

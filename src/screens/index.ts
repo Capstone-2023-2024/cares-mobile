@@ -1,4 +1,11 @@
 // DASHBOARD
+export {default as CreatePass} from '~/screens/authentication/CreatePass';
+export {default as ForgotPass} from '~/screens/authentication/ForgotPass';
+export {default as Login} from '~/screens/authentication/Login';
+export {default as Register} from '~/screens/authentication/Register';
+export {default as VerificationCode} from '~/screens/authentication/VerificationCode';
+
+// DASHBOARD
 export {default as Announcements} from '~/screens/dashboard/Announcements';
 export {default as Home} from '~/screens/dashboard/Home';
 export {default as Chats} from '~/screens/dashboard/Chats';

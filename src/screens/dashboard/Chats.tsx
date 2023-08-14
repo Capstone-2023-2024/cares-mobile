@@ -15,7 +15,6 @@ import {
   launchImageLibrary,
   ImagePickerResponse,
 } from 'react-native-image-picker';
-import BackHeader4Chat from '~/components/headers/BackHeader4Chat';
 
 const ell = '~/assets/ellipsis.png';
 const pho = '~/assets/phone-call.png';
@@ -103,19 +102,18 @@ const Chats = () => {
 
   return (
     <View>
-      <BackHeader4Chat />
       <View>
-        <View>
-          <Text>Gian Carlo Carranza</Text>
-          <View>
+        <View className="flex-row justify-between rounded-full bg-primary p-2">
+          <Text className="text-white">Gian Carlo Carranza</Text>
+          <View className="flex-row gap-4">
             <TouchableOpacity>
-              <Image source={require(pho)} />
+              <Image className="h-6 w-6" source={require(pho)} />
             </TouchableOpacity>
             <TouchableOpacity>
-              <Image source={require(vid)} />
+              <Image className="h-6 w-6" source={require(vid)} />
             </TouchableOpacity>
             <TouchableOpacity>
-              <Image source={require(ell)} />
+              <Image className="h-6 w-6" source={require(ell)} />
             </TouchableOpacity>
           </View>
         </View>
@@ -135,10 +133,10 @@ const Chats = () => {
 
         <View>
           <TouchableOpacity onPress={selectMultipleFile}>
-            <Image source={require(file)} />
+            <Image className="h-6 w-6" source={require(file)} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleImagePicker}>
-            <Image source={require(img)} />
+            <Image className="h-6 w-6" source={require(img)} />
           </TouchableOpacity>
           <TextInput
             value={message}

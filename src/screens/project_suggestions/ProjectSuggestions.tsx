@@ -2,14 +2,15 @@ import React from 'react';
 import {
   Image,
   ImageBackground,
+  ImageSourcePropType,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import FooterNav from '~/components/FooterProjectS';
-import BackHeader from '~/components/headers/BackHeader';
-import {bsuBg} from '~/utils/imagePaths';
+import FooterNav from '~/components/FooterNav';
+import {projectName} from 'cics-mobile-client/../../shared/names';
+import Background from '~/components/Background';
 
 const suggest = require('~/assets/icons/image-project_suggest.png');
 const sov = require('~/assets/icons/saved-or-votes.png');
@@ -17,65 +18,70 @@ const votes = require('~/assets/icons/vote.png');
 const message = require('~/assets/icons/Message.png');
 const menudots = require('~/assets/icons/MenuDots.png');
 
-const SuggestionPage = () => {
-  return (
-    <View className="flex-1">
-      <ScrollView>
-        <ImageBackground source={bsuBg}>
-          <BackHeader />
-          <View>
-            <View>
-              <Image source={suggest} />
-              <Text>Project / Event Suggestions for CICS</Text>
-              <Image source={suggest} />
-            </View>
-          </View>
+interface IconButtonType {
+  name: string;
+  source: ImageSourcePropType;
+}
 
+const ProjectSuggestion = () => {
+  return (
+    <View>
+      <ScrollView className="h-[92%]">
+        <Background>
+          <View className="mb-2 flex-row items-center justify-center gap-2 bg-paper p-6 shadow-sm">
+            <Image className="h-8 w-8" source={suggest} />
+            <Text className="text-xs">
+              Project / Event Suggestions for {projectName}
+            </Text>
+            <Image className="h-8 w-8" source={suggest} />
+          </View>
           <Suggestion />
           <Suggestion />
           <Suggestion />
           <Suggestion />
           <Suggestion />
-        </ImageBackground>
+        </Background>
       </ScrollView>
-      <View>
-        <FooterNav />
-      </View>
+      <FooterNav />
     </View>
   );
 };
 
 const Suggestion = () => {
   return (
-    <View>
-      {/* Individual Suggestion */}
+    <View className="mx-auto mb-2 w-5/6 rounded-3xl bg-primary/90 p-4">
       <View>
-        <View>
-          <Text>Jhay Mark</Text>
-          <Text>
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row gap-2">
+            <Text className="text-white">Jhay Mark Reyes</Text>
+            <Text className="text-white">3A</Text>
+          </View>
+          <Text className="text-white">
             24
             <Image source={sov} />
           </Text>
         </View>
-        <Text>IT Ball and kasama po ang mga Alumni</Text>
-
-        <View>
-          <TouchableOpacity>
-            <Image source={votes} />
-            <Text>Vote</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image source={message} />
-            <Text>Comment</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image source={menudots} />
-            <Text>Options</Text>
-          </TouchableOpacity>
+        <Text className="my-4 text-center text-white">
+          IT Ball and kasama po ang mga Alumni
+        </Text>
+        <View className="flex-row">
+          <IconButton name="vote" source={votes} />
+          <IconButton name="message" source={message} />
+          <IconButton name="options" source={menudots} />
         </View>
       </View>
     </View>
   );
 };
 
-export default SuggestionPage;
+const IconButton = (props: IconButtonType) => {
+  const {name, source} = props;
+  return (
+    <TouchableOpacity className="mr-2 items-center justify-center">
+      <Text className="text-xs capitalize text-white">{name}</Text>
+      <Image source={source} className="h-4 w-4" />
+    </TouchableOpacity>
+  );
+};
+
+export default ProjectSuggestion;

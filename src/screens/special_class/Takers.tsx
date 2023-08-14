@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import BackHeader from '~/components/headers/BackHeader';
 import {useNav} from '~/contexts/NavigationContext';
 import {bsuBg} from '~/utils/imagePaths';
 
@@ -25,7 +24,6 @@ const Takers = () => {
 
   return (
     <ImageBackground source={bsuBg}>
-      <BackHeader />
       <ScrollView className="flex-1 bg-white">
         <Text className="mb-10 mt-20 text-center text-4xl font-bold">
           List of Students for Special Class
