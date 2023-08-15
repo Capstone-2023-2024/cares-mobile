@@ -15,7 +15,7 @@ interface HeadingTemplateType {
 const Usertab = () => {
   const {navigateTo} = useNav();
   return (
-    <View className="border-b-2 border-primary p-12">
+    <View className=" border-b-2 p-12">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
           <View className="h-12 w-12 overflow-hidden rounded-full border border-black">
@@ -59,7 +59,7 @@ export const HeadingTemplate = (props: HeadingTemplateType) => {
 };
 
 export const TabContainer = ({children}: {children: ReactNode}) => {
-  return <View className="border-b border-primary py-6">{children}</View>;
+  return <View className="border-b-2 py-6">{children}</View>;
 };
 
 export default Usertab;

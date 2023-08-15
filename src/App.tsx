@@ -92,7 +92,7 @@ const Navigations = () => {
       options: {header: HeaderWithBack},
     },
     {
-      name: 'WriteSuggestions',
+      name: 'WriteSuggestion',
       component: WriteSuggestion,
       options: {header: HeaderWithBack},
     },

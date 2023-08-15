@@ -22,16 +22,16 @@ const UniversitySchedule = () => {
 };
 
 const Container = (props: UniversityScheduleType) => {
-  const {title, date, source} = props;
+  const {title, dateCreated, photoUrl} = props;
   const newDate = new Date();
-  newDate.setTime(date);
+  newDate.setTime(dateCreated);
 
   return (
     <View className="h-screen shadow-sm">
       <Image
         className="h-64 w-full"
         source={announcementPreview2}
-        src={source}
+        src={photoUrl}
       />
       <View className="mx-auto w-11/12">
         <Text className="mb-2 text-xl font-black capitalize text-primary">
