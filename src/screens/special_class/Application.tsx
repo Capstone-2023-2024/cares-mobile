@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
   View,
+  Image,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  Alert,
 } from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
 
-const remove = '~/assets/remove.png';
-const file = '~/assets/file.png';
+const remove = require('~/assets/remove.png');
+const file = require('~/assets/file.png');
 
 const SpecialClassApplication = () => {
   const {navigateTo} = useNav();
@@ -50,47 +50,55 @@ const SpecialClassApplication = () => {
 
   return (
     <ScrollView className="flex-1">
-      <View className="p-4">
+      <View className="mt-7 p-4">
         <Text className="mb-4 text-2xl font-bold">
           Special Class Application
         </Text>
 
-        <Text className="mb-2 text-xl font-bold">
+        <Text className="mb-2 text-lg font-bold">
           Choose the subject you want to apply (Maximum of three)
         </Text>
 
         <View className="mb-4">
-          <TouchableOpacity
-            className={`mb-2 rounded bg-gray-300 px-4 py-2 ${
-              selectedSubjects.includes('IT302') && 'bg-gray-700 text-white'
-            }`}
-            onPress={() => handleSubjectSelection('IT302')}>
-            <Text
-              className={`text-base ${
-                selectedSubjects.includes('IT302') && 'text-white'
-              }`}>
-              IT302
-            </Text>
-          </TouchableOpacity>
-          {/* Add more subject buttons similarly */}
+          {['IT302', 'CAP301', 'IT308', 'IT309', 'IT310', 'IT311', 'IT312'].map(
+            subject => (
+              <TouchableOpacity
+                key={subject}
+                className={`mb-2 p-2 ${
+                  selectedSubjects.includes(subject)
+                    ? 'bg-gray-600 text-white'
+                    : 'bg-gray-200 text-black'
+                } items-center rounded-md`}
+                onPress={() => handleSubjectSelection(subject)}>
+                <Text
+                  className={
+                    selectedSubjects.includes(subject)
+                      ? 'text-white'
+                      : 'text-black'
+                  }>
+                  {subject}
+                </Text>
+              </TouchableOpacity>
+            ),
+          )}
         </View>
 
-        <Text className="mb-2 text-xl font-bold">Upload E-Signature</Text>
+        <Text className="mb-2 text-lg font-bold">Upload E-Signature</Text>
 
         <View className="mb-4">
           <TouchableOpacity
-            className="flex-row items-center rounded border border-black p-4"
+            className="flex-row items-center rounded-md border border-black p-4"
             onPress={handleFileUpload}>
             {fileUri ? (
               <>
                 <Text className="mr-2 flex-1">{fileUri}</Text>
                 <TouchableOpacity className="p-2" onPress={handleFileRemove}>
-                  <Image source={require(remove)} className="h-6 w-6" />
+                  <Image source={remove} className="h-6 w-6" />
                 </TouchableOpacity>
               </>
             ) : (
               <>
-                <Image source={require(file)} className="mr-2 h-6 w-6" />
+                <Image source={file} className="mr-2 h-6 w-6" />
                 <Text className="text-base">Upload a File</Text>
               </>
             )}
@@ -98,7 +106,7 @@ const SpecialClassApplication = () => {
         </View>
 
         <TouchableOpacity
-          className="self-center rounded bg-gray-500 px-4 py-2"
+          className="mt-4 self-center rounded-md bg-gray-600 px-4 py-2"
           onPress={handleSubmit}>
           <Text className="font-bold text-white">Submit</Text>
         </TouchableOpacity>
