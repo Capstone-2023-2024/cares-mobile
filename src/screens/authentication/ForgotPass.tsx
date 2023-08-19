@@ -6,7 +6,7 @@ import {Textfield} from '~/components/Textfield';
 import {useNav} from '~/contexts/NavigationContext';
 import {authApp} from '~/utils/firebase';
 
-const ForgotPass = ({navigation}: {navigation: any}) => {
+const ForgotPass = () => {
   const [email, setEmail] = useState('');
   const {navigateTo} = useNav();
 

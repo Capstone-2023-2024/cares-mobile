@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Alert,
   Text,
   TouchableOpacity,
   View,
+  ToastAndroid,
   PermissionsAndroid,
   type Permission,
 } from 'react-native';
@@ -12,8 +13,17 @@ import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
 import {useNav} from '~/contexts/NavigationContext';
 import {validateEmail} from '~/utils/firebase';
-import RNFS from 'react-native-fs';
+import RNFS, {type ReadDirItem} from 'react-native-fs';
 import {Error} from '~/utils/error';
+import {FlatList} from 'react-native-gesture-handler';
+import {Extractor} from 'react-native-pdf-extractor';
+import DocumentPicker from 'react-native-document-picker';
+import {Transient} from 'react-native-pdf-extractor/src/types';
+
+interface ItemType {
+  name: string;
+  isFile: boolean;
+}
 
 interface RequestPermissionType {
   title: string;
@@ -24,6 +34,21 @@ interface RequestPermissionType {
 const Register = () => {
   const {navigateTo} = useNav();
   const [email, setEmail] = useState('');
+  const [files, setFiles] = useState<string[]>([]);
+  const [fileData, setFileData] = useState('');
+  const CORPatterns = [
+    /Student No: [0-9]+/,
+    /College: College of [\"Information and Communications Technology\"-\"Industrial Technology\"-\"Education\"]+/,
+    /School Year: [A-Za-z0-9]+[^\d]+[\d]+-[\d]/,
+    /Name:+[^/d]+\./,
+    /Program: Bachelor of Science in [\"Information Technology\"]+/,
+    /Gender: [\'M\'-\'F\']/,
+    /Major: [\"N/A\"-\"Web and Mobile Technology\"]*/,
+    /Curriculum:[^/d]*\([^A-Za-z]*\)/,
+    /Age:[^A-Za-z]*/,
+    /Year Level: [A-Za-z0-9]* Year/,
+    /Scholarship Discount:[\"uniFast Scholar\"]*/,
+  ];
   const read = PermissionsAndroid.PERMISSIONS
     .READ_EXTERNAL_STORAGE as RequestPermissionType['permission'];
   const write = PermissionsAndroid.PERMISSIONS
@@ -70,8 +95,8 @@ const Register = () => {
       requests.forEach(async request => {
         await requestPermission(request);
       });
-      await RNFS.writeFile(`${path}/${fileName}`, 'asdasdasdasdasd', 'utf8');
-      Alert.alert(`Writing in Downloads: ${fileName}`);
+      const response = await DocumentPicker.pickSingle();
+      setFiles([response.uri]);
     } catch (err) {
       const {code} = err as Error;
       Alert.alert(code);
@@ -92,9 +117,58 @@ const Register = () => {
     navigateTo('CreatePass');
   }
 
+  function renderItem({item, index}: {item: any; index: number}) {
+    return (
+      <View>
+        <Text className="text-lg font-bold">{index}</Text>
+        <Item name={item.name} isFile={item.isFile()} />
+      </View>
+    );
+  }
+
+  const Item = ({name, isFile}: ItemType) => {
+    const PATH = `${RNFS.DownloadDirectoryPath}/${name}`;
+    Alert.alert(PATH);
+    return (
+      <View>
+        <Button
+          onPress={async () => {
+            try {
+              console.log(PATH);
+            } catch (err) {
+              const {code} = err as Error;
+              Alert.alert(code);
+            }
+          }}>
+          Name: {name}
+        </Button>
+        <Text> {isFile ? 'It is a file' : "It's a folder"}</Text>
+      </View>
+    );
+  };
+
   return (
     <View className="h-2/3 justify-center">
-      <Heading>Sign Up</Heading>
+      {/* <Extractor */}
+      <Button
+        onPress={() => ToastAndroid.showWithGravity(`${files}`, 4000, 1000)}>
+        SHOW
+      </Button>
+      <Extractor
+        onResult={(data: Transient | null) => {
+          if (data !== null) {
+            data.text?.forEach(text => console.log(text));
+          }
+        }}
+        patterns={CORPatterns}
+        uri={files[0]}
+      />
+      <TouchableOpacity
+        className="mx-auto mb-2 w-2/3 rounded-xl border-2 border-dashed py-12"
+        onPress={handleCORUpload}>
+        <Text className="text-center">Upload your COR here</Text>
+      </TouchableOpacity>
+      {/* <Heading>Sign Up</Heading>
       <View className="mb-2 w-2/3 self-center">
         <Textfield
           placeholder="Email Address"
@@ -124,7 +198,7 @@ const Register = () => {
           onPress={() => navigateTo('Login')}>
           Login here
         </Link>
-      </View>
+      </View> */}
     </View>
   );
 };
