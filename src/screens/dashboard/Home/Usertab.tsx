@@ -2,7 +2,9 @@ import React, {type ReactNode} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {SvgUri} from 'react-native-svg';
 import SvgContainer from '~/components/SvgContainer';
+import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
+import {validateEmailWithCOR} from '~/utils/firebase';
 import {user} from '~/utils/imagePaths';
 import {arrowUri, menuDots, userSvg} from '~/utils/svgIcons';
 
@@ -14,6 +16,12 @@ interface HeadingTemplateType {
 
 const Usertab = () => {
   const {navigateTo} = useNav();
+  const {studentInfo} = useContent();
+  const {name} = studentInfo;
+  const firstName = validateEmailWithCOR(
+    !name ? {name: ''} : {name, type: 'first'},
+  );
+
   return (
     <View className=" border-b-2 p-12">
       <View className="flex-row items-center justify-between">
@@ -28,7 +36,7 @@ const Usertab = () => {
           </View>
           <View className="ml-2">
             <Text className="text-sm font-bold">Welcome back</Text>
-            <Text className="text-lg font-bold text-black">{`${'Juan'}!`}</Text>
+            <Text className="text-lg font-bold capitalize text-black">{`${firstName}!`}</Text>
           </View>
         </View>
         <TouchableOpacity

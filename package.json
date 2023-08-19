@@ -15,6 +15,7 @@
     "emulator": "emulator -avd Pixel_4_API_33 -netdelay none -netspeed full"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.19.2",
     "@react-native-firebase/app": "^18.1.0",
     "@react-native-firebase/auth": "^18.3.0",
     "@react-native-firebase/firestore": "^18.1.0",

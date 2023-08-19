@@ -4,6 +4,7 @@ import {Text, TouchableOpacity, type GestureResponderEvent} from 'react-native';
 interface ButtonBase {
   children: ReactNode;
   onPress: (event: GestureResponderEvent) => void;
+  disabled?: boolean;
 }
 
 interface ButtonType extends ButtonBase {
@@ -19,6 +20,9 @@ export const Button = (props: ButtonType) => {
 
   function style() {
     let base = 'px-4 p-2 rounded-full shadow-sm';
+    if (rest.disabled) {
+      return `${base} bg-slate-300`;
+    }
     if (type === 'error') {
       return `${base} bg-red-500`;
     } else if (type === 'success') {

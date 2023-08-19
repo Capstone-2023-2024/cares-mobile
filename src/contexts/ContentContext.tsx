@@ -7,30 +7,42 @@ import React, {
   useCallback,
 } from 'react';
 import {firestoreApp} from '~/utils/firebase';
-import {AnnouncementType, UniversityScheduleType} from '../../../shared/types';
+import type {
+  AnnouncementType,
+  DataSortedType,
+  UniversityScheduleType,
+} from 'cics-mobile-client/../../shared/types';
 
 interface InitialStateType {
   announcements: AnnouncementType[];
   schedules: UniversityScheduleType[];
+  studentInfo: DataSortedType;
 }
 
-interface ContentContextType extends InitialStateType {}
+interface ContentContextType extends InitialStateType {
+  handleStudentInfo: (props: DataSortedType) => void;
+}
 
 type HolderType = AnnouncementType | UniversityScheduleType;
 
 const initialState: InitialStateType = {
   announcements: [],
   schedules: [],
+  studentInfo: {},
 };
 
 const ContentContext = createContext<ContentContextType>({
   ...initialState,
+  handleStudentInfo: () => null,
 });
 
 const ContentProvider = ({children}: {children: ReactNode}) => {
   const [state, setState] = useState<InitialStateType>(initialState);
 
-  function handleState(name: keyof InitialStateType, value: HolderType[]) {
+  function handleState(
+    name: keyof InitialStateType,
+    value: HolderType[] | DataSortedType,
+  ) {
     setState(prevState => ({...prevState, [name]: value}));
   }
 
@@ -49,6 +61,10 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     });
   }, []);
 
+  function handleStudentInfo(props: DataSortedType) {
+    handleState('studentInfo', props);
+  }
+
   useEffect(() => {
     const unsub = handleSnapshot('announcements');
     return () => unsub();
@@ -60,6 +76,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
 
   const values = {
     ...state,
+    handleStudentInfo,
   };
   return (
     <ContentContext.Provider value={values}>{children}</ContentContext.Provider>

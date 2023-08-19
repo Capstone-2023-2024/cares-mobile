@@ -1,105 +1,71 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {
-  Alert,
-  Text,
-  TouchableOpacity,
-  View,
-  ToastAndroid,
-  PermissionsAndroid,
-  type Permission,
-} from 'react-native';
+import {icon, imageDimension} from 'cics-mobile-client/../../shared/images';
+import {type DataSortedType} from 'cics-mobile-client/../../shared/types';
+import React, {useState} from 'react';
+import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
+import {Extractor} from 'react-native-pdf-extractor';
+import {type Transient} from 'react-native-pdf-extractor/src/types';
 import {Button, Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
+import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {validateEmail} from '~/utils/firebase';
-import RNFS, {type ReadDirItem} from 'react-native-fs';
 import {Error} from '~/utils/error';
-import {FlatList} from 'react-native-gesture-handler';
-import {Extractor} from 'react-native-pdf-extractor';
-import DocumentPicker from 'react-native-document-picker';
-import {Transient} from 'react-native-pdf-extractor/src/types';
+import {validateEmail, validateEmailWithCOR} from '~/utils/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface ItemType {
-  name: string;
-  isFile: boolean;
-}
-
-interface RequestPermissionType {
-  title: string;
-  message: string;
-  permission: Permission | null;
+interface FileType {
+  uri: string;
+  name: string | null;
+  size: number | null;
 }
 
 const Register = () => {
+  const milToKB = 1000;
   const {navigateTo} = useNav();
+  const {handleStudentInfo, studentInfo} = useContent();
   const [email, setEmail] = useState('');
-  const [files, setFiles] = useState<string[]>([]);
-  const [fileData, setFileData] = useState('');
+  const [file, setFile] = useState<FileType | null>(null);
   const CORPatterns = [
-    /Student No: [0-9]+/,
-    /College: College of [\"Information and Communications Technology\"-\"Industrial Technology\"-\"Education\"]+/,
-    /School Year: [A-Za-z0-9]+[^\d]+[\d]+-[\d]/,
-    /Name:+[^/d]+\./,
-    /Program: Bachelor of Science in [\"Information Technology\"]+/,
-    /Gender: [\'M\'-\'F\']/,
-    /Major: [\"N/A\"-\"Web and Mobile Technology\"]*/,
-    /Curriculum:[^/d]*\([^A-Za-z]*\)/,
-    /Age:[^A-Za-z]*/,
-    /Year Level: [A-Za-z0-9]* Year/,
-    /Scholarship Discount:[\"uniFast Scholar\"]*/,
+    /^[0-9]{10}$/,
+    /College of [\"Information and Communications Technology\"-\"Industrial Technology\"-\"Education\"-\"Engineering\"]+/,
+    /^[A-Za-z0-9]+[^\d]+[\d]+-[\d]+$/,
+    /^[A-Z]+, [^/d]*\.$/,
+    /Bachelor of Science in [\"Information Technology\"]+$/,
+    /^[\"M\"-\"F\"]$/,
+    /^[\"N/A\"-\"Web and Mobile\"]*$/,
+    /[A-Z]* \([^A-Za-z]*\)$/,
+    /^[0-9]{2}$/,
+    /^[0-9a-z]* Year$/,
+    /^Official Receipt: [^/d]*$/,
   ];
-  const read = PermissionsAndroid.PERMISSIONS
-    .READ_EXTERNAL_STORAGE as RequestPermissionType['permission'];
-  const write = PermissionsAndroid.PERMISSIONS
-    .WRITE_EXTERNAL_STORAGE as RequestPermissionType['permission'];
-
-  async function requestPermission(props: RequestPermissionType) {
-    try {
-      const {permission, ...rest} = props;
-      if (permission) {
-        const granted = await PermissionsAndroid.request(permission, {
-          ...rest,
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        });
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('Permission granted');
-        } else {
-          console.log('Permission denied');
-        }
-      }
-    } catch (err) {
-      const {code} = err as Error;
-      console.log(code);
-    }
-  }
+  const CORPatternsId = [
+    'studentNo',
+    'college',
+    'schoolYear',
+    'name',
+    'course',
+    'gender',
+    'major',
+    'curriculum',
+    'age',
+    'yearLevel',
+    'scholarship',
+  ];
 
   async function handleCORUpload() {
-    const path = RNFS.DownloadDirectoryPath;
-    const fileName = 'test.txt';
-    const requests: RequestPermissionType[] = [
-      {
-        permission: read,
-        message: 'Read External',
-        title: 'Storage Request',
-      },
-      {
-        permission: write,
-        message: 'Write External',
-        title: 'Storage Request',
-      },
-    ];
     try {
-      requests.forEach(async request => {
-        await requestPermission(request);
-      });
-      const response = await DocumentPicker.pickSingle();
-      setFiles([response.uri]);
+      const {uri, size, name, type} = await DocumentPicker.pickSingle();
+      if (type !== 'application/pdf') {
+        return Alert.alert('File is not a PDF file');
+      }
+      setFile({uri, size, name});
     } catch (err) {
       const {code} = err as Error;
-      Alert.alert(code);
+      if (code !== 'DOCUMENT_PICKER_CANCELED') {
+        Alert.alert(`File is not a valid PDF file: ${code}`);
+        return setFile(null);
+      }
     }
   }
 
@@ -117,58 +83,48 @@ const Register = () => {
     navigateTo('CreatePass');
   }
 
-  function renderItem({item, index}: {item: any; index: number}) {
-    return (
-      <View>
-        <Text className="text-lg font-bold">{index}</Text>
-        <Item name={item.name} isFile={item.isFile()} />
-      </View>
-    );
-  }
+  async function handlePDFResult(data: Transient | null) {
+    if (data !== null) {
+      let idHolder: DataSortedType = {};
+      const bsuPortal = 'https://bulsu.priisms.online';
+      const uniqueTextArray = Array.from(new Set(data.text));
 
-  const Item = ({name, isFile}: ItemType) => {
-    const PATH = `${RNFS.DownloadDirectoryPath}/${name}`;
-    Alert.alert(PATH);
-    return (
-      <View>
-        <Button
-          onPress={async () => {
-            try {
-              console.log(PATH);
-            } catch (err) {
-              const {code} = err as Error;
-              Alert.alert(code);
-            }
-          }}>
-          Name: {name}
-        </Button>
-        <Text> {isFile ? 'It is a file' : "It's a folder"}</Text>
-      </View>
-    );
-  };
+      uniqueTextArray.forEach((text, textIndex) => {
+        if (typeof text === 'string') {
+          CORPatterns.forEach((regex, regexIndex) => {
+            const propName = CORPatternsId[regexIndex];
+            if (regex.test(text))
+              return (idHolder = {...idHolder, [propName ?? '']: text});
+          });
+        }
+      });
+
+      const result =
+        Object.keys(idHolder).length >= CORPatternsId.length && idHolder;
+      if (!result) {
+        return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
+      }
+
+      const {name} = result;
+      console.log(result);
+      const emailFromCOR = validateEmailWithCOR(!name ? {name: ''} : {name});
+      if (email !== emailFromCOR) {
+        setFile(null);
+        return Alert.alert('Unauthorized access of email');
+      }
+      await AsyncStorage.setItem(email, JSON.stringify(result));
+      handleStudentInfo(result);
+    }
+  }
 
   return (
     <View className="h-2/3 justify-center">
-      {/* <Extractor */}
-      <Button
-        onPress={() => ToastAndroid.showWithGravity(`${files}`, 4000, 1000)}>
-        SHOW
-      </Button>
+      <Heading>Sign Up</Heading>
       <Extractor
-        onResult={(data: Transient | null) => {
-          if (data !== null) {
-            data.text?.forEach(text => console.log(text));
-          }
-        }}
+        onResult={handlePDFResult}
         patterns={CORPatterns}
-        uri={files[0]}
+        uri={file?.uri}
       />
-      <TouchableOpacity
-        className="mx-auto mb-2 w-2/3 rounded-xl border-2 border-dashed py-12"
-        onPress={handleCORUpload}>
-        <Text className="text-center">Upload your COR here</Text>
-      </TouchableOpacity>
-      {/* <Heading>Sign Up</Heading>
       <View className="mb-2 w-2/3 self-center">
         <Textfield
           placeholder="Email Address"
@@ -184,12 +140,34 @@ const Register = () => {
         </Text>
       </View>
       <TouchableOpacity
-        className="mx-auto mb-2 w-2/3 rounded-xl border-2 border-dashed py-12"
+        className="mx-auto mb-2 w-2/3 items-center rounded-xl border-2 border-dashed py-12"
         onPress={handleCORUpload}>
-        <Text className="text-center">Upload your COR here</Text>
+        {file && <Text className="mb-2 text-xs">Change COR</Text>}
+        <View className="flex-row gap-2">
+          <Image
+            source={require('~/assets/icons/pdfFilled.png')}
+            {...imageDimension(icon)}
+          />
+          {file && (
+            <View>
+              <Text className="font-semibold">{`${file.name?.substring(
+                0,
+                8,
+              )}...`}</Text>
+              <Text>{`${Math.floor(
+                file.size ? file.size / milToKB : NaN,
+              )} KB`}</Text>
+            </View>
+          )}
+        </View>
+        {!file && <Text className="text-xs">Upload your COR here</Text>}
       </TouchableOpacity>
       <View className="mb-2 w-1/3 self-center">
-        <Button onPress={handleRegisterPress}>Register</Button>
+        <Button
+          onPress={handleRegisterPress}
+          disabled={Object.keys(studentInfo).length === 0}>
+          Register
+        </Button>
       </View>
       <View className="flex-row justify-center gap-2">
         <Text className="text-center text-xs">Already have an account? </Text>
@@ -198,7 +176,7 @@ const Register = () => {
           onPress={() => navigateTo('Login')}>
           Login here
         </Link>
-      </View> */}
+      </View>
     </View>
   );
 };
