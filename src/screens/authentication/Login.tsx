@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 import {Button, Link} from '~/components/Button';
@@ -6,13 +7,16 @@ import {Textfield} from '~/components/Textfield';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {Error} from '~/utils/error';
-import {validateEmail} from '~/utils/firebase';
+import {firestoreApp, validateEmail} from '~/utils/firebase';
+import type {DataSortedType} from 'cics-mobile-client/../../shared/types';
+import {useContent} from '~/contexts/ContentContext';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [emailEntered, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {signInWithEmail} = useAuth();
   const {navigateTo} = useNav();
+  const {handleStudentInfo} = useContent();
 
   function handleRegisterPress() {
     navigateTo('Register');
@@ -23,24 +27,24 @@ const Login = () => {
   }
 
   async function handleLoginPress() {
-    if (!validateEmail(email)) {
+    if (!validateEmail(emailEntered)) {
       return Alert.alert(
         'Invalid Email',
         'Please enter a valid email address.',
       );
     }
-    if (!email || !password) {
+    if (!emailEntered || !password) {
       return Alert.alert(
         'Empty Fields',
         'Please enter your email and password.',
       );
     }
     try {
-      await signInWithEmail(email, password);
-      // console.log(currentUser);
+      await signInWithEmail(emailEntered, password);
     } catch (err) {
       const {code} = err as Error;
-      return Alert.alert(code);
+      return Alert.alert(code); // Debug only
+      // return Alert.alert('Invalid email or password');
     }
   }
 
@@ -51,7 +55,7 @@ const Login = () => {
         <Textfield
           placeholder="Email Address"
           keyboardType="email-address"
-          value={email}
+          value={emailEntered}
           onChangeText={setEmail}
         />
       </View>

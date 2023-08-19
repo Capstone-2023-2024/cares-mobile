@@ -1,53 +1,66 @@
-import {type FirebaseAuthTypes} from '@react-native-firebase/auth';
 import React, {
-  type ReactNode,
   createContext,
-  useState,
-  useEffect,
   useContext,
+  useEffect,
+  useState,
+  type ReactNode,
 } from 'react';
 import {authApp} from '~/utils/firebase';
 
-interface AuthContextType {
+interface InitialStateType {
+  initialRouteName: 'Login' | 'Dashboard Home';
   loading: boolean;
-  currentUser: FirebaseAuthTypes.User | null;
+  currentUser: typeof authApp.currentUser;
+}
+
+interface AuthContextType extends InitialStateType {
   signout: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
 }
+const initialState: InitialStateType = {
+  loading: true,
+  initialRouteName: 'Login',
+  currentUser: null,
+};
 
 const AuthContext = createContext<AuthContextType>({
-  loading: false,
-  currentUser: null,
+  ...initialState,
   signout: async () => {},
   signInWithEmail: async () => {},
 });
 
 const AuthProvider = ({children}: {children: ReactNode}) => {
-  const [loading, setLoading] = useState(false);
-  const [currentUser, setCurrentUser] =
-    useState<AuthContextType['currentUser']>(null);
+  const [state, setState] = useState(initialState);
+
+  const handleState = (
+    name: keyof InitialStateType,
+    value:
+      | InitialStateType['initialRouteName']
+      | InitialStateType['currentUser']
+      | boolean,
+  ) => {
+    setState(prevState => ({...prevState, [name]: value}));
+  };
 
   async function signout() {
-    setLoading(true);
     await authApp.signOut();
   }
-
   async function signInWithEmail(email: string, password: string) {
-    setLoading(true);
     await authApp.signInWithEmailAndPassword(email, password);
   }
 
   useEffect(() => {
     const unsub = authApp.onAuthStateChanged(user => {
-      setCurrentUser(user);
-      setLoading(false);
+      handleState('loading', true);
+      handleState('currentUser', user);
+      handleState('initialRouteName', !user ? 'Login' : 'Dashboard Home');
+      handleState('loading', false);
     });
     return () => unsub();
   }, []);
 
   const values = {
-    loading,
-    currentUser,
+    ...state,
     signout,
     signInWithEmail,
   };

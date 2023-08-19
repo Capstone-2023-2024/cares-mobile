@@ -1,120 +1,112 @@
 import React, {useState} from 'react';
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Image, Text, View} from 'react-native';
+import {Button} from '~/components/Button';
+import {Heading} from '~/components/Heading';
+import {Textfield} from '~/components/Textfield';
+import {useContent} from '~/contexts/ContentContext';
+import {useNav} from '~/contexts/NavigationContext';
+import {Error} from '~/utils/error';
+import {authApp, firestoreApp, validateEmailWithCOR} from '~/utils/firebase';
 
 const CreatePass = () => {
+  const {studentInfo} = useContent();
+  const {navigateTo} = useNav();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleAllSetPress = () => {
-    if (password === confirmPassword) {
-      if (validatePassword(password)) {
-        console.log('first');
+  async function handleSet() {
+    try {
+      if (password === confirmPassword) {
+        if (validatePassword(password)) {
+          const {name, studentNo, scholarship, ...rest} = studentInfo;
+          const email = validateEmailWithCOR(!name ? {name: ''} : {name});
+          const tweakedScolarship = scholarship
+            ?.replace(/Official Receipt:/, '')
+            .trim();
+
+          if (studentNo !== undefined) {
+            const studDocRef = firestoreApp
+              .collection('students')
+              .doc(studentNo);
+            const docSnap = await studDocRef.get();
+
+            function handleExistingUser() {
+              Alert.alert('You need to login as you are already registered');
+              navigateTo('Login');
+            }
+
+            async function handleNewUser() {
+              await studDocRef.set({
+                ...rest,
+                name,
+                email,
+                scholarship: tweakedScolarship,
+              });
+              await firestoreApp.collection('chattables').add({email});
+              await authApp.createUserWithEmailAndPassword(email, password);
+            }
+
+            return docSnap.exists ? handleExistingUser() : handleNewUser();
+          }
+        } else {
+          Alert.alert(
+            'Invalid Password',
+            'Password must be atleast 6 characters long and contain at least one lowercase letter, one uppercase letter, and one special character.',
+          );
+        }
       } else {
         Alert.alert(
-          'Invalid Password',
-          'Password must be 8 characters long and contain at least one lowercase letter, one uppercase letter, and one special character.',
+          'Password Mismatch',
+          'Passwords do not match. Please enter the same password in both fields.',
         );
       }
-    } else {
-      Alert.alert(
-        'Password Mismatch',
-        'Passwords do not match. Please enter the same password in both fields.',
-      );
+    } catch (err) {
+      const {code} = err as Error;
+      Alert.alert(code);
     }
-  };
+  }
 
   const validatePassword = (enteredPassword: string) => {
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{6,}$/;
     return passwordRegex.test(enteredPassword);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Password</Text>
-      {/* <Image
-        source={require('/create_password_picture.png')}
-
-      /> */}
-      <View style={styles.picture}>
-        <Text>Image</Text>
+    <View className="h-2/3 justify-center">
+      <Heading>Create Password</Heading>
+      <View className="mb-2 h-40 w-40 self-center">
+        <Image
+          className="h-full w-full"
+          source={require('~/assets/create_password.png')}
+          alt=""
+        />
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="New Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-      <Text style={styles.passwordInfoText}>
+      <View className="mb-2 w-2/3 self-center">
+        <Textfield
+          placeholder="New Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
+      <View className="mb-2 w-2/3 self-center">
+        <Textfield
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+      </View>
+      <Text className="mx-auto mb-2 w-64 text-center text-xs">
         Create an 8-character long password with at least one combination of
         lowercase, uppercase, and a special character.
       </Text>
-      <TouchableOpacity style={styles.allSetButton} onPress={handleAllSetPress}>
-        <Text style={styles.allSetText}>All Set</Text>
-      </TouchableOpacity>
+      <View className="mx-auto w-1/3">
+        <Button onPress={handleSet}>All Set</Button>
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5F5F5', // Light gray background color
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#424242', // Dark gray text color
-  },
-  picture: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: '#757575', // Medium gray border color
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
-  passwordInfoText: {
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#616161', // Medium gray text color
-  },
-  allSetButton: {
-    backgroundColor: '#757575', // Medium gray button color
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  allSetText: {
-    color: '#FFFFFF', // White text color
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-});
 
 export default CreatePass;

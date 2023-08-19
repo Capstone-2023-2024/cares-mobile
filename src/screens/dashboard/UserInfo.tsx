@@ -2,8 +2,11 @@ import React from 'react';
 import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import SvgContainer from '~/components/SvgContainer';
 import {useAuth} from '~/contexts/AuthContext';
+import {useContent} from '~/contexts/ContentContext';
 import {Error} from '~/utils/error';
+import {validateEmailWithCOR} from '~/utils/firebase';
 import {userSvg} from '~/utils/svgIcons';
+import {ResultType} from 'cics-mobile-client/../../shared/types';
 
 interface TextRowType {
   title: string;
@@ -12,6 +15,23 @@ interface TextRowType {
 
 const UserInfo = () => {
   const {signout} = useAuth();
+  const {studentInfo} = useContent();
+  const {
+    name,
+    age,
+    curriculum,
+    college,
+    yearLevel,
+    scholarship,
+    schoolYear,
+    major,
+    gender,
+  } = studentInfo;
+  const props = (type: ResultType['type']) =>
+    !name ? {name: ''} : {name, type};
+  const firstName = validateEmailWithCOR(props('first') as ResultType);
+  const lastName = validateEmailWithCOR(props('last') as ResultType);
+  const middleInitial = validateEmailWithCOR(props('initial') as ResultType);
 
   async function handleSignout() {
     try {
@@ -22,23 +42,22 @@ const UserInfo = () => {
     }
   }
   return (
-    <View className="bg-paper">
+    <View className="my-auto h-5/6 bg-paper">
       <Hero />
       <Text className="m-8 text-3xl font-semibold text-black">
         Student details
       </Text>
-      <TextRow title="first_name" value={`${'Juan'}`} />
-      <TextRow title="middle_name" value={`${'Xypher Yyzer Zyder'}`} />
-      <TextRow title="last_name" value={`${'Dela Cruz'}`} />
-      <TextRow title="college" value={`${'CICT'}`} />
-      <TextRow title="year_level" value={`${'4th Year'}`} />
-      <TextRow title="school_year" value={`${'2nd Semester AY 20xx - 20xx'}`} />
-      <TextRow title="curriculum" value={`${'BSIT (2018-2019)'}`} />
-      <TextRow title="scholarship/Discount" value={`${'Discount Scholar'}`} />
-      <TextRow title="program" value={`${'BSIT'}`} />
-      <TextRow title="major" value={`${'N/A'}`} />
-      <TextRow title="sex" value={`${'Male'}`} />
-      <TextRow title="age" value={`${'2x'}`} />
+      <TextRow title="first_name" value={`${firstName}`} />
+      <TextRow title="middle_initial" value={`${middleInitial}`} />
+      <TextRow title="last_name" value={`${lastName}`} />
+      <TextRow title="college" value={`${college}`} />
+      <TextRow title="year_level" value={`${yearLevel}`} />
+      <TextRow title="school_year" value={`${schoolYear}`} />
+      <TextRow title="curriculum" value={`${curriculum}`} />
+      <TextRow title="scholarship/Discount" value={`${scholarship}`} />
+      <TextRow title="major" value={`${major}`} />
+      <TextRow title="sex" value={`${gender}`} />
+      <TextRow title="age" value={`${age}`} />
       <TouchableOpacity
         onPress={handleSignout}
         className="mt-14 self-center rounded-xl bg-error p-4 px-10 shadow-sm">
@@ -50,12 +69,19 @@ const UserInfo = () => {
 
 const Hero = () => {
   const {currentUser} = useAuth();
+  const {studentInfo} = useContent();
+  const {name, studentNo} = studentInfo;
+  const props = (type: ResultType['type']) =>
+    !name ? {name: ''} : {name, type};
+  const firstName = validateEmailWithCOR(props('first') as ResultType);
+  const lastName = validateEmailWithCOR(props('last') as ResultType);
+
   return (
     <View className="mx-auto w-11/12 flex-row rounded-xl bg-accent p-6">
       <SvgContainer uri={userSvg} size="base" isCircle />
       <View className="ml-2">
-        <Text className="text-xl text-paper">{`${'Dela Cruz, Juan'}`}</Text>
-        <Text className="text-xs text-paper">{`${'20xx200xxx'}`}</Text>
+        <Text className="text-xl capitalize text-paper">{`${lastName}, ${firstName}`}</Text>
+        <Text className="text-xs text-paper">{`${studentNo}`}</Text>
         <Text className="text-xs text-paper">{`${currentUser?.email}`}</Text>
       </View>
     </View>
@@ -67,7 +93,7 @@ const TextRow = (props: TextRowType) => {
   return (
     <View className="my-1 flex-row justify-between px-14">
       <Text className="capitalize">{title.replace(/_/, ' ')}</Text>
-      <Text className="font-sembold text-black">{value}</Text>
+      <Text className="font-sembold capitalize text-black">{value}</Text>
     </View>
   );
 };

@@ -1,12 +1,12 @@
 import React, {type ReactNode} from 'react';
 import AuthProvider from './AuthContext';
-import NavigationContainer from './NavigationContext';
+import ContentProvider from './ContentContext';
 
 const CtxProviders = ({children}: {children: ReactNode}) => {
   return (
-    <NavigationContainer>
-      <AuthProvider>{children}</AuthProvider>
-    </NavigationContainer>
+    <AuthProvider>
+      <ContentProvider>{children}</ContentProvider>
+    </AuthProvider>
   );
 };
 
