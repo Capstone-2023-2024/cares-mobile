@@ -3,11 +3,14 @@ import {Alert, Image, View} from 'react-native';
 import {Button} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
+import {useNav} from '~/contexts/NavigationContext';
+import {authApp} from '~/utils/firebase';
 
 const ForgotPass = ({navigation}: {navigation: any}) => {
   const [email, setEmail] = useState('');
+  const {navigateTo} = useNav();
 
-  const handleSendCodePress = () => {
+  async function handleSendCodePress() {
     if (!email) {
       showAlert('Empty Email', 'Please enter your email address.');
       return;
@@ -17,28 +20,26 @@ const ForgotPass = ({navigation}: {navigation: any}) => {
       showAlert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
+    try {
+      await authApp.sendPasswordResetEmail(email);
+      showAlert('Email Sent', 'Password reset email has been sent.');
+      navigateTo('Login');
+    } catch (error) {
+      showAlert(
+        'Error',
+        'An error occurred while sending the password reset email.',
+      );
+    }
+  }
 
-    const verificationCode = generateVerificationCode();
-
-    // Navigate to VerificationCode screen with email and verification code
-    navigation.navigate('VerificationCode', {email, verificationCode});
-  };
-
-  const validateEmail = (enteredEmail: string) => {
-    // Email validation with domain check
+  function validateEmail(enteredEmail: string) {
     const emailRegex = /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*@bulsu\.edu\.ph$/;
     return emailRegex.test(enteredEmail);
-  };
+  }
 
-  const generateVerificationCode = () => {
-    // Generate a random 6-digit verification code
-    const code = Math.floor(100000 + Math.random() * 900000);
-    return code.toString();
-  };
-
-  const showAlert = (title: string, message: string) => {
+  function showAlert(title: string, message: string) {
     Alert.alert(title, message);
-  };
+  }
 
   return (
     <View className="h-2/3 justify-center">

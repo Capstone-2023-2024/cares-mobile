@@ -9,6 +9,7 @@ module.exports = {
         paper: '#f5f5f5',
         accent: '#402FFF',
         error: '#F44646',
+        tertiary: '#763435',
       },
     },
   },

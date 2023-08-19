@@ -37,7 +37,7 @@ const Container = (props: AnnouncementType) => {
   const {department, message, photoUrl, docId} = props;
   // console.log(dateCreated);
   return (
-    <View className="mr-2 items-center justify-center overflow-hidden rounded-3xl bg-white p-4 px-6 shadow-xl">
+    <View className="ml-2 mr-2 items-center justify-center overflow-hidden rounded-3xl border-2 bg-white p-4 px-6 shadow-xl">
       <View className="flex-row">
         <View className="items-start">
           <View className="flex-row items-center justify-center">
@@ -55,7 +55,7 @@ const Container = (props: AnnouncementType) => {
           <TouchableOpacity
             className="self-center"
             onPress={() => navigateTo('Dashboard Announcements', docId)}>
-            <Text className="rounded-full border-2 border-black p-1 text-xs">
+            <Text className="justify-center rounded-full border-2 border-black p-1 text-xs">
               Read More
             </Text>
           </TouchableOpacity>
