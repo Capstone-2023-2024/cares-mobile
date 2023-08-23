@@ -31,9 +31,13 @@ export function validateEmailWithCOR(result: ResultType) {
     middleInitial = name.substring(initialDotStart - 1, initialDotEnd);
   }
 
-  if (type === 'first') return firstName;
-  else if (type === 'last') return lastName;
-  else if (type === 'initial') return middleInitial;
+  if (type === 'first') {
+    return firstName;
+  } else if (type === 'last') {
+    return lastName;
+  } else if (type === 'initial') {
+    return middleInitial;
+  }
   return `${firstName.replace(
     / /g,
     '',

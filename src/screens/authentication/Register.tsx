@@ -85,22 +85,24 @@ const Register = () => {
 
   async function handlePDFResult(data: Transient | null) {
     if (data !== null) {
-      let idHolder: DataSortedType = {};
+      let idHolder: Partial<DataSortedType> = {};
       const bsuPortal = 'https://bulsu.priisms.online';
       const uniqueTextArray = Array.from(new Set(data.text));
 
-      uniqueTextArray.forEach((text, textIndex) => {
+      uniqueTextArray.forEach(text => {
         if (typeof text === 'string') {
           CORPatterns.forEach((regex, regexIndex) => {
             const propName = CORPatternsId[regexIndex];
-            if (regex.test(text))
+            if (regex.test(text)) {
               return (idHolder = {...idHolder, [propName ?? '']: text});
+            }
           });
         }
       });
 
       const result =
-        Object.keys(idHolder).length >= CORPatternsId.length && idHolder;
+        Object.keys(idHolder).length >= CORPatternsId.length &&
+        (idHolder as Required<DataSortedType>);
       if (!result) {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }

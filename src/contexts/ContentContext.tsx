@@ -16,7 +16,7 @@ import type {
 interface InitialStateType {
   announcements: AnnouncementType[];
   schedules: UniversityScheduleType[];
-  studentInfo: DataSortedType;
+  studentInfo: Partial<DataSortedType>;
 }
 
 interface ContentContextType extends InitialStateType {
@@ -61,9 +61,9 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     });
   }, []);
 
-  function handleStudentInfo(props: DataSortedType) {
+  const handleStudentInfo = useCallback((props: DataSortedType) => {
     handleState('studentInfo', props);
-  }
+  }, []);
 
   useEffect(() => {
     const unsub = handleSnapshot('announcements');

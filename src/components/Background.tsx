@@ -9,7 +9,7 @@ interface BackgroundType {
 const Background = ({children}: BackgroundType) => {
   return (
     <ImageBackground
-      className="h-screen"
+      className="flex-1 object-cover"
       source={bsuBg}
       imageStyle={{opacity: 0.7}}>
       {children}

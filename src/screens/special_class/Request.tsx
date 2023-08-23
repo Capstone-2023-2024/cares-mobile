@@ -1,7 +1,7 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 
-const ReqPage = () => {
+const Request = () => {
   return (
     <View className="flex-1">
       <View className="flex-1 items-center justify-center">
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReqPage;
+export default Request;

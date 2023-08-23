@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 import {Button, Link} from '~/components/Button';
@@ -7,16 +6,13 @@ import {Textfield} from '~/components/Textfield';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {Error} from '~/utils/error';
-import {firestoreApp, validateEmail} from '~/utils/firebase';
-import type {DataSortedType} from 'cics-mobile-client/../../shared/types';
-import {useContent} from '~/contexts/ContentContext';
+import {validateEmail} from '~/utils/firebase';
 
 const Login = () => {
   const [emailEntered, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {signInWithEmail} = useAuth();
   const {navigateTo} = useNav();
-  const {handleStudentInfo} = useContent();
 
   function handleRegisterPress() {
     navigateTo('Register');
