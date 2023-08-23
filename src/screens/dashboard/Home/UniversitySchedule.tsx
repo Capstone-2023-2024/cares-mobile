@@ -9,8 +9,8 @@ import {HeadingTemplate, TabContainer} from './Usertab';
 import {Text} from '~/components';
 
 const UniversitySchedule = () => {
-  const {schedules} = useContent();
-  const stateLengthEmpty = schedules.length === 0;
+  const {schedule} = useContent();
+  const stateLengthEmpty = schedule.length === 0;
 
   return (
     <TabContainer>
@@ -25,7 +25,7 @@ const UniversitySchedule = () => {
         {stateLengthEmpty ? (
           <PlaceHolder text="Currently no Schedule" />
         ) : (
-          schedules.map((props, i) => {
+          schedule.map((props, i) => {
             return <Container {...props} key={i} />;
           })
         )}

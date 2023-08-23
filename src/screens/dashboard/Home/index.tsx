@@ -6,7 +6,7 @@ import Background from '~/components/Background';
 import FooterNav from '~/components/FooterNav';
 import {useAuth} from '~/contexts/AuthContext';
 import {useContent} from '~/contexts/ContentContext';
-import {firestoreApp} from '~/utils/firebase';
+import {collectionRef} from '~/utils/firebase';
 import Announcements from './Announcements';
 import Notifications from './Notifications';
 import UniversitySchedule from './UniversitySchedule';
@@ -20,8 +20,7 @@ const Home = () => {
   const setup = useCallback(async () => {
     const cacheStudInfo = await AsyncStorage.getItem(email);
     if (cacheStudInfo === null) {
-      const studInfo = await firestoreApp
-        .collection('students')
+      const studInfo = await collectionRef('student')
         .where('email', '==', email)
         .get();
       await AsyncStorage.setItem(

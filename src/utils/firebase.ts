@@ -4,11 +4,12 @@ import auth from '@react-native-firebase/auth';
 import {ResultType} from 'cics-mobile-client/../../shared/types';
 
 type FirestoreCollectionPath =
-  | 'chats'
-  | 'announcements'
+  | 'chat'
+  | 'announcement'
   | 'about'
-  | 'schedules'
-  | 'users';
+  | 'schedule'
+  | 'student'
+  | 'faculty';
 
 const app = firebase.app();
 

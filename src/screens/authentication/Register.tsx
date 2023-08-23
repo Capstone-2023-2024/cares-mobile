@@ -13,7 +13,11 @@ import {Textfield} from '~/components/Textfield';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {Error} from '~/utils/error';
-import {validateEmail, validateEmailWithCOR} from '~/utils/firebase';
+import {
+  collectionRef,
+  validateEmail,
+  validateEmailWithCOR,
+} from '~/utils/firebase';
 
 interface FileType {
   uri: string;
@@ -31,7 +35,7 @@ const Register = () => {
     /^[0-9]{10}$/,
     /College of [\"Information and Communications Technology\"-\"Industrial Technology\"-\"Education\"-\"Engineering\"]+/,
     /^[A-Za-z0-9]+[^\d]+[\d]+-[\d]+$/,
-    /^[A-Z]+, [^/d]*\.$/,
+    /^[A-Z]*, [^0-9]*\.$/,
     /Bachelor of Science in [\"Information Technology\"]+$/,
     /^[\"M\"-\"F\"]$/,
     /^[\"N/A\"-\"Web and Mobile\"]*$/,
@@ -57,10 +61,13 @@ const Register = () => {
   async function handleCORUpload() {
     try {
       const {uri, size, name, type} = await DocumentPicker.pickSingle();
-      if (type !== 'application/pdf') {
-        return Alert.alert('File is not a PDF file');
+      // TODO: convert octet-stream to pdf in Android API 24
+      // const file = await RNFS.readFile(uri);
+      // Alert.alert(file);
+      if (type === 'application/pdf') {
+        return setFile({uri, size, name});
       }
-      setFile({uri, size, name});
+      Alert.alert('File is not a PDF file');
     } catch (err) {
       const {code} = err as Error;
       if (code !== 'DOCUMENT_PICKER_CANCELED') {
@@ -70,7 +77,14 @@ const Register = () => {
     }
   }
 
-  function handleRegisterPress() {
+  async function handleRegisterPress() {
+    const doc = await collectionRef('student')
+      .where('email', '==', email)
+      .count()
+      .get();
+    const {count} = doc.data();
+    const condition = count > 0;
+
     if (!email) {
       Alert.alert('Empty Email', 'Please enter your email address.');
       return;
@@ -81,7 +95,8 @@ const Register = () => {
         'Please enter a valid email address.',
       );
     }
-    navigateTo('CreatePass');
+    condition && Alert.alert("You're already registered!\nPlease login");
+    navigateTo(condition ? 'Login' : 'CreatePass');
   }
 
   async function handlePDFResult(data: Transient | null) {
@@ -109,7 +124,6 @@ const Register = () => {
       }
 
       const {name} = result;
-      console.log(result);
       const emailFromCOR = validateEmailWithCOR(!name ? {name: ''} : {name});
       if (email !== emailFromCOR) {
         setFile(null);

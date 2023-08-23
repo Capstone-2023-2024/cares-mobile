@@ -5,10 +5,10 @@ import {Text} from '~/components';
 import {useContent} from '~/contexts/ContentContext';
 
 const ChatBox = () => {
-  const {chats, selectedChat} = useContent();
+  const {chat, selectedChat} = useContent();
 
   function renderChatBox() {
-    const selectedInbox = chats.filter(({docId}) => docId === selectedChat)[0]
+    const selectedInbox = chat.filter(({docId}) => docId === selectedChat)[0]
       ?.inbox;
     if (selectedInbox !== undefined) {
       return selectedInbox.map(({content, type, docId}) => (

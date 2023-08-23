@@ -7,14 +7,14 @@ import type {UniversityScheduleType} from 'cics-mobile-client/../../shared/types
 import {Text} from '~/components';
 
 const UniversitySchedule = () => {
-  const {schedules} = useContent();
+  const {schedule} = useContent();
 
   return (
     <View>
       <Calendar />
       <ScrollView>
         <Text className="text-center text-4xl text-black">Announcements</Text>
-        {schedules.map((props, i) => {
+        {schedule.map((props, i) => {
           return <Container key={i} {...props} />;
         })}
       </ScrollView>

@@ -8,15 +8,15 @@ import {HeadingTemplate, TabContainer} from './Usertab';
 import {Text} from '~/components';
 
 const Announcements = () => {
-  const {announcements} = useContent();
-  const stateLengthEmpty = announcements.length === 0;
+  const {announcement} = useContent();
+  const stateLengthEmpty = announcement.length === 0;
 
   return (
     <TabContainer>
       <HeadingTemplate
         disabled={stateLengthEmpty}
-        navigation="Dashboard Announcements"
-        title="announcements"
+        navigation="Announcements"
+        title="announcement"
       />
       <ScrollView
         horizontal={!stateLengthEmpty}
@@ -24,7 +24,7 @@ const Announcements = () => {
         {stateLengthEmpty ? (
           <PlaceHolder text="Currently no Announcements" />
         ) : (
-          announcements.map((props, i) => {
+          announcement.map((props, i) => {
             return <Container {...props} key={i} />;
           })
         )}

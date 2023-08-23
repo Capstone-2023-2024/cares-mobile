@@ -18,9 +18,9 @@ import type {
 import {useAuth} from './AuthContext';
 
 interface InitialStateType {
-  chats: ClientChatType[];
-  announcements: AnnouncementType[];
-  schedules: UniversityScheduleType[];
+  chat: ClientChatType[];
+  announcement: AnnouncementType[];
+  schedule: UniversityScheduleType[];
   studentInfo: Partial<StudInfoSortedType>;
   selectedChat: string | null;
 }
@@ -33,9 +33,9 @@ interface ContentContextType extends InitialStateType {
 type HolderType = AnnouncementType | UniversityScheduleType;
 
 const initialState: InitialStateType = {
-  announcements: [],
-  chats: [],
-  schedules: [],
+  announcement: [],
+  chat: [],
+  schedule: [],
   studentInfo: {},
   selectedChat: null,
 };
@@ -46,7 +46,7 @@ const ContentContext = createContext<ContentContextType>({
   handleSelectedChat: () => null,
 });
 
-const chatColReference = collectionRef('chats');
+const chatColReference = collectionRef('chat');
 const ContentProvider = ({children}: {children: ReactNode}) => {
   const [state, setState] = useState<InitialStateType>(initialState);
   const {currentUser} = useAuth();
@@ -82,12 +82,12 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
   }
 
   useEffect(() => {
-    const unsub = handleSnapshot('announcements');
+    const unsub = handleSnapshot('announcement');
     return () => unsub();
   }, [handleSnapshot]);
 
   useEffect(() => {
-    const unsub = handleSnapshot('schedules');
+    const unsub = handleSnapshot('schedule');
     return () => unsub();
   }, [handleSnapshot]);
 
@@ -119,7 +119,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
               });
             chatHeads.push({...chatHead, inbox});
           });
-          handleState('chats', chatHeads);
+          handleState('chat', chatHeads);
         }
       });
     return () => {

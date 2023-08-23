@@ -6,7 +6,12 @@ import {Textfield} from '~/components/Textfield';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {Error} from '~/utils/error';
-import {authApp, firestoreApp, validateEmailWithCOR} from '~/utils/firebase';
+import {
+  authApp,
+  collectionRef,
+  firestoreApp,
+  validateEmailWithCOR,
+} from '~/utils/firebase';
 import {Text} from '~/components';
 
 const CreatePass = () => {
@@ -26,9 +31,7 @@ const CreatePass = () => {
             .trim();
 
           if (studentNo !== undefined) {
-            const studDocRef = firestoreApp
-              .collection('students')
-              .doc(studentNo);
+            const studDocRef = collectionRef('student').doc(studentNo);
             const docSnap = await studDocRef.get();
 
             function handleExistingUser() {

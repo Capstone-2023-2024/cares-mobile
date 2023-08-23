@@ -17,13 +17,17 @@ interface AddChatIconType {
 }
 
 const ChatHead = () => {
-  const {chats} = useContent();
+  const {chat} = useContent();
 
   function renderChatHeads() {
-    return chats.map(({docId, participants}) => {
-      const id = docId ? docId : '';
-      return <ChatPeopleContainer key={id} {...{participants, docId: id}} />;
-    });
+    return chat.length > 0 ? (
+      chat.map(({docId, participants}) => {
+        const id = docId ? docId : '';
+        return <ChatPeopleContainer key={id} {...{participants, docId: id}} />;
+      })
+    ) : (
+      <></>
+    );
   }
 
   return (

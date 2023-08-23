@@ -11,7 +11,7 @@ interface ContainerType extends AnnouncementType {
 }
 
 const Announcements = () => {
-  const {announcements} = useContent();
+  const {announcement} = useContent();
   const {getState} = useNavigation();
   const routes = getState().routes;
   const params: string | undefined = routes[routes.length - 1]?.params;
@@ -23,8 +23,8 @@ const Announcements = () => {
       <ScrollView className="h-full" scrollEnabled={!paramsExist}>
         {[
           ...(paramsExist
-            ? announcements.filter(({docId}) => docId === params)
-            : announcements),
+            ? announcement.filter(({docId}) => docId === params)
+            : announcement),
         ].map(({docId, ...rest}) => {
           return <Container key={docId} {...rest} />;
         })}
