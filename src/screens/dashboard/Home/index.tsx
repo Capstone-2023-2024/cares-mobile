@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type {DataSortedType} from 'cics-mobile-client/../../shared/types';
+import type {StudInfoSortedType} from 'cics-mobile-client/../../shared/types';
 import React, {useCallback, useEffect} from 'react';
 import {ScrollView, View} from 'react-native';
 import Background from '~/components/Background';
@@ -33,7 +33,7 @@ const Home = () => {
       );
     }
     const props = JSON.parse(cacheStudInfo ?? '{}');
-    handleStudentInfo(props as DataSortedType);
+    handleStudentInfo(props as StudInfoSortedType);
   }, [email, handleStudentInfo]);
 
   useEffect(() => {

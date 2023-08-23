@@ -1,10 +1,11 @@
 import React from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {announcementPreview1, cics} from '~/utils/imagePaths';
-import {AnnouncementType} from '../../../../../shared/types';
+import type {AnnouncementType} from 'cics-mobile-client/../../shared/types';
 import {HeadingTemplate, TabContainer} from './Usertab';
+import {Text} from '~/components';
 
 const Announcements = () => {
   const {announcements} = useContent();

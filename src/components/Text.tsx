@@ -1,9 +1,9 @@
 import {Text as InputField} from 'react-native';
-import React from 'react';
+import React, {type ReactNode} from 'react';
 
 interface TextType {
   className?: string;
-  children: string;
+  children: string | ReactNode;
 }
 
 const Text = (props: TextType) => {

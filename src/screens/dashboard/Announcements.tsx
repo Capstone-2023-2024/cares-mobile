@@ -1,9 +1,10 @@
 import React from 'react';
-import {Image, ScrollView, Text, View} from 'react-native';
+import {Image, ScrollView, View} from 'react-native';
 import {useContent} from '~/contexts/ContentContext';
 import {announcementPreview1} from '~/utils/imagePaths';
-import {AnnouncementType} from '../../../../shared/types';
+import type {AnnouncementType} from '../../../../shared/types';
 import {useNavigation} from '@react-navigation/native';
+import {Text} from '~/components';
 
 interface ContainerType extends AnnouncementType {
   single?: boolean;

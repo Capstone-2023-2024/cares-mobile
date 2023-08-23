@@ -3,14 +3,23 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {ResultType} from 'cics-mobile-client/../../shared/types';
 
+type FirestoreCollectionPath =
+  | 'chats'
+  | 'announcements'
+  | 'about'
+  | 'schedules'
+  | 'users';
+
 const app = firebase.app();
 
 export const firestoreApp = firestore(app);
 export const authApp = auth(app);
+export const collectionRef = (path: FirestoreCollectionPath) =>
+  firestoreApp.collection(path);
 
 export const validateEmail = (email: string) => {
-  const emailRegex = /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*@bulsu\.edu\.ph$/;
-  return emailRegex.test(email);
+  const bulsuRegex = /^[a-z]+(\.[a-z]+)*@bulsu\.edu\.ph$/;
+  return bulsuRegex.test(email);
 };
 
 export function validateEmailWithCOR(result: ResultType) {

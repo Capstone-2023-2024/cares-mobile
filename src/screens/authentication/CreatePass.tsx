@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, Image, Text, View} from 'react-native';
+import {Alert, Image, View} from 'react-native';
 import {Button} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
@@ -7,6 +7,7 @@ import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {Error} from '~/utils/error';
 import {authApp, firestoreApp, validateEmailWithCOR} from '~/utils/firebase';
+import {Text} from '~/components';
 
 const CreatePass = () => {
   const {studentInfo} = useContent();

@@ -1,8 +1,9 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import SvgContainer from '~/components/SvgContainer';
 import {idea} from '~/utils/svgIcons';
 import {HeadingTemplate} from './Usertab';
+import {Text} from '~/components';
 
 const Notifications = () => {
   return (

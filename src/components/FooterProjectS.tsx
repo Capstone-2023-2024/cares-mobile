@@ -1,6 +1,7 @@
-import {Text, View, TouchableOpacity, Image} from 'react-native';
+import {View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {useNav} from '~/contexts/NavigationContext';
+import {Text} from '~/components';
 
 const FooterNav = () => {
   const {navigateTo} = useNav();
@@ -12,23 +13,16 @@ const FooterNav = () => {
           height: 1,
         }}
       />
-      <View
-        style={{
-          alignContent: 'center',
-          paddingTop: 10,
-          borderTopWidth: 0.5, // Add some horizontal padding
-        }}>
+      <View className="items-center">
         <TouchableOpacity
-          style={{marginBottom: 8}}
+          className="mb-2"
           onPress={() => navigateTo('WriteSuggestion')}>
-          <View style={{alignItems: 'center'}}>
+          <View className="h-8 w-8 items-center">
             <Image
               source={require('~/assets/contract.png')} // Assuming you have a different image for project suggestions
-              style={{height: 40, width: 40}}
+              className="h-full w-full"
             />
-            <Text style={{fontWeight: '700', color: 'black'}}>
-              Write a suggestion
-            </Text>
+            <Text>Write a suggestion</Text>
           </View>
         </TouchableOpacity>
       </View>

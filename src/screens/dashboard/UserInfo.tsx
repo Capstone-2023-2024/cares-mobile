@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, TouchableOpacity, View} from 'react-native';
 import SvgContainer from '~/components/SvgContainer';
 import {useAuth} from '~/contexts/AuthContext';
 import {useContent} from '~/contexts/ContentContext';
@@ -7,6 +7,7 @@ import {Error} from '~/utils/error';
 import {validateEmailWithCOR} from '~/utils/firebase';
 import {userSvg} from '~/utils/svgIcons';
 import {ResultType} from 'cics-mobile-client/../../shared/types';
+import {Text} from '~/components';
 
 interface TextRowType {
   title: string;

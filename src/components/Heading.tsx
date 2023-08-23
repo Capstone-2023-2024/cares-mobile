@@ -1,5 +1,5 @@
 import React, {type ReactNode} from 'react';
-import {Text} from 'react-native';
+import {Text} from '~/components';
 
 export const Heading = ({children}: {children: ReactNode}) => {
   return (

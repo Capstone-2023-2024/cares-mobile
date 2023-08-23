@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, View} from 'react-native';
 import {Button, Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
+import {Text} from '~/components';
 
 const VerificationCode = () => {
   const [code, setVerificationCode] = useState('');

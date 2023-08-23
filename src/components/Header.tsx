@@ -1,9 +1,10 @@
 import {projectName} from 'cics-mobile-client/../../shared/names';
 import React from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {cics} from '~/utils/imagePaths';
+import {Text} from '~/components';
 
 function Header({}: {withBack?: boolean}) {
   const {navigateTo} = useNav();

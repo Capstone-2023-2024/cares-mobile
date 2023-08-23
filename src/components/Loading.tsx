@@ -1,6 +1,7 @@
-import {View, Text} from 'react-native';
-import React from 'react';
 import {projectName} from 'cics-mobile-client/../../shared/names';
+import React from 'react';
+import {View} from 'react-native';
+import {Text} from '~/components';
 
 const Loading = () => {
   return (

@@ -1,5 +1,5 @@
 import React, {type ReactNode} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {SvgUri} from 'react-native-svg';
 import SvgContainer from '~/components/SvgContainer';
 import {useContent} from '~/contexts/ContentContext';
@@ -7,6 +7,7 @@ import {useNav} from '~/contexts/NavigationContext';
 import {validateEmailWithCOR} from '~/utils/firebase';
 import {user} from '~/utils/imagePaths';
 import {arrowUri, menuDots, userSvg} from '~/utils/svgIcons';
+import {Text} from '~/components';
 
 interface HeadingTemplateType {
   navigation: string;

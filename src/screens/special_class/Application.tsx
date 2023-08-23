@@ -1,13 +1,7 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  Text,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import {View, Image, TouchableOpacity, ScrollView, Alert} from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
+import {Text} from '~/components';
 
 const remove = require('~/assets/remove.png');
 const file = require('~/assets/file.png');

@@ -1,5 +1,6 @@
 import React, {type ReactNode} from 'react';
-import {Text, TouchableOpacity, type GestureResponderEvent} from 'react-native';
+import {TouchableOpacity, type GestureResponderEvent} from 'react-native';
+import {Text} from '~/components';
 
 interface ButtonBase {
   children: ReactNode;

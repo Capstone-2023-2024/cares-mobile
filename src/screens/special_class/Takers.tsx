@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
+import {Text} from '~/components';
 
 const subjects = [
   'IT302',

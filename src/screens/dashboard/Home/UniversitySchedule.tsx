@@ -1,11 +1,12 @@
 import React from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import SvgContainer from '~/components/SvgContainer';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {pin} from '~/utils/svgIcons';
-import {UniversityScheduleType} from '../../../../../shared/types';
+import type {UniversityScheduleType} from 'cics-mobile-client/../../shared/types';
 import {HeadingTemplate, TabContainer} from './Usertab';
+import {Text} from '~/components';
 
 const UniversitySchedule = () => {
   const {schedules} = useContent();

@@ -1,10 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {icon, imageDimension} from 'cics-mobile-client/../../shared/images';
-import {type DataSortedType} from 'cics-mobile-client/../../shared/types';
+import {type StudInfoSortedType} from 'cics-mobile-client/../../shared/types';
 import React, {useState} from 'react';
-import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, Image, TouchableOpacity, View} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {Extractor} from 'react-native-pdf-extractor';
 import {type Transient} from 'react-native-pdf-extractor/src/types';
+import {Text} from '~/components';
 import {Button, Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
@@ -12,7 +14,6 @@ import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {Error} from '~/utils/error';
 import {validateEmail, validateEmailWithCOR} from '~/utils/firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface FileType {
   uri: string;
@@ -85,7 +86,7 @@ const Register = () => {
 
   async function handlePDFResult(data: Transient | null) {
     if (data !== null) {
-      let idHolder: Partial<DataSortedType> = {};
+      let idHolder: Partial<StudInfoSortedType> = {};
       const bsuPortal = 'https://bulsu.priisms.online';
       const uniqueTextArray = Array.from(new Set(data.text));
 
@@ -102,7 +103,7 @@ const Register = () => {
 
       const result =
         Object.keys(idHolder).length >= CORPatternsId.length &&
-        (idHolder as Required<DataSortedType>);
+        (idHolder as Required<StudInfoSortedType>);
       if (!result) {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }

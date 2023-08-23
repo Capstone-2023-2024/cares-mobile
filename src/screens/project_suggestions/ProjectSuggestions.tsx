@@ -1,11 +1,11 @@
 import {
   View,
-  Text,
   ScrollView,
   Image,
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+import {Text} from '~/components';
 import BackHeader from '~/components/BackHeader';
 import FooterNav from '~/components/FooterProjectS';
 

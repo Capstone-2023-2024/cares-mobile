@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Image,
   TextInput,
@@ -12,6 +11,7 @@ import {
 } from 'react-native';
 import BackHeader from '~/components/BackHeader';
 import {useNav} from '~/contexts/NavigationContext';
+import {Text} from '~/components';
 
 const write = require('~/assets/icons/writing.png');
 const bsu = require('~/assets/BSUBACKGROUND.png');

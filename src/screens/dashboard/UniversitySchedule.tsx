@@ -1,9 +1,10 @@
 import React from 'react';
-import {Image, ScrollView, Text, View} from 'react-native';
+import {Image, ScrollView, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {useContent} from '~/contexts/ContentContext';
 import {announcementPreview2} from '~/utils/imagePaths';
-import {UniversityScheduleType} from '../../../../shared/types';
+import type {UniversityScheduleType} from 'cics-mobile-client/../../shared/types';
+import {Text} from '~/components';
 
 const UniversitySchedule = () => {
   const {schedules} = useContent();
