@@ -3,7 +3,7 @@ import {
   createStackNavigator,
   type StackNavigationOptions,
 } from '@react-navigation/stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import HeaderDefault from '~/components/Header';
 import Screens, {optionsList} from '~/screens';
 import Loading from './components/Loading';
@@ -62,9 +62,12 @@ const NavigationRouter = () => {
     pathList: pathWithoutUserList,
   });
 
-  if (loading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    const unsub = loading && <Loading />;
+    return () => {
+      unsub;
+    };
+  }, [loading]);
 
   return (
     <NavigationContainer>
