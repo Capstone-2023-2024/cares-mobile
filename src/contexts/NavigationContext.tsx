@@ -1,9 +1,10 @@
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import React, {useContext, createContext} from 'react';
+import type {PathListType} from '~/types/navigation';
 
-type NavigationContextType = {
-  navigateTo: (name: string, params?: any) => void;
-};
+interface NavigationContextType {
+  navigateTo: (name: PathListType, params?: any) => void;
+}
 
 const NavigationContext = createContext<NavigationContextType>({
   navigateTo: () => null,
@@ -14,7 +15,7 @@ const NavigationProvider: React.FC<{children: React.ReactNode}> = ({
 }) => {
   const navigation = useNavigation();
 
-  function navigateTo(name: string, params?: any) {
+  function navigateTo(name: PathListType, params?: any) {
     navigation.dispatch(CommonActions.navigate({name, params}));
   }
 

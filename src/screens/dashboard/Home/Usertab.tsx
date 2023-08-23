@@ -8,9 +8,10 @@ import {validateEmailWithCOR} from '~/utils/firebase';
 import {user} from '~/utils/imagePaths';
 import {arrowUri, menuDots, userSvg} from '~/utils/svgIcons';
 import {Text} from '~/components';
+import type {PathListType} from '~/types/navigation';
 
 interface HeadingTemplateType {
-  navigation: string;
+  navigation: PathListType;
   title: string;
   disabled?: boolean;
 }
@@ -41,7 +42,7 @@ const Usertab = () => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => navigateTo('Dashboard User Info')}
+          onPress={() => navigateTo('UserInfo')}
           className="h-10 w-10 overflow-hidden rounded-full">
           <SvgUri width="100%" height="100%" uri={menuDots} />
         </TouchableOpacity>

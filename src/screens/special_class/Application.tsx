@@ -38,7 +38,7 @@ const SpecialClassApplication = () => {
     } else {
       // Logic to handle form submission
       console.log('Form submitted');
-      navigateTo('Special Class Request Page');
+      navigateTo('Request');
     }
   };
 

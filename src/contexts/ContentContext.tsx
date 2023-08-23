@@ -73,9 +73,9 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     });
   }, []);
 
-  function handleStudentInfo(props: StudInfoSortedType) {
+  const handleStudentInfo = useCallback((props: StudInfoSortedType) => {
     handleState('studentInfo', props);
-  }
+  }, []);
 
   function handleSelectedChat(docId: string) {
     handleState('selectedChat', docId);

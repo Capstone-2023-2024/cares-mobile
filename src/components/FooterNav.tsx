@@ -9,9 +9,7 @@ const FooterNav = () => {
   return (
     <View className=" bottom-0 left-0 right-0">
       <View className="flex-row items-center justify-between border-t border-gray-400 bg-white px-12 pt-2">
-        <TouchableOpacity
-          className="mb-2"
-          onPress={() => navigateTo('Special Class Takers')}>
+        <TouchableOpacity className="mb-2" onPress={() => navigateTo('Takers')}>
           <View className="items-center">
             <Image
               source={require('~/assets/contract.png')}

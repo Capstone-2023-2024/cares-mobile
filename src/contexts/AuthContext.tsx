@@ -8,7 +8,7 @@ import React, {
 import {authApp} from '~/utils/firebase';
 
 interface InitialStateType {
-  initialRouteName: 'Login' | 'Dashboard Home';
+  initialRouteName: 'Login' | 'Home';
   loading: boolean;
   currentUser: typeof authApp.currentUser;
 }
@@ -53,7 +53,7 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
     const unsub = authApp.onAuthStateChanged(user => {
       handleState('loading', true);
       handleState('currentUser', user);
-      handleState('initialRouteName', !user ? 'Login' : 'Dashboard Home');
+      handleState('initialRouteName', !user ? 'Login' : 'Home');
       handleState('loading', false);
     });
     return () => unsub();

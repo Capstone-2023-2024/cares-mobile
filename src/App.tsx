@@ -10,16 +10,10 @@ import Loading from './components/Loading';
 import CtxProviders from './contexts';
 import {useAuth} from './contexts/AuthContext';
 import NavigationProvider from './contexts/NavigationContext';
-import {
-  pathWithoutUserList,
-  pathWithUserList,
-  type PathsWithoutUserListType,
-  type PathsWithUserListType,
-} from './utils/navPaths';
+import {PathListType} from './types/navigation';
+import {pathWithoutUserList, pathWithUserList} from './utils/navPaths';
 
 const Stack = createStackNavigator();
-
-type PathListType = PathsWithUserListType | PathsWithoutUserListType;
 
 interface StackType<T> {
   name: T;

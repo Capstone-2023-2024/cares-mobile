@@ -8,7 +8,7 @@ import {Text} from '~/components';
 const Notifications = () => {
   return (
     <View className="m-4 rounded-3xl border-2 bg-zinc-300 p-4 shadow-sm">
-      <HeadingTemplate navigation="Dashboard Home" title="Notifications" />
+      <HeadingTemplate navigation="Home" title="Notifications" />
       <NotifContainer />
       <NotifContainer />
       <NotifContainer />

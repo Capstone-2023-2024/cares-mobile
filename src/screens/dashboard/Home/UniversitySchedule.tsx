@@ -17,7 +17,7 @@ const UniversitySchedule = () => {
       <HeadingTemplate
         disabled={stateLengthEmpty}
         title="university schedule"
-        navigation="Dashboard University Schedule"
+        navigation="UniversitySchedule"
       />
       <ScrollView
         horizontal={!stateLengthEmpty}
@@ -41,7 +41,7 @@ const Container = (props: UniversityScheduleType) => {
   return (
     <TouchableOpacity
       className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full border-2 bg-tertiary px-2 py-4"
-      onPress={() => navigateTo('Dashboard University Schedule')}>
+      onPress={() => navigateTo('UniversitySchedule')}>
       <View className="flex-row items-center">
         <SvgContainer uri={pin} size="sm" />
         <Text className="ml-2 w-1/2 text-xs text-white">{title}</Text>

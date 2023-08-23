@@ -16,7 +16,7 @@ const FooterNav = () => {
       <View className="items-center">
         <TouchableOpacity
           className="mb-2"
-          onPress={() => navigateTo('WriteSuggestion')}>
+          onPress={() => navigateTo('WriteSuggestions')}>
           <View className="h-8 w-8 items-center">
             <Image
               source={require('~/assets/contract.png')} // Assuming you have a different image for project suggestions

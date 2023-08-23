@@ -55,7 +55,7 @@ const Container = (props: AnnouncementType) => {
           <Text className="w-48 text-xs">{message}</Text>
           <TouchableOpacity
             className="self-center"
-            onPress={() => navigateTo('Dashboard Announcements', docId)}>
+            onPress={() => navigateTo('Announcements', docId)}>
             <Text className="justify-center rounded-full border-2 border-black p-1 text-xs">
               Read More
             </Text>

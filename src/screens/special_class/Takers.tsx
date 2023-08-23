@@ -27,7 +27,7 @@ const Takers = () => {
       <View className="mt-4 px-4">
         <TouchableOpacity
           className="self-center rounded-md bg-gray-500 px-4 py-2"
-          onPress={() => navigateTo('Special Class Application')}>
+          onPress={() => navigateTo('Application')}>
           <Text className="font-bold text-white">Apply Now</Text>
         </TouchableOpacity>
       </View>
