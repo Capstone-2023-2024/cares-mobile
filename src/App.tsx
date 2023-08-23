@@ -4,126 +4,69 @@ import {
   type StackNavigationOptions,
 } from '@react-navigation/stack';
 import React from 'react';
-import Header from '~/components/Header';
-import {
-  Announcements,
-  Application,
-  Chats,
-  CreatePass,
-  ForgotPass,
-  Home,
-  Login,
-  ProjectSuggestions,
-  Register,
-  ReqPage,
-  Takers,
-  UniversitySchedule,
-  VerificationCode,
-  WriteSuggestion,
-} from '~/screens';
+import HeaderDefault from '~/components/Header';
+import Screens, {optionsList} from '~/screens';
 import Loading from './components/Loading';
 import CtxProviders from './contexts';
 import {useAuth} from './contexts/AuthContext';
 import NavigationProvider from './contexts/NavigationContext';
-import UserInfo from './screens/dashboard/UserInfo';
+import {
+  pathWithoutUserList,
+  pathWithUserList,
+  type PathsWithoutUserListType,
+  type PathsWithUserListType,
+} from './utils/navPaths';
 
 const Stack = createStackNavigator();
 
-interface StackType {
-  name: string;
-  component: any;
+type PathListType = PathsWithUserListType | PathsWithoutUserListType;
+
+interface StackType<T> {
+  name: T;
+  component: () => React.JSX.Element;
   options?: StackNavigationOptions;
+}
+
+interface IteratePathsType {
+  pathList: readonly PathListType[];
 }
 
 const App = () => {
   return (
     <CtxProviders>
-      <Navigations />
+      <NavigationRouter />
     </CtxProviders>
   );
 };
 
-const Navigations = () => {
+const NavigationRouter = () => {
   const {initialRouteName, loading, currentUser} = useAuth();
-  const withAuth: StackType[] = [
-    {
-      name: 'Dashboard Home',
-      component: Home,
-      options: {header: HeaderDefault},
-    },
-    {
-      name: 'Dashboard User Info',
-      component: UserInfo,
-      options: {headerShown: false},
-    },
-    {
-      name: 'Dashboard University Schedule',
-      component: UniversitySchedule,
-      options: {header: HeaderDefault},
-    },
-    {
-      name: 'Dashboard Announcements',
-      component: Announcements,
-      options: {header: HeaderDefault},
-    },
-    {
-      name: 'Special Class Application',
-      component: Application,
-      options: {header: HeaderDefault},
-    },
-    {
-      name: 'Special Class Request Page',
-      component: ReqPage,
-      options: {header: HeaderDefault},
-    },
-    {
-      name: 'Special Class Takers',
-      component: Takers,
-      options: {header: HeaderWithBack},
-    },
-    {
-      name: 'Chats',
-      component: Chats,
-      options: {header: HeaderDefault},
-    },
-    {
-      name: 'ProjectSuggestions',
-      component: ProjectSuggestions,
-      options: {header: HeaderWithBack},
-    },
-    {
-      name: 'WriteSuggestion',
-      component: WriteSuggestion,
-      options: {header: HeaderWithBack},
-    },
-  ];
 
-  const withoutAuth: StackType[] = [
-    {
-      name: 'CreatePass',
-      component: CreatePass,
-      options: {header: HeaderDefault},
-    },
-    {
-      name: 'Login',
-      component: Login,
-      options: {
-        header: HeaderDefault,
-        animationTypeForReplace: loading ? 'pop' : 'push',
-      },
-    },
-    {
-      name: 'ForgotPass',
-      component: ForgotPass,
-      options: {header: HeaderDefault},
-    },
-    {name: 'Register', component: Register, options: {header: HeaderDefault}},
-    {
-      name: 'VerificationCode',
-      component: VerificationCode,
-      options: {header: HeaderDefault},
-    },
-  ];
+  function iteratePaths(props: IteratePathsType) {
+    const {pathList} = props;
+    const pathListHolder: StackType<(typeof pathList)[number]>[] = [];
+    pathList.forEach(path => {
+      const name = path;
+      const Element = Screens.filter(cmp => name === cmp.name)[0];
+      const options = optionsList.filter(cmp => name === cmp.name)[0]
+        ?.options ?? {
+        header: Header,
+      };
+      if (Element !== undefined) {
+        const Component = () => Element();
+        pathListHolder.push({name, component: Component, options});
+      }
+    });
+    return pathListHolder;
+  }
+
+  const withUser = iteratePaths({
+    pathList: pathWithUserList,
+  });
+
+  const withoutUser = iteratePaths({
+    pathList: pathWithoutUserList,
+  });
 
   if (loading) {
     return <Loading />;
@@ -133,7 +76,7 @@ const Navigations = () => {
     <NavigationContainer>
       <NavigationProvider>
         <Stack.Navigator initialRouteName={initialRouteName}>
-          {[...(currentUser === null ? withoutAuth : withAuth)].map(
+          {[...(currentUser === null ? withoutUser : withUser)].map(
             (props, i) => {
               return <Stack.Screen key={i} {...props} />;
             },
@@ -144,11 +87,8 @@ const Navigations = () => {
   );
 };
 
-const HeaderDefault = () => {
-  return <Header />;
-};
-const HeaderWithBack = () => {
-  return <Header withBack />;
+const Header = () => {
+  return <HeaderDefault />;
 };
 
 export default App;
