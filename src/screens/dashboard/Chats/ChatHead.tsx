@@ -5,15 +5,17 @@ import {
   View,
   TextInput,
   Modal,
-  Alert,
+  FlatList,
+  type ListRenderItemInfo,
 } from 'react-native';
 import {Text} from '~/components';
 import IconButton from '~/components/IconButton';
 import {useAuth} from '~/contexts/AuthContext';
-import {useContent} from '~/contexts/ContentContext';
+import {ChattableType, useContent} from '~/contexts/ContentContext';
 
-interface AddChatIconType {
+interface AddIconType {
   showSearch: boolean;
+  emailList: ChattableType[];
 }
 
 const ChatHead = () => {
@@ -61,13 +63,15 @@ const ChatPeopleContainer = (props: {
 };
 
 const AddChatIcon = () => {
-  const [state, setState] = useState<AddChatIconType>({
+  const [state, setState] = useState<AddIconType>({
     showSearch: false,
+    emailList: [],
   });
+  const {chattables} = useContent();
 
   function handleState(
-    key: keyof AddChatIconType,
-    value: AddChatIconType['showSearch'],
+    key: keyof AddIconType,
+    value: AddIconType['showSearch'] | AddIconType['emailList'],
   ) {
     setState(prevState => ({...prevState, [key]: value}));
   }
@@ -76,26 +80,49 @@ const AddChatIcon = () => {
     handleState('showSearch', !state.showSearch);
   }
 
+  function handleSearch(text: string) {
+    const emailList = chattables.filter(({email}) => text === email);
+    handleState('emailList', emailList);
+  }
+
+  const renderEmailList = ({item}: ListRenderItemInfo<ChattableType>) => {
+    return (
+      <TouchableOpacity>
+        <Text>{item.email}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <View className="relative mt-4 h-12 w-12 items-center justify-center self-center rounded-lg bg-paper">
-      <TextInput
-        onPressIn={handleToggleButton}
-        className={`${
-          state.showSearch ? 'w-full' : 'w-1/2'
-        } absolute bg-slate-400 duration-500 ease-in-out`}
-      />
+    <View className="relative mt-4 h-12 w-12 items-center justify-center self-center overflow-hidden rounded-lg bg-paper">
       <View className="absolute">
-        <IconButton uri={require('~/assets/icons/Award-Icon.png')} />
+        <IconButton
+          onPress={handleToggleButton}
+          uri={require('~/assets/icons/Award-Icon.png')}
+        />
       </View>
       <Modal
-        animationType="slide"
-        transparent={true}
+        animationType="fade"
+        transparent
+        statusBarTranslucent
         visible={state.showSearch}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
+          // Alert.alert('Modal has been closed.');
           handleState('showSearch', !state.showSearch);
         }}>
-        <View />
+        <View className="mx-auto my-auto h-1/5 w-5/6 rounded-lg bg-white p-4">
+          <TextInput
+            className={`${
+              state.showSearch ? 'w-full' : 'w-1/2'
+            } absolute mt-4 self-center rounded-full bg-slate-200 px-4 duration-500 ease-in-out`}
+            onChangeText={handleSearch}
+          />
+          <FlatList
+            data={state.emailList}
+            renderItem={renderEmailList}
+            keyExtractor={item => item.email}
+          />
+        </View>
       </Modal>
     </View>
   );

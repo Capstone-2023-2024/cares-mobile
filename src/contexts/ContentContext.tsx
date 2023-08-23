@@ -1,12 +1,3 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-  useCallback,
-} from 'react';
-import {collectionRef, firestoreApp} from '~/utils/firebase';
 import type {
   AnnouncementType,
   ChatConfigType,
@@ -15,6 +6,15 @@ import type {
   StudInfoSortedType,
   UniversityScheduleType,
 } from 'cics-mobile-client/../../shared/types';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
+import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
 import {useAuth} from './AuthContext';
 
 interface InitialStateType {
@@ -23,6 +23,7 @@ interface InitialStateType {
   schedule: UniversityScheduleType[];
   studentInfo: Partial<StudInfoSortedType>;
   selectedChat: string | null;
+  chattables: ChattableType[];
 }
 
 interface ContentContextType extends InitialStateType {
@@ -32,12 +33,20 @@ interface ContentContextType extends InitialStateType {
 
 type HolderType = AnnouncementType | UniversityScheduleType;
 
-const initialState: InitialStateType = {
+export interface ChattableType extends Pick<StudInfoSortedType, 'email'> {
+  type: 'student' | 'faculty';
+}
+
+const firestoreCollection = {
   announcement: [],
   chat: [],
   schedule: [],
+};
+const initialState: InitialStateType = {
+  ...firestoreCollection,
   studentInfo: {},
   selectedChat: null,
+  chattables: [],
 };
 
 const ContentContext = createContext<ContentContextType>({
@@ -52,14 +61,19 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
   const {currentUser} = useAuth();
 
   function handleState(
-    name: keyof InitialStateType,
-    value: HolderType[] | ClientChatType[] | StudInfoSortedType | string,
+    name: keyof InitialStateType | FirestoreCollectionPath,
+    value:
+      | HolderType[]
+      | ClientChatType[]
+      | StudInfoSortedType
+      | string
+      | ChattableType[],
   ) {
     setState(prevState => ({...prevState, [name]: value}));
   }
 
-  const handleSnapshot = useCallback((name: keyof InitialStateType) => {
-    return firestoreApp.collection(name).onSnapshot(snapshot => {
+  const handleSnapshot = useCallback((name: FirestoreCollectionPath) => {
+    return collectionRef(name).onSnapshot(snapshot => {
       let holder: HolderType[] = [];
       if (snapshot.docs.length > 0) {
         snapshot.docs.forEach(doc => {
@@ -71,6 +85,28 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
         holder.sort((a, b) => b.dateCreated - a.dateCreated),
       );
     });
+  }, []);
+
+  const handleChattables = useCallback(async (type: ChattableType['type']) => {
+    try {
+      const colRef = collectionRef(type);
+      const {count} = (await colRef.count().get()).data();
+      console.log(count);
+      if (count > 0) {
+        const colList = await colRef.get();
+        const emails: ChattableType[] = [];
+
+        colList.forEach(async doc => {
+          const docRef = await colRef.doc(doc.id).get();
+          const data = docRef.data() as StudInfoSortedType;
+          emails.push({email: data.email, type});
+        });
+
+        handleState('chattables', emails);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   const handleStudentInfo = useCallback((props: StudInfoSortedType) => {
@@ -90,6 +126,17 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     const unsub = handleSnapshot('schedule');
     return () => unsub();
   }, [handleSnapshot]);
+
+  useEffect(() => {
+    let unsub = true;
+    if (unsub) {
+      handleChattables('student');
+      handleChattables('faculty');
+    }
+    return () => {
+      unsub = false;
+    };
+  }, [handleChattables]);
 
   useEffect(() => {
     const email = currentUser !== null ? currentUser.email : '';

@@ -3,7 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {ResultType} from 'cics-mobile-client/../../shared/types';
 
-type FirestoreCollectionPath =
+export type FirestoreCollectionPath =
   | 'chat'
   | 'announcement'
   | 'about'
