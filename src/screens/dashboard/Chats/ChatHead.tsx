@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {
+  FlatList,
+  Modal,
   ScrollView,
+  TextInput,
   TouchableOpacity,
   View,
-  TextInput,
-  Modal,
-  FlatList,
   type ListRenderItemInfo,
 } from 'react-native';
 import {Text} from '~/components';
@@ -67,8 +67,9 @@ const AddChatIcon = () => {
     showSearch: false,
     emailList: [],
   });
-  const {chattables} = useContent();
+  const {handleSelectedChat, chattables, selectedChat} = useContent();
 
+  console.log(selectedChat);
   function handleState(
     key: keyof AddIconType,
     value: AddIconType['showSearch'] | AddIconType['emailList'],
@@ -81,14 +82,22 @@ const AddChatIcon = () => {
   }
 
   function handleSearch(text: string) {
-    const emailList = chattables.filter(({email}) => text === email);
-    handleState('emailList', emailList);
+    handleSelectedChat(null);
+    if (text.trim() !== '') {
+      const emailList = chattables.filter(({email}) => email.match(text));
+      handleState('emailList', emailList);
+    }
+  }
+
+  function handleEmailSelection() {
+    const selectedEmail = state.emailList[0];
+    handleSelectedChat(selectedEmail?.email ?? '');
   }
 
   const renderEmailList = ({item}: ListRenderItemInfo<ChattableType>) => {
     return (
-      <TouchableOpacity>
-        <Text>{item.email}</Text>
+      <TouchableOpacity onPress={handleEmailSelection} className="bg-white/90">
+        <Text className="p-2 px-4">{item.email}</Text>
       </TouchableOpacity>
     );
   };
@@ -110,14 +119,16 @@ const AddChatIcon = () => {
           // Alert.alert('Modal has been closed.');
           handleState('showSearch', !state.showSearch);
         }}>
-        <View className="mx-auto my-auto h-1/5 w-5/6 rounded-lg bg-white p-4">
+        <View className="mx-auto my-auto h-1/3 w-5/6 rounded-lg bg-white p-4">
           <TextInput
+            value={selectedChat !== null ? selectedChat : ''}
             className={`${
               state.showSearch ? 'w-full' : 'w-1/2'
             } absolute mt-4 self-center rounded-full bg-slate-200 px-4 duration-500 ease-in-out`}
             onChangeText={handleSearch}
           />
           <FlatList
+            className="mt-16 h-full"
             data={state.emailList}
             renderItem={renderEmailList}
             keyExtractor={item => item.email}

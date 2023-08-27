@@ -1,4 +1,4 @@
-import {projectName} from 'cics-mobile-client/../../shared/names';
+import {projectName} from '../../../shared/names';
 import React from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {useAuth} from '~/contexts/AuthContext';

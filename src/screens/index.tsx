@@ -12,7 +12,7 @@ import ProjectSuggestions from '~/screens/project_suggestions/ProjectSuggestions
 import Application from '~/screens/special_class/Application';
 import Request from '~/screens/special_class/Request';
 import Takers from '~/screens/special_class/Takers';
-import WriteSuggestion from '~/screens/project_suggestions/WriteSuggestion';
+import WriteSuggestion from '~/screens/project_suggestions/WriteSuggestions';
 import LandingScreen from '~/screens/LandingScreen';
 
 import HeaderDefault from '~/components/Header';

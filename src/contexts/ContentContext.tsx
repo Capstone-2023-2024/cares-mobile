@@ -28,7 +28,7 @@ interface InitialStateType {
 
 interface ContentContextType extends InitialStateType {
   handleStudentInfo: (props: StudInfoSortedType) => void;
-  handleSelectedChat: (props: string) => void;
+  handleSelectedChat: (props: string ) => void;
 }
 
 type HolderType = AnnouncementType | UniversityScheduleType;

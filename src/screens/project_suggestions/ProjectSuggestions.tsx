@@ -16,7 +16,8 @@ const votes = require('~/assets/icons/vote.png');
 const message = require('~/assets/icons/Message.png');
 const menudots = require('~/assets/icons/MenuDots.png');
 const bsu = '~/assets/BSUBACKGROUND.png';
-const SuggestionPage = () => {
+
+const ProjectSuggestions = () => {
   return (
     <View className="flex-1">
       <ScrollView>
@@ -84,4 +85,4 @@ const Suggestion = () => {
   );
 };
 
-export default SuggestionPage;
+export default ProjectSuggestions;

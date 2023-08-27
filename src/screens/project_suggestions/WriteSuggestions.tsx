@@ -16,7 +16,7 @@ import {Text} from '~/components';
 const write = require('~/assets/icons/writing.png');
 const bsu = require('~/assets/BSUBACKGROUND.png');
 
-const SuggestionPage = () => {
+const WriteSuggestions = () => {
   const {navigateTo} = useNav();
   const [inputValue, setInputValue] = useState('');
 
@@ -159,4 +159,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SuggestionPage;
+export default WriteSuggestions;
