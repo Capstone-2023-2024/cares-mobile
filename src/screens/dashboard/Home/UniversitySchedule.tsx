@@ -4,13 +4,13 @@ import SvgContainer from '~/components/SvgContainer';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {pin} from '~/utils/svgIcons';
-import type {UniversityScheduleType} from 'cics-mobile-client/../../shared/types';
+import type {AnnouncementType} from 'cics-mobile-client/../../shared/types';
 import {HeadingTemplate, TabContainer} from './Usertab';
 import {Text} from '~/components';
 
 const UniversitySchedule = () => {
-  const {schedule} = useContent();
-  const stateLengthEmpty = schedule.length === 0;
+  const {announcement} = useContent();
+  const stateLengthEmpty = announcement.length === 0;
 
   return (
     <TabContainer>
@@ -25,7 +25,7 @@ const UniversitySchedule = () => {
         {stateLengthEmpty ? (
           <PlaceHolder text="Currently no Schedule" />
         ) : (
-          schedule.map((props, i) => {
+          announcement.map((props, i) => {
             return <Container {...props} key={i} />;
           })
         )}
@@ -34,9 +34,9 @@ const UniversitySchedule = () => {
   );
 };
 
-const Container = (props: UniversityScheduleType) => {
+const Container = (props: AnnouncementType) => {
   const {navigateTo} = useNav();
-  const {title, dateCreated} = props;
+  const {dateCreated} = props;
   console.log(dateCreated);
   return (
     <TouchableOpacity
@@ -44,7 +44,7 @@ const Container = (props: UniversityScheduleType) => {
       onPress={() => navigateTo('UniversitySchedule')}>
       <View className="flex-row items-center">
         <SvgContainer uri={pin} size="sm" />
-        <Text className="ml-2 w-1/2 text-xs text-white">{title}</Text>
+        {/* <Text className="ml-2 w-1/2 text-xs text-white">{title}</Text> */}
       </View>
     </TouchableOpacity>
   );

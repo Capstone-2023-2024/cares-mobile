@@ -8,7 +8,7 @@ function DefaultHeader() {
     <View className="h-16 flex-row items-center bg-gray-500 px-2">
       <TouchableOpacity
         className="flex-row items-center"
-        onPress={() => navigateTo('Dashboard Home')}>
+        onPress={() => navigateTo('Home')}>
         <View className="mr-2 h-12 w-12">
           <Image
             source={require('~/assets/CICS.png')}

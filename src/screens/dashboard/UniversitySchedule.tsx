@@ -1,45 +1,47 @@
-import React from 'react';
-import {Image, ScrollView, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {useContent} from '~/contexts/ContentContext';
-import {announcementPreview2} from '~/utils/imagePaths';
-import type {UniversityScheduleType} from 'cics-mobile-client/../../shared/types';
-import {Text} from '~/components';
+// import type {UniversityScheduleType} from 'cics-mobile-client/../../shared/types';
+import type {MarkedDates} from 'react-native-calendars/src/types';
+import Announcements from './Announcements';
 
 const UniversitySchedule = () => {
-  const {schedule} = useContent();
+  const {announcement} = useContent();
+  const [markedDates, setMarkedDates] = useState<MarkedDates>({});
 
+  useEffect(() => {
+    const unsub = announcement.forEach(({markedDates}) => {
+      const length = markedDates.length;
+      const endingDay = length - 1;
+      markedDates.forEach((value, i) =>
+        setMarkedDates(prevState => ({
+          ...prevState,
+          [value]: {
+            startingDay: i < 1,
+            endingDay: endingDay === i,
+            color: 'lightgreen',
+            textColor: 'white',
+          },
+        })),
+      );
+    });
+    return () => unsub;
+  }, [announcement]);
+
+  console.log(markedDates);
   return (
     <View>
-      <Calendar />
+      {markedDates && (
+        <Calendar
+          onDayPress={e => console.log(e)}
+          markingType="period"
+          markedDates={{...markedDates}}
+        />
+      )}
       <ScrollView>
-        <Text className="text-center text-4xl text-black">Announcements</Text>
-        {schedule.map((props, i) => {
-          return <Container key={i} {...props} />;
-        })}
+        <Announcements />
       </ScrollView>
-    </View>
-  );
-};
-
-const Container = (props: UniversityScheduleType) => {
-  const {title, dateCreated, photoUrl} = props;
-  const newDate = new Date();
-  newDate.setTime(dateCreated);
-
-  return (
-    <View className="h-screen shadow-sm">
-      <Image
-        className="h-64 w-full"
-        source={announcementPreview2}
-        src={photoUrl}
-      />
-      <View className="mx-auto w-11/12">
-        <Text className="mb-2 text-xl font-black capitalize text-primary">
-          {title}
-        </Text>
-        <Text className="text-black">{newDate.toLocaleDateString()}</Text>
-      </View>
     </View>
   );
 };

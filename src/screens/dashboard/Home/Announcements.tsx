@@ -1,11 +1,12 @@
+import {retrieveImageFBStorage} from '../../../../../shared/images';
+import type {AnnouncementType} from '../../../../../shared/types';
 import React from 'react';
 import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import {Text} from '~/components';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {announcementPreview1, cics} from '~/utils/imagePaths';
-import type {AnnouncementType} from 'cics-mobile-client/../../shared/types';
 import {HeadingTemplate, TabContainer} from './Usertab';
-import {Text} from '~/components';
 
 const Announcements = () => {
   const {announcement} = useContent();
@@ -36,7 +37,7 @@ const Announcements = () => {
 const Container = (props: AnnouncementType) => {
   const {navigateTo} = useNav();
   const {department, message, photoUrl, docId} = props;
-  // console.log(dateCreated);
+
   return (
     <View className="ml-2 mr-2 items-center justify-center overflow-hidden rounded-3xl border-2 bg-white p-4 px-6 shadow-xl">
       <View className="flex-row">
@@ -65,8 +66,8 @@ const Container = (props: AnnouncementType) => {
           <Image
             className="h-full w-full "
             source={announcementPreview1}
-            src={photoUrl}
-            resizeMode="center"
+            src={retrieveImageFBStorage(photoUrl ?? '')}
+            resizeMode="cover"
           />
         </View>
       </View>

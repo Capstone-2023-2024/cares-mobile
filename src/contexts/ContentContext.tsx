@@ -4,7 +4,6 @@ import type {
   ChatType,
   ClientChatType,
   StudInfoSortedType,
-  UniversityScheduleType,
 } from 'cics-mobile-client/../../shared/types';
 import React, {
   createContext,
@@ -16,11 +15,11 @@ import React, {
 } from 'react';
 import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
 import {useAuth} from './AuthContext';
+import {currentMonth} from '~/utils/date';
 
 interface InitialStateType {
   chat: ClientChatType[];
   announcement: AnnouncementType[];
-  schedule: UniversityScheduleType[];
   studentInfo: Partial<StudInfoSortedType>;
   selectedChat: string | null;
   chattables: ChattableType[];
@@ -28,10 +27,8 @@ interface InitialStateType {
 
 interface ContentContextType extends InitialStateType {
   handleStudentInfo: (props: StudInfoSortedType) => void;
-  handleSelectedChat: (props: string ) => void;
+  handleSelectedChat: (props: string) => void;
 }
-
-type HolderType = AnnouncementType | UniversityScheduleType;
 
 export interface ChattableType extends Pick<StudInfoSortedType, 'email'> {
   type: 'student' | 'faculty';
@@ -63,7 +60,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
   function handleState(
     name: keyof InitialStateType | FirestoreCollectionPath,
     value:
-      | HolderType[]
+      | AnnouncementType[]
       | ClientChatType[]
       | StudInfoSortedType
       | string
@@ -73,25 +70,32 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
   }
 
   const handleSnapshot = useCallback((name: FirestoreCollectionPath) => {
-    return collectionRef(name).onSnapshot(snapshot => {
-      let holder: HolderType[] = [];
-      if (snapshot.docs.length > 0) {
-        snapshot.docs.forEach(doc => {
-          holder.push({...doc.data(), docId: doc.id} as HolderType);
-        });
-      }
-      handleState(
-        name,
-        holder.sort((a, b) => b.dateCreated - a.dateCreated),
-      );
-    });
+    const newDate = new Date();
+    const month = newDate.getMonth();
+    const year = newDate.getFullYear();
+    const MONTH = currentMonth({month, year})?.name.toUpperCase();
+
+    return collectionRef(name)
+      .doc(MONTH)
+      .collection(`${year}`)
+      .onSnapshot(snapshot => {
+        const holder: AnnouncementType[] = [];
+        if (snapshot.docs.length > 0) {
+          snapshot.docs.forEach(doc => {
+            holder.push({...doc.data(), docId: doc.id} as AnnouncementType);
+          });
+        }
+        handleState(
+          name,
+          holder.sort((a, b) => b.dateCreated - a.dateCreated),
+        );
+      });
   }, []);
 
   const handleChattables = useCallback(async (type: ChattableType['type']) => {
     try {
       const colRef = collectionRef(type);
       const {count} = (await colRef.count().get()).data();
-      console.log(count);
       if (count > 0) {
         const colList = await colRef.get();
         const emails: ChattableType[] = [];
@@ -119,11 +123,6 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
 
   useEffect(() => {
     const unsub = handleSnapshot('announcement');
-    return () => unsub();
-  }, [handleSnapshot]);
-
-  useEffect(() => {
-    const unsub = handleSnapshot('schedule');
     return () => unsub();
   }, [handleSnapshot]);
 

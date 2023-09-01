@@ -33,7 +33,7 @@ const UserInfo = () => {
   const firstName = validateEmailWithCOR(props('first') as ResultType);
   const lastName = validateEmailWithCOR(props('last') as ResultType);
   const middleInitial = validateEmailWithCOR(props('initial') as ResultType);
-
+  console.log(scholarship);
   async function handleSignout() {
     try {
       await signout();
@@ -55,7 +55,12 @@ const UserInfo = () => {
       <TextRow title="year_level" value={`${yearLevel}`} />
       <TextRow title="school_year" value={`${schoolYear}`} />
       <TextRow title="curriculum" value={`${curriculum}`} />
-      <TextRow title="scholarship/Discount" value={`${scholarship}`} />
+      <TextRow
+        title="scholarship"
+        value={`${
+          scholarship?.replace(/Official Receipt:/y, '') ?? scholarship
+        }`}
+      />
       <TextRow title="major" value={`${major}`} />
       <TextRow title="sex" value={`${gender}`} />
       <TextRow title="age" value={`${age}`} />

@@ -2,9 +2,10 @@ import React from 'react';
 import {Image, ScrollView, View} from 'react-native';
 import {useContent} from '~/contexts/ContentContext';
 import {announcementPreview1} from '~/utils/imagePaths';
-import type {AnnouncementType} from '../../../../shared/types';
+import type {AnnouncementType} from 'cics-mobile-client/../shared/types';
 import {useNavigation} from '@react-navigation/native';
 import {Text} from '~/components';
+import {retrieveImageFBStorage} from '../../../../shared/images';
 
 interface ContainerType extends AnnouncementType {
   single?: boolean;
@@ -18,7 +19,7 @@ const Announcements = () => {
   const paramsExist = typeof params === 'string';
 
   return (
-    <View className="h-5/6 bg-yellow-300">
+    <View className="my-auto h-full bg-yellow-300">
       <Text className="text-center text-4xl text-black">Announcements</Text>
       <ScrollView className="h-full" scrollEnabled={!paramsExist}>
         {[
@@ -35,7 +36,6 @@ const Announcements = () => {
 
 const Container = (props: ContainerType) => {
   const {department, message, photoUrl, single} = props;
-
   const viewStyle = single ? 'h-full justify-center ' : 'h-[70vh]';
 
   return (
@@ -43,7 +43,12 @@ const Container = (props: ContainerType) => {
       {!photoUrl ? (
         <View className="h-32 w-full bg-primary" />
       ) : (
-        <Image className="h-2/3" source={announcementPreview1} src={photoUrl} />
+        <Image
+          className="h-2/3"
+          resizeMode="contain"
+          source={announcementPreview1}
+          src={retrieveImageFBStorage(photoUrl)}
+        />
       )}
       <View className="mx-auto w-11/12 bg-blue-400">
         <Text className="mb-2 text-xl font-black capitalize text-primary">{`${department} department`}</Text>

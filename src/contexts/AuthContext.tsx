@@ -8,7 +8,7 @@ import React, {
 import {authApp} from '~/utils/firebase';
 
 interface InitialStateType {
-  initialRouteName: 'Login' | 'Chats';
+  initialRouteName: 'Login' | 'Home';
   loading: boolean;
   currentUser: typeof authApp.currentUser;
 }

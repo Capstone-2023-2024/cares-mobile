@@ -7,7 +7,6 @@ export type FirestoreCollectionPath =
   | 'chat'
   | 'announcement'
   | 'about'
-  | 'schedule'
   | 'student'
   | 'faculty';
 
