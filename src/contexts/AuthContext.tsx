@@ -13,6 +13,11 @@ interface InitialStateType {
   currentUser: typeof authApp.currentUser;
 }
 
+type InitialStatePropType =
+  | InitialStateType['initialRouteName']
+  | InitialStateType['currentUser']
+  | InitialStateType['loading'];
+
 interface AuthContextType extends InitialStateType {
   signout: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
@@ -34,10 +39,7 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
 
   const handleState = (
     name: keyof InitialStateType,
-    value:
-      | InitialStateType['initialRouteName']
-      | InitialStateType['currentUser']
-      | boolean,
+    value: InitialStatePropType,
   ) => {
     setState(prevState => ({...prevState, [name]: value}));
   };
@@ -51,21 +53,24 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
 
   useEffect(() => {
     const unsub = authApp.onAuthStateChanged(user => {
-      // authApp.currentUser.
       handleState('loading', true);
       handleState('currentUser', user);
-      handleState('initialRouteName', !user ? 'Login' : 'Chats');
+      handleState('initialRouteName', !user ? 'Login' : 'Home');
       handleState('loading', false);
     });
     return () => unsub();
   }, []);
 
-  const values = {
-    ...state,
-    signout,
-    signInWithEmail,
-  };
-  return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        ...state,
+        signout,
+        signInWithEmail,
+      }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);

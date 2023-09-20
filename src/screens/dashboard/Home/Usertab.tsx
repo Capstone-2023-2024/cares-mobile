@@ -30,11 +30,11 @@ const Usertab = () => {
         <View className="flex-row items-center">
           <View className="h-12 w-12 overflow-hidden rounded-full border border-black">
             <SvgUri width="100%" height="100%" uri={userSvg} />
-            <Image
+            {/* <Image
               source={user}
               resizeMode="center"
               className="h-full w-full"
-            />
+            /> */}
           </View>
           <View className="ml-2">
             <Text className="text-sm font-bold">Welcome back</Text>

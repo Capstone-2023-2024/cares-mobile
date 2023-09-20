@@ -82,7 +82,7 @@ const Chats = () => {
       <ChatNav />
       <View className="absolute right-0 top-16 w-3/4 bg-tertiary">
         <View className="w-full flex-row justify-around rounded-xl bg-primary p-2">
-          <Text className="text-lg font-semibold">Gian Carlo Carranza</Text>
+          <Text className="text-lg font-semibold">Name</Text>
           <IconOptions />
         </View>
         <Categories />

@@ -44,7 +44,9 @@ const Container = (props: AnnouncementType) => {
       onPress={() => navigateTo('UniversitySchedule')}>
       <View className="flex-row items-center">
         <SvgContainer uri={pin} size="sm" />
-        {/* <Text className="ml-2 w-1/2 text-xs text-white">{title}</Text> */}
+        <Text className="ml-2 w-1/2 text-xs text-white">
+          {props.message.substring(0, 15)}
+        </Text>
       </View>
     </TouchableOpacity>
   );

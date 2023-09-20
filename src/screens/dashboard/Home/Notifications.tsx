@@ -7,12 +7,13 @@ import {Text} from '~/components';
 
 const Notifications = () => {
   return (
-    <View className="m-4 rounded-3xl border-2 bg-zinc-300 p-4 shadow-sm">
-      <HeadingTemplate navigation="Home" title="Notifications" />
-      <NotifContainer />
-      <NotifContainer />
-      <NotifContainer />
-    </View>
+    <></>
+    // <View className="m-4 rounded-3xl border-2 bg-zinc-300 p-4 shadow-sm">
+    //   <HeadingTemplate navigation="Home" title="Notifications" />
+    //   <NotifContainer />
+    //   <NotifContainer />
+    //   <NotifContainer />
+    // </View>
   );
 };
 
@@ -22,10 +23,8 @@ const NotifContainer = () => {
       <View className="flex-row p-2 text-left">
         <SvgContainer uri={idea} size="sm" />
         <View className="ml-2 ">
-          <Text className="text-left text-xs font-bold text-black">
-            Final Examination
-          </Text>
-          <Text>(Non-graduating Students) in 7 days</Text>
+          <Text className="text-left text-xs font-bold text-black">Lorem</Text>
+          <Text>Lorem Ipsum in 7 days</Text>
         </View>
       </View>
     </TouchableOpacity>
