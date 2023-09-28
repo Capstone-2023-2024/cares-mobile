@@ -1,5 +1,3 @@
-import CreatePass from '~/screens/authentication/CreatePass';
-import ForgotPass from '~/screens/authentication/ForgotPass';
 import Login from '~/screens/authentication/Login';
 import Register from '~/screens/authentication/Register';
 import VerificationCode from '~/screens/authentication/VerificationCode';
@@ -13,13 +11,12 @@ import Application from '~/screens/special_class/Application';
 import Request from '~/screens/special_class/Request';
 import Takers from '~/screens/special_class/Takers';
 import WriteSuggestion from '~/screens/project_suggestions/WriteSuggestions';
-import LandingScreen from '~/screens/LandingScreen';
+import Landing from '~/screens/authentication/Landing';
 
 import HeaderDefault from '~/components/Header';
+import Loading from '~/screens/shared/Loading';
 
 const Screens = [
-  CreatePass,
-  ForgotPass,
   Login,
   Register,
   VerificationCode,
@@ -33,7 +30,8 @@ const Screens = [
   Application,
   Request,
   Takers,
-  LandingScreen,
+  Landing,
+  Loading,
 ];
 
 const Header = () => {
@@ -44,7 +42,8 @@ export const optionsList = [
   {name: UserInfo.name, options: {headerShown: false}},
   {name: ProjectSuggestions.name, options: {header: Header}},
   {name: WriteSuggestion.name, options: {header: Header}},
-  {name: LandingScreen.name, options: {headerShown: false}},
+  {name: Landing.name, options: {headerShown: false}},
+  {name: Loading.name, options: {headerShown: false}},
 ];
 
 export default Screens;

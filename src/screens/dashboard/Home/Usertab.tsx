@@ -1,14 +1,16 @@
 import React, {type ReactNode} from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {SvgUri} from 'react-native-svg';
+import {StudInfoSortedType} from 'shared/types';
+import {Text} from '~/components';
 import SvgContainer from '~/components/SvgContainer';
-import {useContent} from '~/contexts/ContentContext';
+import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
+import type {RoleType} from '~/screens/authentication/Landing/types';
+import type {PathListType} from '~/types/navigation';
 import {validateEmailWithCOR} from '~/utils/firebase';
 import {user} from '~/utils/imagePaths';
-import {arrowUri, menuDots, userSvg} from '~/utils/svgIcons';
-import {Text} from '~/components';
-import type {PathListType} from '~/types/navigation';
+import {arrowUri, menuDots} from '~/utils/svgIcons';
 
 interface HeadingTemplateType {
   navigation: PathListType;
@@ -16,9 +18,15 @@ interface HeadingTemplateType {
   disabled?: boolean;
 }
 
-const Usertab = () => {
+const Usertab = ({
+  role,
+  studentInfo,
+}: {
+  role?: RoleType;
+  studentInfo: Omit<StudInfoSortedType, 'studentNo'>;
+}) => {
   const {navigateTo} = useNav();
-  const {studentInfo} = useContent();
+  const {currentUser} = useAuth();
   const {name} = studentInfo;
   const firstName = validateEmailWithCOR(
     !name ? {name: ''} : {name, type: 'first'},
@@ -29,20 +37,21 @@ const Usertab = () => {
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
           <View className="h-12 w-12 overflow-hidden rounded-full border border-black">
-            <SvgUri width="100%" height="100%" uri={userSvg} />
-            {/* <Image
+            <Image
               source={user}
-              resizeMode="center"
+              src={currentUser?.photoURL ?? ''}
               className="h-full w-full"
-            /> */}
+            />
           </View>
           <View className="ml-2">
             <Text className="text-sm font-bold">Welcome back</Text>
-            <Text className="text-lg font-bold capitalize text-black">{`${firstName}!`}</Text>
+            <Text className="text-lg font-bold capitalize text-black">{`${
+              role === 'faculty' ? currentUser?.displayName : firstName
+            }!`}</Text>
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => navigateTo('UserInfo')}
+          onPress={() => navigateTo('UserInfo', {role})}
           className="h-10 w-10 overflow-hidden rounded-full">
           <SvgUri width="100%" height="100%" uri={menuDots} />
         </TouchableOpacity>

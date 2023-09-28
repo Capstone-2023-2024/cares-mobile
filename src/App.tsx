@@ -3,10 +3,9 @@ import {
   createStackNavigator,
   type StackNavigationOptions,
 } from '@react-navigation/stack';
-import React, {useEffect} from 'react';
+import React from 'react';
 import HeaderDefault from '~/components/Header';
 import Screens, {optionsList} from '~/screens';
-import Loading from './components/Loading';
 import CtxProviders from './contexts';
 import {useAuth} from './contexts/AuthContext';
 import NavigationProvider from './contexts/NavigationContext';
@@ -36,6 +35,8 @@ const App = () => {
 const NavigationRouter = () => {
   const {initialRouteName, loading, currentUser} = useAuth();
 
+  console.log(loading);
+
   function iteratePaths(props: IteratePathsType) {
     const {pathList} = props;
     const pathListHolder: StackType<(typeof pathList)[number]>[] = [];
@@ -61,13 +62,6 @@ const NavigationRouter = () => {
   const withoutUser = iteratePaths({
     pathList: pathWithoutUserList,
   });
-
-  useEffect(() => {
-    const unsub = loading && <Loading />;
-    return () => {
-      unsub;
-    };
-  }, [loading]);
 
   return (
     <NavigationContainer>

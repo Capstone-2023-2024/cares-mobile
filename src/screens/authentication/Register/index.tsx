@@ -1,16 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {icon, imageDimension} from 'cics-mobile-client/../../shared/images';
-import {type StudInfoSortedType} from 'cics-mobile-client/../../shared/types';
+import type {StudInfoSortedType} from 'cics-mobile-client/../../shared/types';
 import React, {useState} from 'react';
 import {Alert, Image, TouchableOpacity, View} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {Extractor} from 'react-native-pdf-extractor';
-import {type Transient} from 'react-native-pdf-extractor/src/types';
+import type {Transient} from 'react-native-pdf-extractor/src/types';
 import {Text} from '~/components';
 import {Button, Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
-import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {Error} from '~/utils/error';
 import {
@@ -18,45 +17,44 @@ import {
   validateEmail,
   validateEmailWithCOR,
 } from '~/utils/firebase';
-
-interface FileType {
-  uri: string;
-  name: string | null;
-  size: number | null;
-}
+import type {CORPatternsProps, FileType, UserCacheType} from './types';
+import {useRoute} from '@react-navigation/native';
+import type {RoleType} from '../Landing/types';
 
 const Register = () => {
   const milToKB = 1000;
+  const route = useRoute();
+  const {role} = route.params as {role: RoleType};
   const {navigateTo} = useNav();
-  const {handleStudentInfo, studentInfo} = useContent();
+  const [studentInfo, setStudentInfo] = useState<StudInfoSortedType | null>(
+    null,
+  );
   const [email, setEmail] = useState('');
   const [file, setFile] = useState<FileType | null>(null);
-  const CORPatterns = [
-    /^[0-9]{10}$/,
-    /College of [\"Information and Communications Technology\"-\"Industrial Technology\"-\"Education\"-\"Engineering\"]+/,
-    /^[A-Za-z0-9]+[^\d]+[\d]+-[\d]+$/,
-    /^[A-Z]*, [^0-9]*\.$/,
-    /Bachelor of Science in [\"Information Technology\"]+$/,
-    /^[\"M\"-\"F\"]$/,
-    /^[\"N/A\"-\"Web and Mobile\"]*$/,
-    /[A-Z]* \([^A-Za-z]*\)$/,
-    /^[0-9]{2}$/,
-    /^[0-9a-z]* Year$/,
-    /^Official Receipt: [^/d]*$/,
+  const CORPatterns: CORPatternsProps[] = [
+    {name: 'studentNo', regex: /^[0-9]{10}$/},
+    {
+      name: 'college',
+      regex:
+        /College of [\"Information and Communications Technology\"-\"Industrial Technology\"-\"Education\"-\"Engineering\"]+/,
+    },
+    {name: 'schoolYear', regex: /^[A-Za-z0-9]+[^\d]+[\d]+-[\d]+$/},
+    {name: 'name', regex: /^[A-Z]*, [^0-9]*\.$/},
+    {
+      name: 'course',
+      regex: /Bachelor of Science in [\"Information Technology\"]+$/,
+    },
+    {name: 'gender', regex: /^[\"M\"-\"F\"]$/},
+    {name: 'major', regex: /^[\"N/A\"-\"Web and Mobile\"]*$/},
+    {name: 'curriculum', regex: /[A-Z]* \([^A-Za-z]*\)$/},
+    {name: 'age', regex: /^[0-9]{2}$/},
+    {name: 'yearLevel', regex: /^[0-9a-z]* Year$/},
+    {name: 'scholarship', regex: /^Official Receipt: [^/d]*$/},
   ];
-  const CORPatternsId = [
-    'studentNo',
-    'college',
-    'schoolYear',
-    'name',
-    'course',
-    'gender',
-    'major',
-    'curriculum',
-    'age',
-    'yearLevel',
-    'scholarship',
-  ];
+
+  function navigateToLoginWithRole() {
+    navigateTo('Login', {role});
+  }
 
   async function handleCORUpload() {
     try {
@@ -83,7 +81,8 @@ const Register = () => {
       .count()
       .get();
     const {count} = doc.data();
-    const condition = count > 0;
+    const isCountGreaterZero = count > 0;
+    const {studentNo, ...rest} = studentInfo as StudInfoSortedType;
 
     if (!email) {
       Alert.alert('Empty Email', 'Please enter your email address.');
@@ -95,8 +94,18 @@ const Register = () => {
         'Please enter a valid email address.',
       );
     }
-    condition && Alert.alert("You're already registered!\nPlease login");
-    navigateTo(condition ? 'Login' : 'CreatePass');
+    !isCountGreaterZero &&
+      collectionRef('student')
+        .doc(studentNo)
+        .set({...rest, email});
+    Alert.alert(
+      isCountGreaterZero
+        ? "You're already registered!\nPlease login"
+        : 'You can now login your Google BulSU Email',
+    );
+
+    setStudentInfo(null);
+    navigateToLoginWithRole();
   }
 
   async function handlePDFResult(data: Transient | null) {
@@ -107,39 +116,39 @@ const Register = () => {
 
       uniqueTextArray.forEach(text => {
         if (typeof text === 'string') {
-          CORPatterns.forEach((regex, regexIndex) => {
-            const propName = CORPatternsId[regexIndex];
+          CORPatterns.forEach(({regex, name}) => {
             if (regex.test(text)) {
-              return (idHolder = {...idHolder, [propName ?? '']: text});
+              return (idHolder = {...idHolder, [name ?? '']: text});
             }
           });
         }
       });
 
       const result =
-        Object.keys(idHolder).length >= CORPatternsId.length &&
+        Object.keys(idHolder).length >= CORPatterns.length &&
         (idHolder as Required<StudInfoSortedType>);
       if (!result) {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }
 
-      const {name} = result;
+      const {name, studentNo, ...rest} = result;
+      const cache: UserCacheType = {studentNo: {...rest, name, email}};
       const emailFromCOR = validateEmailWithCOR(!name ? {name: ''} : {name});
       if (email !== emailFromCOR) {
         setFile(null);
         return Alert.alert('Unauthorized access of email');
       }
-      await AsyncStorage.setItem(email, JSON.stringify(result));
-      handleStudentInfo(result);
+      await AsyncStorage.setItem('usersCache', JSON.stringify([cache]));
+      setStudentInfo(result);
     }
   }
 
   return (
     <View className="h-2/3 justify-center">
-      <Heading>Sign Up</Heading>
+      <Heading>COR Registration</Heading>
       <Extractor
         onResult={handlePDFResult}
-        patterns={CORPatterns}
+        patterns={CORPatterns.map(({regex}) => regex)}
         uri={file?.uri}
       />
       <View className="mb-2 w-2/3 self-center">
@@ -182,15 +191,15 @@ const Register = () => {
       <View className="mb-2 w-1/3 self-center">
         <Button
           onPress={handleRegisterPress}
-          disabled={Object.keys(studentInfo).length === 0}>
+          disabled={Object.keys(studentInfo ?? {}).length === 0}>
           Register
         </Button>
       </View>
       <View className="flex-row justify-center gap-2">
-        <Text className="text-center text-xs">Already have an account? </Text>
+        <Text className="text-center text-xs">Already registered? </Text>
         <Link
           textStyle="text-primary/60 text-center"
-          onPress={() => navigateTo('Login')}>
+          onPress={navigateToLoginWithRole}>
           Login here
         </Link>
       </View>

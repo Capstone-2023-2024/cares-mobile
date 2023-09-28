@@ -34,7 +34,7 @@ export const Button = (props: ButtonType) => {
 
   return (
     <TouchableOpacity className={style()} {...rest}>
-      <Text className="text-center text-white">{children}</Text>
+      <Text className="text-center capitalize text-white">{children}</Text>
     </TouchableOpacity>
   );
 };

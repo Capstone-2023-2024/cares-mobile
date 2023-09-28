@@ -15,7 +15,8 @@ export const scApp = 'Application';
 export const scReq = 'Request';
 export const scTakers = 'Takers';
 
-export const landing = 'LandingScreen';
+export const landing = 'Landing';
+export const loading = 'Loading';
 
 export const pathWithUserList = [
   home,
@@ -28,6 +29,7 @@ export const pathWithUserList = [
   chats,
   projSug,
   writeSug,
+  loading,
 ] as const;
 export const pathWithoutUserList = [
   crtPass,
@@ -36,6 +38,7 @@ export const pathWithoutUserList = [
   register,
   verCode,
   landing,
+  loading,
 ] as const;
 
 export type PathsWithUserListType = (typeof pathWithUserList)[number];

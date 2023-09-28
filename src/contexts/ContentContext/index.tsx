@@ -13,26 +13,14 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
-import {useAuth} from './AuthContext';
 import {currentMonth} from '~/utils/date';
-
-interface InitialStateType {
-  chat: ClientChatType[];
-  announcement: AnnouncementType[];
-  studentInfo: Partial<StudInfoSortedType>;
-  selectedChat: string | null;
-  chattables: ChattableType[];
-}
-
-interface ContentContextType extends InitialStateType {
-  handleStudentInfo: (props: StudInfoSortedType) => void;
-  handleSelectedChat: (props: string) => void;
-}
-
-export interface ChattableType extends Pick<StudInfoSortedType, 'email'> {
-  type: 'student' | 'faculty';
-}
+import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
+import {useAuth} from '../AuthContext';
+import type {
+  ChattableType,
+  ContentContextType,
+  InitialStateType,
+} from './types';
 
 const firestoreCollection = {
   announcement: [],
@@ -41,14 +29,11 @@ const firestoreCollection = {
 };
 const initialState: InitialStateType = {
   ...firestoreCollection,
-  studentInfo: {},
   selectedChat: null,
-  chattables: [],
 };
 
 const ContentContext = createContext<ContentContextType>({
   ...initialState,
-  handleStudentInfo: () => null,
   handleSelectedChat: () => null,
 });
 
@@ -92,31 +77,6 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
       });
   }, []);
 
-  const handleChattables = useCallback(async (type: ChattableType['type']) => {
-    try {
-      const colRef = collectionRef(type);
-      const {count} = (await colRef.count().get()).data();
-      if (count > 0) {
-        const colList = await colRef.get();
-        const emails: ChattableType[] = [];
-
-        colList.forEach(async doc => {
-          const docRef = await colRef.doc(doc.id).get();
-          const data = docRef.data() as StudInfoSortedType;
-          emails.push({email: data.email, type});
-        });
-
-        handleState('chattables', emails);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  const handleStudentInfo = useCallback((props: StudInfoSortedType) => {
-    handleState('studentInfo', props);
-  }, []);
-
   function handleSelectedChat(docId: string) {
     handleState('selectedChat', docId);
   }
@@ -125,17 +85,6 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     const unsub = handleSnapshot('announcement');
     return () => unsub();
   }, [handleSnapshot]);
-
-  useEffect(() => {
-    let unsub = true;
-    if (unsub) {
-      handleChattables('student');
-      handleChattables('faculty');
-    }
-    return () => {
-      unsub = false;
-    };
-  }, [handleChattables]);
 
   useEffect(() => {
     const email = currentUser !== null ? currentUser.email : '';
@@ -177,7 +126,6 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
 
   const values = {
     ...state,
-    handleStudentInfo,
     handleSelectedChat,
   };
   return (

@@ -1,6 +1,5 @@
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
 import {ResultType} from 'cics-mobile-client/../../shared/types';
 
 export type FirestoreCollectionPath =
@@ -13,7 +12,6 @@ export type FirestoreCollectionPath =
 const app = firebase.app();
 
 export const firestoreApp = firestore(app);
-export const authApp = auth(app);
 export const collectionRef = (path: FirestoreCollectionPath) =>
   firestoreApp.collection(path);
 
