@@ -13,14 +13,15 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import {currentMonth} from '~/utils/date';
-import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
-import {useAuth} from '../AuthContext';
+import { currentMonth } from '~/utils/date';
+import { FirestoreCollectionPath, collectionRef } from '~/utils/firebase';
+import { useAuth } from '../AuthContext';
 import type {
   ChattableType,
   ContentContextType,
   InitialStateType,
 } from './types';
+import { RoleType } from '~/screens/authentication/Landing/types';
 
 const firestoreCollection = {
   announcement: [],
@@ -29,18 +30,20 @@ const firestoreCollection = {
 };
 const initialState: InitialStateType = {
   ...firestoreCollection,
+  role: null,
   selectedChat: null,
 };
 
 const ContentContext = createContext<ContentContextType>({
   ...initialState,
   handleSelectedChat: () => null,
+  handleRole: () => null,
 });
 
 const chatColReference = collectionRef('chat');
-const ContentProvider = ({children}: {children: ReactNode}) => {
+const ContentProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<InitialStateType>(initialState);
-  const {currentUser} = useAuth();
+  const { currentUser } = useAuth();
 
   function handleState(
     name: keyof InitialStateType | FirestoreCollectionPath,
@@ -49,16 +52,16 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
       | ClientChatType[]
       | StudInfoSortedType
       | string
-      | ChattableType[],
+      | ChattableType[] | InitialStateType['role']
   ) {
-    setState(prevState => ({...prevState, [name]: value}));
+    setState(prevState => ({ ...prevState, [name]: value }));
   }
 
   const handleSnapshot = useCallback((name: FirestoreCollectionPath) => {
     const newDate = new Date();
     const month = newDate.getMonth();
     const year = newDate.getFullYear();
-    const MONTH = currentMonth({month, year})?.name.toUpperCase();
+    const MONTH = currentMonth({ month, year })?.name.toUpperCase();
 
     return collectionRef(name)
       .doc(MONTH)
@@ -67,7 +70,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
         const holder: AnnouncementType[] = [];
         if (snapshot.docs.length > 0) {
           snapshot.docs.forEach(doc => {
-            holder.push({...doc.data(), docId: doc.id} as AnnouncementType);
+            holder.push({ ...doc.data(), docId: doc.id } as AnnouncementType);
           });
         }
         handleState(
@@ -79,6 +82,10 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
 
   function handleSelectedChat(docId: string) {
     handleState('selectedChat', docId);
+  }
+
+  function handleRole(props: RoleType) {
+    handleState('role', props)
   }
 
   useEffect(() => {
@@ -96,7 +103,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
         const chatHeads: ClientChatType[] = [];
         if (snapshot !== null) {
           snapshot.docs.forEach(doc => {
-            const chatHead = {...doc.data(), docId: doc.id} as ChatConfigType;
+            const chatHead = { ...doc.data(), docId: doc.id } as ChatConfigType;
             const inbox: ChatType[] = [];
             chatColReference
               .doc(doc.id)
@@ -112,7 +119,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
                   inbox.push(message);
                 });
               });
-            chatHeads.push({...chatHead, inbox});
+            chatHeads.push({ ...chatHead, inbox });
           });
           handleState('chat', chatHeads);
         }
@@ -127,6 +134,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
   const values = {
     ...state,
     handleSelectedChat,
+    handleRole
   };
   return (
     <ContentContext.Provider value={values}>{children}</ContentContext.Provider>

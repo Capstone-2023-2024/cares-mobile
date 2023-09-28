@@ -1,18 +1,18 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, TouchableOpacity, View, Image} from 'react-native';
-import {useAuth} from '~/contexts/AuthContext';
-import {Error} from '~/utils/error';
-import {collectionRef, validateEmailWithCOR} from '~/utils/firebase';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, TouchableOpacity, View, Image } from 'react-native';
+import { useAuth } from '~/contexts/AuthContext';
+import { Error } from '~/utils/error';
+import { collectionRef, validateEmailWithCOR } from '~/utils/firebase';
 import {
   ResultType,
   StudInfoSortedType,
 } from 'cics-mobile-client/../../shared/types';
-import {Text} from '~/components';
-import {UserCacheType} from '../authentication/Register/types';
+import { Text } from '~/components';
+import { UserCacheType } from '../authentication/Register/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {user} from '~/utils/imagePaths';
-import {useRoute} from '@react-navigation/native';
-import {RoleType} from '../authentication/Landing/types';
+import { user } from '~/utils/imagePaths';
+import { RoleType } from '../authentication/Landing/types';
+import { useContent } from '~/contexts/ContentContext';
 
 interface TextRowType {
   title: string;
@@ -23,13 +23,12 @@ const UserInfo = () => {
   const {currentUser, signout} = useAuth();
   const [state, setState] = useState<Omit<StudInfoSortedType, 'studentNo'>>();
   const [studNo, setStudNo] = useState('');
+  const {role } = useContent()
   const props = (type: ResultType['type']) =>
     state?.name ? {name: state?.name, type} : {name: ''};
   const firstName = validateEmailWithCOR(props('first') as ResultType);
   const lastName = validateEmailWithCOR(props('last') as ResultType);
   const middleInitial = validateEmailWithCOR(props('initial') as ResultType);
-  const route = useRoute();
-  const {role} = route.params as {role: RoleType};
 
   const setup = useCallback(async () => {
     const usersCache: UserCacheType[] = JSON.parse(
@@ -68,7 +67,7 @@ const UserInfo = () => {
   }
   return (
     <View className="my-auto h-5/6 bg-paper">
-      <Hero role={role} name={state?.name ?? ''} studentNo={studNo} />
+      <Hero name={state?.name ?? ''} studentNo={studNo} />
       <Text className="m-8 text-3xl font-semibold capitalize text-black">
         {`${role} details`}
       </Text>
@@ -109,14 +108,13 @@ const UserInfo = () => {
 };
 
 const Hero = ({
-  role,
   name,
   studentNo,
 }: {
-  role: RoleType;
   name: string;
   studentNo: string;
 }) => {
+  const {role } = useContent()
   const DIMENSION = 40;
   const {currentUser} = useAuth();
   const props = (type: ResultType['type']) =>

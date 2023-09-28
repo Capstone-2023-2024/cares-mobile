@@ -5,6 +5,7 @@ import {StudInfoSortedType} from 'shared/types';
 import {Text} from '~/components';
 import SvgContainer from '~/components/SvgContainer';
 import {useAuth} from '~/contexts/AuthContext';
+import { useContent } from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import type {RoleType} from '~/screens/authentication/Landing/types';
 import type {PathListType} from '~/types/navigation';
@@ -19,15 +20,14 @@ interface HeadingTemplateType {
 }
 
 const Usertab = ({
-  role,
   studentInfo,
 }: {
-  role?: RoleType;
   studentInfo: Omit<StudInfoSortedType, 'studentNo'>;
 }) => {
   const {navigateTo} = useNav();
   const {currentUser} = useAuth();
   const {name} = studentInfo;
+  const {role} = useContent()
   const firstName = validateEmailWithCOR(
     !name ? {name: ''} : {name, type: 'first'},
   );

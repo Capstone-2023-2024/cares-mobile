@@ -1,28 +1,28 @@
-import {useRoute} from '@react-navigation/native';
 import React from 'react';
-import {Image, Text, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Link} from '~/components/Button';
-import {Heading} from '~/components/Heading';
-import {useAuth} from '~/contexts/AuthContext';
-import {useNav} from '~/contexts/NavigationContext';
-import {RoleType} from '../Landing/types';
+import { Image, Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Link } from '~/components/Button';
+import { Heading } from '~/components/Heading';
+import { useAuth } from '~/contexts/AuthContext';
+import { useNav } from '~/contexts/NavigationContext';
+import { useContent } from '~/contexts/ContentContext';
 
 const Login = () => {
   const DIMENSION = 20;
-  const {onGoogleButtonPress, currentUser} = useAuth();
-  const route = useRoute();
+  const {onGoogleButtonPress} = useAuth();
+  const {role} = useContent()
   const {navigateTo} = useNav();
-  const {role} = route.params as unknown as {role: RoleType};
 
   function handleRegisterPress() {
-    navigateTo('Register', {role});
+    navigateTo('Register');
   }
 
   async function handleLogin() {
     try {
-      const message = await onGoogleButtonPress(role);
-      navigateTo('Loading', {role, message});
+      if (role !== null) {
+        const message = await onGoogleButtonPress(role);
+        navigateTo('Loading', {message});
+      }
     } catch (err) {
       console.log(err);
     }

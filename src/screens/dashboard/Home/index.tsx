@@ -20,8 +20,6 @@ const Home = () => {
     Omit<StudInfoSortedType, 'studentNo'> | undefined
   >();
   const email = currentUser?.email || '{}';
-  const route = useRoute();
-  const param = route.params as {role?: RoleType};
 
   const setup = useCallback(async () => {
     const usersCache: UserCacheType[] = JSON.parse(
@@ -63,7 +61,6 @@ const Home = () => {
       <Background>
         <ScrollView>
           <Usertab
-            role={param.role}
             studentInfo={
               state ?? {
                 college: '',

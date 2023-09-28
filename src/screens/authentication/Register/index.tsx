@@ -1,30 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {icon, imageDimension} from 'cics-mobile-client/../../shared/images';
-import type {StudInfoSortedType} from 'cics-mobile-client/../../shared/types';
-import React, {useState} from 'react';
-import {Alert, Image, TouchableOpacity, View} from 'react-native';
+import { icon, imageDimension } from 'cics-mobile-client/../../shared/images';
+import type { StudInfoSortedType } from 'cics-mobile-client/../../shared/types';
+import React, { useState } from 'react';
+import { Alert, Image, TouchableOpacity, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-import {Extractor} from 'react-native-pdf-extractor';
-import type {Transient} from 'react-native-pdf-extractor/src/types';
-import {Text} from '~/components';
-import {Button, Link} from '~/components/Button';
-import {Heading} from '~/components/Heading';
-import {Textfield} from '~/components/Textfield';
-import {useNav} from '~/contexts/NavigationContext';
-import {Error} from '~/utils/error';
+import { Extractor } from 'react-native-pdf-extractor';
+import type { Transient } from 'react-native-pdf-extractor/src/types';
+import { Text } from '~/components';
+import { Button, Link } from '~/components/Button';
+import { Heading } from '~/components/Heading';
+import { Textfield } from '~/components/Textfield';
+import { useNav } from '~/contexts/NavigationContext';
+import { Error } from '~/utils/error';
 import {
   collectionRef,
   validateEmail,
   validateEmailWithCOR,
 } from '~/utils/firebase';
-import type {CORPatternsProps, FileType, UserCacheType} from './types';
-import {useRoute} from '@react-navigation/native';
-import type {RoleType} from '../Landing/types';
+import type { CORPatternsProps, FileType, UserCacheType } from './types';
 
 const Register = () => {
   const milToKB = 1000;
-  const route = useRoute();
-  const {role} = route.params as {role: RoleType};
   const {navigateTo} = useNav();
   const [studentInfo, setStudentInfo] = useState<StudInfoSortedType | null>(
     null,
@@ -53,7 +49,7 @@ const Register = () => {
   ];
 
   function navigateToLoginWithRole() {
-    navigateTo('Login', {role});
+    navigateTo('Login');
   }
 
   async function handleCORUpload() {
