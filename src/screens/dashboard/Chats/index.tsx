@@ -14,6 +14,7 @@ import ChatBox from './ChatBox';
 import ChatHead from './ChatHead';
 import ChatNav from './ChatNav';
 import InputContainer from './InputContainer';
+import ChatProvider from '~/contexts/ChatContext';
 
 const Chats = () => {
   const [message, setMessage] = useState('');
@@ -78,27 +79,29 @@ const Chats = () => {
   };
 
   return (
-    <View className="relative flex-1 bg-violet-300">
-      <ChatNav />
-      <View className="absolute right-0 top-16 w-3/4 bg-tertiary">
-        <View className="w-full flex-row justify-around rounded-xl bg-primary p-2">
-          <Text className="text-lg font-semibold">Name</Text>
-          <IconOptions />
+    <ChatProvider>
+      <View className="relative flex-1 bg-violet-300">
+        <ChatNav />
+        <View className="absolute right-0 top-16 w-3/4 bg-tertiary">
+          <View className="w-full flex-row justify-around rounded-xl bg-primary p-2">
+            <Text className="text-lg font-semibold">Name</Text>
+            <IconOptions />
+          </View>
+          <Categories />
         </View>
-        <Categories />
+        <ChatHead />
+        <ChatBox />
+        <InputContainer {...inputContainerProps} />
       </View>
-      <ChatHead />
-      <ChatBox />
-      <InputContainer {...inputContainerProps} />
-    </View>
+    </ChatProvider>
   );
 };
 
 const IconOptions = () => {
   return (
     <View className="flex-row items-center justify-center">
-      <IconButton uri={require('~/assets/phone-call.png')} />
-      <IconButton uri={require('~/assets/video-call.png')} />
+      {/* <IconButton uri={require('~/assets/phone-call.png')} /> */}
+      {/* <IconButton uri={require('~/assets/video-call.png')} /> */}
       <IconButton uri={require('~/assets/ellipsis.png')} />
     </View>
   );
@@ -106,9 +109,9 @@ const IconOptions = () => {
 
 const Categories = () => {
   return (
-    <View className="w-1/2 flex-row">
-      <CategoryButton name="Complains" />
-      <CategoryButton name="Announcements" />
+    <View className="w-full flex-row">
+      <CategoryButton name="Complains/Concerns" />
+      {/* <CategoryButton name="Announcements" /> */}
     </View>
   );
 };

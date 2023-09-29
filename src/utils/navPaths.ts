@@ -20,6 +20,7 @@ export const loading = 'Loading';
 
 export const pathWithUserList = [
   home,
+  loading,
   userInfo,
   schedule,
   announce,
@@ -29,7 +30,6 @@ export const pathWithUserList = [
   chats,
   projSug,
   writeSug,
-  loading,
 ] as const;
 export const pathWithoutUserList = [
   crtPass,

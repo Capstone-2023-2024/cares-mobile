@@ -35,8 +35,6 @@ const App = () => {
 const NavigationRouter = () => {
   const {initialRouteName, loading, currentUser} = useAuth();
 
-  console.log(loading);
-
   function iteratePaths(props: IteratePathsType) {
     const {pathList} = props;
     const pathListHolder: StackType<(typeof pathList)[number]>[] = [];

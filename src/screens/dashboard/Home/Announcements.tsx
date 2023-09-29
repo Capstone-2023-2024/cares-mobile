@@ -37,7 +37,7 @@ const Announcements = () => {
 const Container = (props: AnnouncementType) => {
   const {navigateTo} = useNav();
   const {department, message, photoUrl, docId} = props;
-  console.log(retrieveImageFBStorage(photoUrl ?? ''));
+  // console.log(retrieveImageFBStorage(photoUrl ?? ''));
 
   return (
     <View className="ml-2 mr-2 items-center justify-center overflow-hidden rounded-3xl border-2 bg-white p-4 px-6 shadow-xl">

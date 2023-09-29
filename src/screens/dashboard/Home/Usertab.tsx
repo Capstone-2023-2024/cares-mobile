@@ -1,13 +1,15 @@
-import React, {type ReactNode} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState, type ReactNode} from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {SvgUri} from 'react-native-svg';
 import {StudInfoSortedType} from 'shared/types';
 import {Text} from '~/components';
 import SvgContainer from '~/components/SvgContainer';
 import {useAuth} from '~/contexts/AuthContext';
-import { useContent } from '~/contexts/ContentContext';
+import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import type {RoleType} from '~/screens/authentication/Landing/types';
+import {UserCacheType} from '~/screens/authentication/Register/types';
 import type {PathListType} from '~/types/navigation';
 import {validateEmailWithCOR} from '~/utils/firebase';
 import {user} from '~/utils/imagePaths';
@@ -19,18 +21,21 @@ interface HeadingTemplateType {
   disabled?: boolean;
 }
 
-const Usertab = ({
-  studentInfo,
-}: {
-  studentInfo: Omit<StudInfoSortedType, 'studentNo'>;
-}) => {
+const Usertab = ({name}: {name: string}) => {
   const {navigateTo} = useNav();
   const {currentUser} = useAuth();
-  const {name} = studentInfo;
-  const {role} = useContent()
-  const firstName = validateEmailWithCOR(
-    !name ? {name: ''} : {name, type: 'first'},
-  );
+  const {role} = useContent();
+  const [firstName, setFirstName] = useState('');
+
+  useEffect(() => {
+    async function setup() {
+      const firstN = validateEmailWithCOR({name, type: 'first'});
+      setFirstName(firstN);
+    }
+    return () => {
+      void setup();
+    };
+  }, [name]);
 
   return (
     <View className=" border-b-2 p-12">
@@ -51,7 +56,7 @@ const Usertab = ({
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => navigateTo('UserInfo', {role})}
+          onPress={() => navigateTo('UserInfo')}
           className="h-10 w-10 overflow-hidden rounded-full">
           <SvgUri width="100%" height="100%" uri={menuDots} />
         </TouchableOpacity>

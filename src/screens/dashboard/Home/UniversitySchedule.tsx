@@ -37,7 +37,7 @@ const UniversitySchedule = () => {
 const Container = (props: AnnouncementType) => {
   const {navigateTo} = useNav();
   const {dateCreated} = props;
-  console.log(dateCreated);
+  // console.log(dateCreated);
   return (
     <TouchableOpacity
       className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full border-2 bg-tertiary px-2 py-4"

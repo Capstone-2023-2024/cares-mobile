@@ -2,8 +2,10 @@ import {View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {useNav} from '~/contexts/NavigationContext';
 import {Text} from '~/components';
+import {useContent} from '~/contexts/ContentContext';
 
 const FooterNav = () => {
+  const {role} = useContent();
   const {navigateTo} = useNav();
 
   return (
@@ -19,17 +21,19 @@ const FooterNav = () => {
           </View>
         </TouchableOpacity> */}
 
-        <TouchableOpacity
-          className="mb-2"
-          onPress={() => navigateTo('ProjectSuggestions')}>
-          <View className="items-center">
-            <Image
-              source={require('~/assets/project.png')} // Assuming you have a different image for project suggestions
-              className="h-10 w-10"
-            />
-            <Text className="font-bold text-black">Project Suggestions</Text>
-          </View>
-        </TouchableOpacity>
+        {role === 'student' && (
+          <TouchableOpacity
+            className="mb-2"
+            onPress={() => navigateTo('ProjectSuggestions')}>
+            <View className="items-center">
+              <Image
+                source={require('~/assets/project.png')} // Assuming you have a different image for project suggestions
+                className="h-10 w-10"
+              />
+              <Text className="font-bold text-black">Project Suggestions</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

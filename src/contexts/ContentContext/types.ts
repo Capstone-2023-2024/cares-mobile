@@ -1,22 +1,17 @@
 import type {
   AnnouncementType,
-  ClientChatType,
   StudInfoSortedType,
 } from 'shared/types';
-import type { RoleType } from '~/screens/authentication/Landing/types';
+import type {RoleType} from '~/screens/authentication/Landing/types';
+import {MessagePromptType} from '../AuthContext/types';
 
 export interface InitialStateType {
-  role: RoleType | null
-  chat: ClientChatType[];
+  message: MessagePromptType;
+  role: RoleType | null;
   announcement: AnnouncementType[];
-  selectedChat: string | null;
 }
 
 export interface ContentContextType extends InitialStateType {
-  handleSelectedChat: (props: string) => void;
-  handleRole: (props: RoleType) => void
-}
-
-export interface ChattableType extends Pick<StudInfoSortedType, 'email'> {
-  type: 'student' | 'faculty';
+  handleMessage: (props: MessagePromptType) => void;
+  handleRole: (props: RoleType) => void;
 }

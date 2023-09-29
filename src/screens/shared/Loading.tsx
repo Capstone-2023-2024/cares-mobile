@@ -1,15 +1,13 @@
-import { View, Text } from 'react-native';
-import React, { useEffect } from 'react';
-import { useRoute } from '@react-navigation/native';
-import { MessagePromptType } from '~/contexts/AuthContext/types';
-import { useNav } from '~/contexts/NavigationContext';
+import {View, Text} from 'react-native';
+import React, {useEffect} from 'react';
+import {useRoute} from '@react-navigation/native';
+import {MessagePromptType} from '~/contexts/AuthContext/types';
+import {useNav} from '~/contexts/NavigationContext';
+import {useContent} from '~/contexts/ContentContext';
 
 const Loading = () => {
-  const route = useRoute();
+  const {message} = useContent();
   const {navigateTo} = useNav();
-  const { message} = route.params as {
-    message: MessagePromptType;
-  };
 
   useEffect(() => {
     if (message === 'SUCCESS') {

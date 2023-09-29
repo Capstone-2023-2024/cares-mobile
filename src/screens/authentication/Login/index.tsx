@@ -1,27 +1,28 @@
 import React from 'react';
-import { Image, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Link } from '~/components/Button';
-import { Heading } from '~/components/Heading';
-import { useAuth } from '~/contexts/AuthContext';
-import { useNav } from '~/contexts/NavigationContext';
-import { useContent } from '~/contexts/ContentContext';
+import {Image, Text, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Link} from '~/components/Button';
+import {Heading} from '~/components/Heading';
+import {useAuth} from '~/contexts/AuthContext';
+import {useNav} from '~/contexts/NavigationContext';
+import {useContent} from '~/contexts/ContentContext';
 
 const Login = () => {
   const DIMENSION = 20;
+  const {handleMessage} = useContent();
   const {onGoogleButtonPress} = useAuth();
-  const {role} = useContent()
+  const {role} = useContent();
   const {navigateTo} = useNav();
 
   function handleRegisterPress() {
     navigateTo('Register');
   }
-
   async function handleLogin() {
     try {
       if (role !== null) {
         const message = await onGoogleButtonPress(role);
-        navigateTo('Loading', {message});
+        handleMessage(message);
+        navigateTo('Home');
       }
     } catch (err) {
       console.log(err);

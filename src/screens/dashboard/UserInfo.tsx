@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, TouchableOpacity, View, Image } from 'react-native';
-import { useAuth } from '~/contexts/AuthContext';
-import { Error } from '~/utils/error';
-import { collectionRef, validateEmailWithCOR } from '~/utils/firebase';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Alert, TouchableOpacity, View, Image} from 'react-native';
+import {useAuth} from '~/contexts/AuthContext';
+import {Error} from '~/utils/error';
+import {collectionRef, validateEmailWithCOR} from '~/utils/firebase';
 import {
   ResultType,
   StudInfoSortedType,
 } from 'cics-mobile-client/../../shared/types';
-import { Text } from '~/components';
-import { UserCacheType } from '../authentication/Register/types';
+import {Text} from '~/components';
+import {UserCacheType} from '../authentication/Register/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { user } from '~/utils/imagePaths';
-import { RoleType } from '../authentication/Landing/types';
-import { useContent } from '~/contexts/ContentContext';
+import {user} from '~/utils/imagePaths';
+import {useContent} from '~/contexts/ContentContext';
+import type {PushToCacheProps, StudentInfoProps} from './Home/types';
+import type {RoleType} from '../authentication/Landing/types';
 
 interface TextRowType {
   title: string;
@@ -23,39 +24,47 @@ const UserInfo = () => {
   const {currentUser, signout} = useAuth();
   const [state, setState] = useState<Omit<StudInfoSortedType, 'studentNo'>>();
   const [studNo, setStudNo] = useState('');
-  const {role } = useContent()
+  const isStudNotEmpty = studNo !== '';
+  const {role} = useContent();
   const props = (type: ResultType['type']) =>
     state?.name ? {name: state?.name, type} : {name: ''};
   const firstName = validateEmailWithCOR(props('first') as ResultType);
   const lastName = validateEmailWithCOR(props('last') as ResultType);
   const middleInitial = validateEmailWithCOR(props('initial') as ResultType);
 
-  const setup = useCallback(async () => {
-    const usersCache: UserCacheType[] = JSON.parse(
-      (await AsyncStorage.getItem('usersCache')) ?? '',
-    );
-    usersCache.forEach(user => {
-      const currentLogin = Object.values(user).filter(async values => {
-        try {
-          const studNo = await collectionRef('student')
-            .where('email', '==', currentUser?.email)
-            .get();
-          setStudNo(studNo.docs[0]?.id ?? '');
-          return currentUser?.email === values.email;
-        } catch (err) {
-          console.log(err);
+  const setupForStudents = useCallback(async () => {
+    try {
+      async function fetchStudentId() {
+        const studInfo = await collectionRef('student')
+          .where('email', '==', currentUser?.email)
+          .get();
+        const doc = studInfo.docs[0] as unknown as StudentInfoProps | undefined;
+        if (doc !== undefined) {
+          setStudNo(doc.id);
         }
-      })[0];
-      setState(currentLogin);
-    });
-  }, []);
+        const getUserCache = await AsyncStorage.getItem('usersCache');
+        if (getUserCache !== null) {
+          const usersCache: UserCacheType[] = JSON.parse(getUserCache);
+          usersCache.forEach(user => {
+            const currentLogin = Object.values(user).filter(
+              values => currentUser?.email === values.email,
+            )[0];
+            setState(currentLogin);
+          });
+        }
+      }
+      void fetchStudentId();
+    } catch (err) {
+      console.log(err);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
-    const unsub = setup();
+    const unsub = void setupForStudents();
     return () => {
       unsub;
     };
-  }, []);
+  }, [setupForStudents]);
 
   async function handleSignout() {
     try {
@@ -67,25 +76,50 @@ const UserInfo = () => {
   }
   return (
     <View className="my-auto h-5/6 bg-paper">
-      <Hero name={state?.name ?? ''} studentNo={studNo} />
+      <Hero
+        name={
+          role === 'faculty'
+            ? currentUser?.displayName ?? ''
+            : state?.name ?? ''
+        }
+        studentNo={studNo}
+      />
       <Text className="m-8 text-3xl font-semibold capitalize text-black">
         {`${role} details`}
       </Text>
       {role === 'faculty' ? (
         <>
           <TextRow title="name" value={`${currentUser?.displayName}`} />
-          <TextRow title="name" value={`${currentUser?.email}`} />
-          <TextRow title="name" value={`${currentUser?.phoneNumber}`} />
+          <TextRow title="email" value={`${currentUser?.email}`} />
+          <TextRow title="phone number" value={`${currentUser?.phoneNumber}`} />
         </>
       ) : (
         <>
-          <TextRow title="first_name" value={`${firstName}`} />
-          <TextRow title="middle_initial" value={`${middleInitial}`} />
-          <TextRow title="last_name" value={`${lastName}`} />
-          <TextRow title="college" value={`${state?.college}`} />
-          <TextRow title="year_level" value={`${state?.yearLevel}`} />
-          <TextRow title="school_year" value={`${state?.schoolYear}`} />
-          <TextRow title="curriculum" value={`${state?.curriculum}`} />
+          <TextRow
+            title="first_name"
+            value={`${isStudNotEmpty && firstName}`}
+          />
+          <TextRow
+            title="middle_initial"
+            value={`${isStudNotEmpty && middleInitial}`}
+          />
+          <TextRow title="last_name" value={`${isStudNotEmpty && lastName}`} />
+          <TextRow
+            title="college"
+            value={`${isStudNotEmpty && state?.college}`}
+          />
+          <TextRow
+            title="year_level"
+            value={`${isStudNotEmpty && state?.yearLevel}`}
+          />
+          <TextRow
+            title="school_year"
+            value={`${isStudNotEmpty && state?.schoolYear}`}
+          />
+          <TextRow
+            title="curriculum"
+            value={`${isStudNotEmpty && state?.curriculum}`}
+          />
           <TextRow
             title="scholarship"
             value={`${
@@ -93,9 +127,9 @@ const UserInfo = () => {
               state?.scholarship
             }`}
           />
-          <TextRow title="major" value={`${state?.major}`} />
-          <TextRow title="sex" value={`${state?.gender}`} />
-          <TextRow title="age" value={`${state?.age}`} />
+          <TextRow title="major" value={`${isStudNotEmpty && state?.major}`} />
+          <TextRow title="sex" value={`${isStudNotEmpty && state?.gender}`} />
+          <TextRow title="age" value={`${isStudNotEmpty && state?.age}`} />
         </>
       )}
       <TouchableOpacity
@@ -107,14 +141,8 @@ const UserInfo = () => {
   );
 };
 
-const Hero = ({
-  name,
-  studentNo,
-}: {
-  name: string;
-  studentNo: string;
-}) => {
-  const {role } = useContent()
+const Hero = ({name, studentNo}: {name: string; studentNo: string}) => {
+  const {role} = useContent();
   const DIMENSION = 40;
   const {currentUser} = useAuth();
   const props = (type: ResultType['type']) =>
@@ -136,7 +164,9 @@ const Hero = ({
       </View>
       <View className="ml-2">
         {role === 'faculty' ? (
-          <></>
+          <>
+            <Text className="text-xl capitalize text-paper">{`${name}`}</Text>
+          </>
         ) : (
           <>
             <Text className="text-xl capitalize text-paper">{`${lastName}, ${firstName}`}</Text>
@@ -154,7 +184,7 @@ const TextRow = (props: TextRowType) => {
   return (
     <View className="my-1 flex-row justify-between px-14">
       <Text className="capitalize">{title.replace(/_/, ' ')}</Text>
-      <Text className="font-sembold capitalize text-black">{value}</Text>
+      <Text className="font-sembold text-sm text-black">{value}</Text>
     </View>
   );
 };

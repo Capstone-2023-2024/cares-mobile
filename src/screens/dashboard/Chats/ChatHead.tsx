@@ -11,21 +11,21 @@ import {
 import {Text} from '~/components';
 import IconButton from '~/components/IconButton';
 import {useAuth} from '~/contexts/AuthContext';
-import {ChattableType, useContent} from '~/contexts/ContentContext';
+import {useChat} from '~/contexts/ChatContext';
+import type {ChattableProps} from '~/contexts/ChatContext/types';
 
 interface AddIconType {
   showSearch: boolean;
-  emailList: ChattableType[];
+  emailList: ChattableProps[];
 }
 
 const ChatHead = () => {
-  const {chat} = useContent();
+  const {chat} = useChat();
 
   function renderChatHeads() {
     return chat.length > 0 ? (
-      chat.map(({docId, participants}) => {
-        const id = docId ? docId : '';
-        return <ChatPeopleContainer key={id} {...{participants, docId: id}} />;
+      chat.map(({id, participants}) => {
+        return <ChatPeopleContainer key={id} {...{participants, id}} />;
       })
     ) : (
       <></>
@@ -42,19 +42,16 @@ const ChatHead = () => {
   );
 };
 
-const ChatPeopleContainer = (props: {
-  participants: string[];
-  docId: string;
-}) => {
+const ChatPeopleContainer = (props: {participants: string[]; id: string}) => {
   const {currentUser} = useAuth();
-  const {handleSelectedChat} = useContent();
-  const {participants, docId} = props;
+  const {handleSelectedChat} = useChat();
+  const {participants, id} = props;
   const recipient = participants.filter(
     email => currentUser?.email !== email,
   )[0];
 
   return (
-    <TouchableOpacity onPress={() => handleSelectedChat(docId)}>
+    <TouchableOpacity onPress={() => handleSelectedChat(id)}>
       <View className="items-center justify-center bg-paper p-2">
         <Text>{recipient ?? ''}</Text>
       </View>
@@ -67,9 +64,8 @@ const AddChatIcon = () => {
     showSearch: false,
     emailList: [],
   });
-  const {handleSelectedChat, chattables, selectedChat} = useContent();
+  const {handleSelectedChat, selectedChat} = useChat();
 
-  console.log(selectedChat);
   function handleState(
     key: keyof AddIconType,
     value: AddIconType['showSearch'] | AddIconType['emailList'],

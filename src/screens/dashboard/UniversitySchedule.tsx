@@ -29,7 +29,6 @@ const UniversitySchedule = () => {
     return () => unsub;
   }, [announcement]);
 
-  console.log(markedDates);
   return (
     <View>
       {markedDates && (

@@ -1,8 +1,5 @@
 import type {
   AnnouncementType,
-  ChatConfigType,
-  ChatType,
-  ClientChatType,
   StudInfoSortedType,
 } from 'cics-mobile-client/../../shared/types';
 import React, {
@@ -13,15 +10,13 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import { currentMonth } from '~/utils/date';
-import { FirestoreCollectionPath, collectionRef } from '~/utils/firebase';
-import { useAuth } from '../AuthContext';
-import type {
-  ChattableType,
-  ContentContextType,
-  InitialStateType,
-} from './types';
-import { RoleType } from '~/screens/authentication/Landing/types';
+import {currentMonth} from '~/utils/date';
+import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
+import {useAuth} from '../AuthContext';
+import {MessagePromptType} from '../AuthContext/types';
+import type {ContentContextType, InitialStateType} from './types';
+import {RoleType} from '~/screens/authentication/Landing/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firestoreCollection = {
   announcement: [],
@@ -29,39 +24,42 @@ const firestoreCollection = {
   schedule: [],
 };
 const initialState: InitialStateType = {
-  ...firestoreCollection,
+  message: null,
   role: null,
-  selectedChat: null,
+  ...firestoreCollection,
 };
 
 const ContentContext = createContext<ContentContextType>({
   ...initialState,
-  handleSelectedChat: () => null,
+  handleMessage: () => null,
   handleRole: () => null,
 });
 
 const chatColReference = collectionRef('chat');
-const ContentProvider = ({ children }: { children: ReactNode }) => {
+const ContentProvider = ({children}: {children: ReactNode}) => {
   const [state, setState] = useState<InitialStateType>(initialState);
-  const { currentUser } = useAuth();
+  const {currentUser} = useAuth();
 
   function handleState(
     name: keyof InitialStateType | FirestoreCollectionPath,
-    value:
-      | AnnouncementType[]
-      | ClientChatType[]
-      | StudInfoSortedType
-      | string
-      | ChattableType[] | InitialStateType['role']
+    value: AnnouncementType[] | StudInfoSortedType | string | MessagePromptType,
   ) {
-    setState(prevState => ({ ...prevState, [name]: value }));
+    setState(prevState => ({...prevState, [name]: value}));
+  }
+
+  function handleMessage(props: MessagePromptType) {
+    handleState('message', props);
+  }
+
+  function handleRole(props: RoleType) {
+    handleState('role', props);
   }
 
   const handleSnapshot = useCallback((name: FirestoreCollectionPath) => {
     const newDate = new Date();
     const month = newDate.getMonth();
     const year = newDate.getFullYear();
-    const MONTH = currentMonth({ month, year })?.name.toUpperCase();
+    const MONTH = currentMonth({month, year})?.name.toUpperCase();
 
     return collectionRef(name)
       .doc(MONTH)
@@ -70,7 +68,7 @@ const ContentProvider = ({ children }: { children: ReactNode }) => {
         const holder: AnnouncementType[] = [];
         if (snapshot.docs.length > 0) {
           snapshot.docs.forEach(doc => {
-            holder.push({ ...doc.data(), docId: doc.id } as AnnouncementType);
+            holder.push({...doc.data(), docId: doc.id} as AnnouncementType);
           });
         }
         handleState(
@@ -80,64 +78,34 @@ const ContentProvider = ({ children }: { children: ReactNode }) => {
       });
   }, []);
 
-  function handleSelectedChat(docId: string) {
-    handleState('selectedChat', docId);
-  }
-
-  function handleRole(props: RoleType) {
-    handleState('role', props)
-  }
-
   useEffect(() => {
     const unsub = handleSnapshot('announcement');
     return () => unsub();
   }, [handleSnapshot]);
 
   useEffect(() => {
-    const email = currentUser !== null ? currentUser.email : '';
-    const unsub = chatColReference
-      .where('participants', 'array-contains', email)
-      .limit(8)
-      .orderBy('dateModified')
-      .onSnapshot(snapshot => {
-        const chatHeads: ClientChatType[] = [];
-        if (snapshot !== null) {
-          snapshot.docs.forEach(doc => {
-            const chatHead = { ...doc.data(), docId: doc.id } as ChatConfigType;
-            const inbox: ChatType[] = [];
-            chatColReference
-              .doc(doc.id)
-              .collection('inbox')
-              .limit(20)
-              .orderBy('dateCreated')
-              .onSnapshot(inboxsnap => {
-                inboxsnap.docs.forEach(inDoc => {
-                  const message = {
-                    ...inDoc.data(),
-                    docId: inDoc.id,
-                  } as ChatType;
-                  inbox.push(message);
-                });
-              });
-            chatHeads.push({ ...chatHead, inbox });
-          });
-          handleState('chat', chatHeads);
-        }
-      });
-    return () => {
-      if (currentUser !== null) {
-        unsub();
+    async function getRole() {
+      try {
+        const role = await AsyncStorage.getItem('role');
+        handleRole(role as RoleType);
+      } catch (err) {
+        console.log(err, 'Error in role');
       }
+    }
+    return () => {
+      void getRole();
     };
   }, [currentUser]);
 
-  const values = {
-    ...state,
-    handleSelectedChat,
-    handleRole
-  };
   return (
-    <ContentContext.Provider value={values}>{children}</ContentContext.Provider>
+    <ContentContext.Provider
+      value={{
+        ...state,
+        handleMessage,
+        handleRole,
+      }}>
+      {children}
+    </ContentContext.Provider>
   );
 };
 

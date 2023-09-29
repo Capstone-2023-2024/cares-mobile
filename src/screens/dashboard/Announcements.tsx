@@ -19,7 +19,7 @@ const Announcements = () => {
   const paramsExist = typeof params === 'string';
 
   return (
-    <View className="my-auto h-full bg-yellow-300">
+    <View className="my-auto h-full">
       <Text className="text-center text-4xl text-black">Announcements</Text>
       <ScrollView className="h-full" scrollEnabled={!paramsExist}>
         {[
@@ -39,7 +39,7 @@ const Container = (props: ContainerType) => {
   const viewStyle = single ? 'h-full justify-center ' : 'h-[70vh]';
 
   return (
-    <View className={`${viewStyle} bg-green-300 shadow-sm`}>
+    <View className={`${viewStyle} shadow-sm`}>
       {!photoUrl ? (
         <View className="h-32 w-full bg-primary" />
       ) : (
@@ -50,7 +50,7 @@ const Container = (props: ContainerType) => {
           src={retrieveImageFBStorage(photoUrl)}
         />
       )}
-      <View className="mx-auto w-11/12 bg-blue-400">
+      <View className="mx-auto w-11/12 p-2 shadow-sm">
         <Text className="mb-2 text-xl font-black capitalize text-primary">{`${department} department`}</Text>
         <Text className="text-black">{message}</Text>
       </View>
