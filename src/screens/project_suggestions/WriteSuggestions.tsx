@@ -1,26 +1,23 @@
 import React, {useState} from 'react';
 import {
-  View,
-  StyleSheet,
-  Image,
-  TextInput,
-  TouchableOpacity,
   Alert,
   ImageBackground,
-  Dimensions,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import {Text} from '~/components';
 import BackHeader from '~/components/BackHeader';
 import {useNav} from '~/contexts/NavigationContext';
-import {Text} from '~/components';
-
-const write = require('~/assets/icons/writing.png');
-const bsu = require('~/assets/BSUBACKGROUND.png');
+import {bsu} from '~/utils/imagePaths';
+import {imageStyle} from '~/utils/opacity';
 
 const WriteSuggestions = () => {
   const {navigateTo} = useNav();
+
   const [inputValue, setInputValue] = useState('');
 
-  const handleInputChange = text => {
+  const handleInputChange = (text: string) => {
     // Limit the input to 150 characters
     if (text.length <= 150) {
       setInputValue(text);
@@ -42,40 +39,26 @@ const WriteSuggestions = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View className="flex-1">
       <ImageBackground
         source={bsu} // Replace with your background image path
-        style={styles.backgroundImage}
-        imageStyle={{opacity: 0.7}} // Set the opacity of the background image
+        className="resize-cover h-screen w-screen flex-1"
+        imageStyle={imageStyle} // Set the opacity of the background image
       >
         <BackHeader />
-        <View style={styles.suggestionContainer}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignSelf: 'center',
-              backgroundColor: 'white',
-              borderRadius: 25,
-              width: '90%',
-              padding: 10,
-            }}>
-            <Image
-              style={{width: 40, height: 40, alignSelf: 'center'}}
-              source={write}
-            />
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 30,
-                fontWeight: '800',
-                color: 'rgb(118, 52, 53)',
-              }}>
+        <View className="mt-4 p-2">
+          <View className="w-5/6 flex-row self-center rounded-md bg-white p-2">
+            {/* <Image
+            style={{ width: 40, height: 40, alignSelf: 'center' }}
+            source={write}
+          /> */}
+            <Text className="text-center text-xl font-semibold text-red-300">
               Write your suggestion
             </Text>
           </View>
-          <View style={styles.inputContainer}>
+          <View className="mt-4 w-5/6 self-center">
             <TextInput
-              style={styles.input}
+              className="h-64 w-full rounded-sm border bg-white p-2 text-lg text-black"
               placeholder="What's on your mind?"
               textAlignVertical="top"
               multiline={true}
@@ -83,22 +66,16 @@ const WriteSuggestions = () => {
               onChangeText={handleInputChange}
               maxLength={150} // Set the maximum character limit to 150
             />
-            <View style={styles.characterCountContainer}>
-              <Text style={styles.characterCountText}>
+            <View className="absolute bottom-6 right-6">
+              <Text className="text-lg font-semibold text-black opacity-50">
                 {inputValue.length}/150
               </Text>
             </View>
           </View>
           <TouchableOpacity
-            style={styles.submitButton}
+            className="boder mt-4 h-24 w-1/4 self-center rounded-sm bg-red-300"
             onPress={handleSubmission}>
-            <Text
-              style={{
-                textAlign: 'center',
-                color: 'white',
-                fontWeight: 'bold',
-                padding: 7,
-              }}>
+            <Text className="p-2 text-center font-semibold text-white">
               Submit
             </Text>
           </TouchableOpacity>
@@ -107,56 +84,5 @@ const WriteSuggestions = () => {
     </View>
   );
 };
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
-    width: windowWidth,
-    height: windowHeight,
-  },
-  suggestionContainer: {
-    marginTop: '3%',
-    padding: 10,
-  },
-  input: {
-    width: '100%',
-    height: 200,
-    fontSize: 18,
-    borderWidth: 1,
-    borderRadius: 15,
-    padding: 10,
-    color: 'black',
-    backgroundColor: 'white',
-  },
-  inputContainer: {
-    marginTop: '5%',
-    alignSelf: 'center',
-    width: '95%', // Adjust the width as needed
-  },
-  characterCountContainer: {
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
-  },
-  characterCountText: {
-    opacity: 0.5,
-    color: 'black',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  submitButton: {
-    alignSelf: 'center',
-    marginTop: '5%',
-    width: '20%',
-    height: 40,
-    borderWidth: 2,
-    borderRadius: 15,
-    backgroundColor: 'rgb(118,52,53)',
-  },
-});
 
 export default WriteSuggestions;

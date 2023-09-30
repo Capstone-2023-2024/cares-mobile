@@ -15,8 +15,9 @@ import {useChat} from '~/contexts/ChatContext';
 import type {ChattableProps} from '~/contexts/ChatContext/types';
 
 interface AddIconType {
+  text: string;
   showSearch: boolean;
-  emailList: ChattableProps[];
+  chattable: ChattableProps[];
 }
 
 const ChatHead = () => {
@@ -60,15 +61,17 @@ const ChatPeopleContainer = (props: {participants: string[]; id: string}) => {
 };
 
 const AddChatIcon = () => {
+  const {chattables} = useChat();
   const [state, setState] = useState<AddIconType>({
+    text: '',
     showSearch: false,
-    emailList: [],
+    chattable: [],
   });
   const {handleSelectedChat, selectedChat} = useChat();
 
   function handleState(
     key: keyof AddIconType,
-    value: AddIconType['showSearch'] | AddIconType['emailList'],
+    value: AddIconType['showSearch'] | AddIconType['chattable'] | string,
   ) {
     setState(prevState => ({...prevState, [key]: value}));
   }
@@ -79,18 +82,23 @@ const AddChatIcon = () => {
 
   function handleSearch(text: string) {
     handleSelectedChat(null);
+    handleState('text', text);
     if (text.trim() !== '') {
-      const emailList = chattables.filter(({email}) => email.match(text));
-      handleState('emailList', emailList);
+      const chattable = chattables.filter(({email}) => email.match(text));
+      handleState('chattable', chattable);
+      // handleState('text', '')
     }
   }
 
   function handleEmailSelection() {
-    const selectedEmail = state.emailList[0];
+    const selectedEmail = state.chattable[0];
     handleSelectedChat(selectedEmail?.email ?? '');
+    handleState('showSearch', false);
   }
 
-  const renderEmailList = ({item}: ListRenderItemInfo<ChattableType>) => {
+  console.log({selectedChat});
+
+  const renderEmailList = ({item}: ListRenderItemInfo<ChattableProps>) => {
     return (
       <TouchableOpacity onPress={handleEmailSelection} className="bg-white/90">
         <Text className="p-2 px-4">{item.email}</Text>
@@ -117,7 +125,7 @@ const AddChatIcon = () => {
         }}>
         <View className="mx-auto my-auto h-1/3 w-5/6 rounded-lg bg-white p-4">
           <TextInput
-            value={selectedChat !== null ? selectedChat : ''}
+            value={selectedChat !== null ? selectedChat : state.text}
             className={`${
               state.showSearch ? 'w-full' : 'w-1/2'
             } absolute mt-4 self-center rounded-full bg-slate-200 px-4 duration-500 ease-in-out`}
@@ -125,7 +133,7 @@ const AddChatIcon = () => {
           />
           <FlatList
             className="mt-16 h-full"
-            data={state.emailList}
+            data={state.chattable}
             renderItem={renderEmailList}
             keyExtractor={item => item.email}
           />

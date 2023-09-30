@@ -20,7 +20,7 @@ const initialState: InitialStateType = {
 const AuthContext = createContext<AuthContextType>({
   ...initialState,
   signout: async () => {},
-  onGoogleButtonPress: async (p: FirestoreCollectionPath) => null,
+  onGoogleButtonPress: async () => null,
 });
 
 const AuthProvider = ({children}: AuthProviderProps) => {

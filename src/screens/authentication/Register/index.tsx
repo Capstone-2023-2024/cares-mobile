@@ -1,23 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { icon, imageDimension } from 'cics-mobile-client/../../shared/images';
-import type { StudInfoSortedType } from 'cics-mobile-client/../../shared/types';
-import React, { useState } from 'react';
-import { Alert, Image, TouchableOpacity, View } from 'react-native';
+import {icon, imageDimension} from 'cics-mobile-client/../../shared/images';
+import type {StudInfoSortedType} from 'cics-mobile-client/../../shared/types';
+import React, {useState} from 'react';
+import {Alert, Image, TouchableOpacity, View} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-import { Extractor } from 'react-native-pdf-extractor';
-import type { Transient } from 'react-native-pdf-extractor/src/types';
-import { Text } from '~/components';
-import { Button, Link } from '~/components/Button';
-import { Heading } from '~/components/Heading';
-import { Textfield } from '~/components/Textfield';
-import { useNav } from '~/contexts/NavigationContext';
-import { Error } from '~/utils/error';
+import {Extractor} from 'react-native-pdf-extractor';
+import type {Transient} from 'react-native-pdf-extractor/src/types';
+import {Text} from '~/components';
+import {Button, Link} from '~/components/Button';
+import {Heading} from '~/components/Heading';
+import {Textfield} from '~/components/Textfield';
+import {useNav} from '~/contexts/NavigationContext';
+import {Error} from '~/utils/error';
 import {
   collectionRef,
   validateEmail,
   validateEmailWithCOR,
 } from '~/utils/firebase';
-import type { CORPatternsProps, FileType, UserCacheType } from './types';
+import type {CORPatternsProps, FileType, UserCacheType} from './types';
 
 const Register = () => {
   const milToKB = 1000;
@@ -32,7 +32,7 @@ const Register = () => {
     {
       name: 'college',
       regex:
-        /College of [\"Information and Communications Technology\"-\"Industrial Technology\"-\"Education\"-\"Engineering\"]+/,
+        /College of ["Information and Communications Technology"-"Industrial Technology"-"Education"-"Engineering"]+/,
     },
     {name: 'schoolYear', regex: /^[A-Za-z0-9]+[^\d]+[\d]+-[\d]+$/},
     {name: 'name', regex: /^[A-Z]*, [^0-9]*\.$/},
@@ -128,7 +128,7 @@ const Register = () => {
       }
 
       const {name, studentNo, ...rest} = result;
-      const cache: UserCacheType = {studentNo: {...rest, name, email}};
+      const cache: UserCacheType = {[studentNo]: {...rest, name, email}};
       const emailFromCOR = validateEmailWithCOR(!name ? {name: ''} : {name});
       if (email !== emailFromCOR) {
         setFile(null);

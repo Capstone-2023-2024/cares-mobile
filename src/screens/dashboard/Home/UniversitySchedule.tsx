@@ -1,12 +1,12 @@
+import type {AnnouncementType} from 'cics-mobile-client/../../shared/types';
 import React from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {Text} from '~/components';
 import SvgContainer from '~/components/SvgContainer';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {pin} from '~/utils/svgIcons';
-import type {AnnouncementType} from 'cics-mobile-client/../../shared/types';
 import {HeadingTemplate, TabContainer} from './Usertab';
-import {Text} from '~/components';
 
 const UniversitySchedule = () => {
   const {announcement} = useContent();
@@ -36,7 +36,7 @@ const UniversitySchedule = () => {
 
 const Container = (props: AnnouncementType) => {
   const {navigateTo} = useNav();
-  const {dateCreated} = props;
+  // const {dateCreated} = props;
   // console.log(dateCreated);
   return (
     <TouchableOpacity

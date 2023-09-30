@@ -1,9 +1,7 @@
-import {View, Text} from 'react-native';
 import React, {useEffect} from 'react';
-import {useRoute} from '@react-navigation/native';
-import {MessagePromptType} from '~/contexts/AuthContext/types';
-import {useNav} from '~/contexts/NavigationContext';
+import {Text, View} from 'react-native';
 import {useContent} from '~/contexts/ContentContext';
+import {useNav} from '~/contexts/NavigationContext';
 
 const Loading = () => {
   const {message} = useContent();
@@ -26,7 +24,7 @@ const Loading = () => {
     }
     navigateTo('Landing');
     return console.log('Please contact your IT Admin');
-  }, []);
+  }, [message, navigateTo]);
 
   return (
     <View className="absolute z-50 h-screen w-screen items-center justify-center bg-white opacity-95">

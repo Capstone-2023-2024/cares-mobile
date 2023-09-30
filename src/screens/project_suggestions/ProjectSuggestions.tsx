@@ -5,9 +5,12 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+import React from 'react';
 import {Text} from '~/components';
 import BackHeader from '~/components/BackHeader';
 import FooterNav from '~/components/FooterProjectS';
+import {imageStyle} from '~/utils/opacity';
+import {bsu} from '~/utils/imagePaths';
 
 // Import the images directly without using constants
 const suggest = require('~/assets/icons/image-project_suggest.png');
@@ -15,15 +18,14 @@ const sov = require('~/assets/icons/saved-or-votes.png');
 const votes = require('~/assets/icons/vote.png');
 const message = require('~/assets/icons/Message.png');
 const menudots = require('~/assets/icons/MenuDots.png');
-const bsu = '~/assets/BSUBACKGROUND.png';
 
 const ProjectSuggestions = () => {
   return (
     <View className="flex-1">
       <ScrollView>
         <ImageBackground
-          source={require(bsu)} // Replace with your background image path
-          imageStyle={{opacity: 0.7}} // Set the opacity of the background image
+          source={bsu} // Replace with your background image path
+          imageStyle={imageStyle} // Set the opacity of the background image
         >
           <BackHeader />
           {/* Project Suggestions Section */}

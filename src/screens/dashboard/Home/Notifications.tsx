@@ -1,9 +1,4 @@
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
-import SvgContainer from '~/components/SvgContainer';
-import {idea} from '~/utils/svgIcons';
-import {HeadingTemplate} from './Usertab';
-import {Text} from '~/components';
 
 const Notifications = () => {
   return (
@@ -17,18 +12,18 @@ const Notifications = () => {
   );
 };
 
-const NotifContainer = () => {
-  return (
-    <TouchableOpacity className="mx-auto mb-1 mt-2 w-11/12 rounded-full border-2 bg-white">
-      <View className="flex-row p-2 text-left">
-        <SvgContainer uri={idea} size="sm" />
-        <View className="ml-2 ">
-          <Text className="text-left text-xs font-bold text-black">Lorem</Text>
-          <Text>Lorem Ipsum in 7 days</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+// const NotifContainer = () => {
+//   return (
+//     <TouchableOpacity className="mx-auto mb-1 mt-2 w-11/12 rounded-full border-2 bg-white">
+//       <View className="flex-row p-2 text-left">
+//         <SvgContainer uri={idea} size="sm" />
+//         <View className="ml-2 ">
+//           <Text className="text-left text-xs font-bold text-black">Lorem</Text>
+//           <Text>Lorem Ipsum in 7 days</Text>
+//         </View>
+//       </View>
+//     </TouchableOpacity>
+//   );
+// };
 
 export default Notifications;

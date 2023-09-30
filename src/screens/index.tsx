@@ -1,3 +1,4 @@
+import React from 'react';
 import Login from '~/screens/authentication/Login';
 import Register from '~/screens/authentication/Register';
 import VerificationCode from '~/screens/authentication/VerificationCode';

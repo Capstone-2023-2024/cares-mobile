@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {
   AnnouncementType,
   StudInfoSortedType,
@@ -10,13 +11,12 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
+import {RoleType} from '~/screens/authentication/Landing/types';
 import {currentMonth} from '~/utils/date';
 import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
 import {useAuth} from '../AuthContext';
 import {MessagePromptType} from '../AuthContext/types';
 import type {ContentContextType, InitialStateType} from './types';
-import {RoleType} from '~/screens/authentication/Landing/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firestoreCollection = {
   announcement: [],
@@ -35,7 +35,7 @@ const ContentContext = createContext<ContentContextType>({
   handleRole: () => null,
 });
 
-const chatColReference = collectionRef('chat');
+// const chatColReference = collectionRef('chat');
 const ContentProvider = ({children}: {children: ReactNode}) => {
   const [state, setState] = useState<InitialStateType>(initialState);
   const {currentUser} = useAuth();
@@ -51,9 +51,9 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     handleState('message', props);
   }
 
-  function handleRole(props: RoleType) {
+  const handleRole = useCallback((props: RoleType) => {
     handleState('role', props);
-  }
+  }, []);
 
   const handleSnapshot = useCallback((name: FirestoreCollectionPath) => {
     const newDate = new Date();
@@ -95,7 +95,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     return () => {
       void getRole();
     };
-  }, [currentUser]);
+  }, [currentUser, handleRole]);
 
   return (
     <ContentContext.Provider

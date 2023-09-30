@@ -33,7 +33,7 @@ const App = () => {
 };
 
 const NavigationRouter = () => {
-  const {initialRouteName, loading, currentUser} = useAuth();
+  const {initialRouteName, currentUser} = useAuth();
 
   function iteratePaths(props: IteratePathsType) {
     const {pathList} = props;

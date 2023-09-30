@@ -1,19 +1,18 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, TouchableOpacity, View, Image} from 'react-native';
-import {useAuth} from '~/contexts/AuthContext';
-import {Error} from '~/utils/error';
-import {collectionRef, validateEmailWithCOR} from '~/utils/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ResultType,
   StudInfoSortedType,
 } from 'cics-mobile-client/../../shared/types';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Alert, Image, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
-import {UserCacheType} from '../authentication/Register/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {user} from '~/utils/imagePaths';
+import {useAuth} from '~/contexts/AuthContext';
 import {useContent} from '~/contexts/ContentContext';
-import type {PushToCacheProps, StudentInfoProps} from './Home/types';
-import type {RoleType} from '../authentication/Landing/types';
+import {Error} from '~/utils/error';
+import {collectionRef, validateEmailWithCOR} from '~/utils/firebase';
+import {user} from '~/utils/imagePaths';
+import {UserCacheType} from '../authentication/Register/types';
+import type {StudentInfoProps} from './Home/types';
 
 interface TextRowType {
   title: string;
@@ -45,8 +44,8 @@ const UserInfo = () => {
         const getUserCache = await AsyncStorage.getItem('usersCache');
         if (getUserCache !== null) {
           const usersCache: UserCacheType[] = JSON.parse(getUserCache);
-          usersCache.forEach(user => {
-            const currentLogin = Object.values(user).filter(
+          usersCache.forEach(uCache => {
+            const currentLogin = Object.values(uCache).filter(
               values => currentUser?.email === values.email,
             )[0];
             setState(currentLogin);
