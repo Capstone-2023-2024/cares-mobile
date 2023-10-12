@@ -1,4 +1,4 @@
-package com.cics;
+package com.cares;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

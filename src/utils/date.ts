@@ -1,4 +1,4 @@
-import {DateType} from 'cics-mobile-client/../../shared/types';
+import type {DateType} from 'mobile/../../mobile/../../shared/types/date';
 
 export function currentMonth({month, year}: Omit<DateType, 'date'>) {
   const months = [

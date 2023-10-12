@@ -1,20 +1,12 @@
 import React, {useState} from 'react';
-import {
-  Alert,
-  ImageBackground,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, TextInput, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import BackHeader from '~/components/BackHeader';
+import Background from '~/components/Background';
 import {useNav} from '~/contexts/NavigationContext';
-import {bsu} from '~/utils/imagePaths';
-import {imageStyle} from '~/utils/opacity';
 
 const WriteSuggestions = () => {
-  const {navigateTo} = useNav();
-
+  const {handleNavigation} = useNav();
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (text: string) => {
@@ -34,17 +26,13 @@ const WriteSuggestions = () => {
       // Add your submission logic here
       // For this example, we'll just show an alert message
       Alert.alert('Suggestion submitted', 'Thank you for your suggestion!');
-      navigateTo('ProjectSuggestions'); // Assuming 'ProjectSuggestions' is the destination route after submission
+      handleNavigation('ProjectSuggestions'); // Assuming 'ProjectSuggestions' is the destination route after submission
     }
   };
 
   return (
     <View className="flex-1">
-      <ImageBackground
-        source={bsu} // Replace with your background image path
-        className="resize-cover h-screen w-screen flex-1"
-        imageStyle={imageStyle} // Set the opacity of the background image
-      >
+      <Background>
         <BackHeader />
         <View className="mt-4 p-2">
           <View className="w-5/6 flex-row self-center rounded-md bg-white p-2">
@@ -80,7 +68,7 @@ const WriteSuggestions = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </ImageBackground>
+      </Background>
     </View>
   );
 };

@@ -1,41 +1,24 @@
-import {
-  View,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
 import React from 'react';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import BackHeader from '~/components/BackHeader';
-import FooterNav from '~/components/FooterProjectS';
-import {imageStyle} from '~/utils/opacity';
-import {bsu} from '~/utils/imagePaths';
-
-// Import the images directly without using constants
-const suggest = require('~/assets/icons/image-project_suggest.png');
-const sov = require('~/assets/icons/saved-or-votes.png');
-const votes = require('~/assets/icons/vote.png');
-const message = require('~/assets/icons/Message.png');
-const menudots = require('~/assets/icons/MenuDots.png');
+import Background from '~/components/Background';
+import FooterNav from '~/components/FooterNav';
 
 const ProjectSuggestions = () => {
   return (
     <View className="flex-1">
       <ScrollView>
-        <ImageBackground
-          source={bsu} // Replace with your background image path
-          imageStyle={imageStyle} // Set the opacity of the background image
-        >
+        <Background>
           <BackHeader />
           {/* Project Suggestions Section */}
           <View className="border-black-500 mb-5 w-full self-center border-2 bg-red-800">
             <View className="m-5 flex-row items-center self-center">
-              <Image className="h-12 w-12" source={suggest} />
+              {/* <Image className="h-12 w-12" source={suggest} /> */}
               <Text className="flex-1 text-center text-lg font-bold text-white">
                 Project / Event Suggestions for CICS
               </Text>
-              <Image className="h-12 w-12" source={suggest} />
+              {/* <Image className="h-12 w-12" source={suggest} /> */}
             </View>
           </View>
 
@@ -44,7 +27,7 @@ const ProjectSuggestions = () => {
           <Suggestion />
           <Suggestion />
           <Suggestion />
-        </ImageBackground>
+        </Background>
       </ScrollView>
       <View>
         <FooterNav />
@@ -62,7 +45,7 @@ const Suggestion = () => {
           <Text className="mt-2 text-black">Jhay Mark Reyes - BSIT 3A</Text>
           <Text className="text-black">
             24
-            <Image source={sov} />
+            {/* <Image source={sov} /> */}
           </Text>
         </View>
         <Text className="mt-2 text-center text-lg font-semibold text-black">
@@ -70,15 +53,15 @@ const Suggestion = () => {
         </Text>
         <View className="m-10 flex-row items-center justify-around">
           <TouchableOpacity className="flex-row items-center">
-            <Image className="h-5 w-5" source={votes} />
+            {/* <Image className="h-5 w-5" source={votes} /> */}
             <Text className="ml-2 text-black">Vote</Text>
           </TouchableOpacity>
           <TouchableOpacity className="flex-row items-center">
-            <Image className="h-5 w-5" source={message} />
+            {/* <Image className="h-5 w-5" source={message} /> */}
             <Text className="ml-2 text-black">Comment</Text>
           </TouchableOpacity>
           <TouchableOpacity className="flex-row items-center">
-            <Image className="h-5 w-5" source={menudots} />
+            {/* <Image className="h-5 w-5" source={menudots} /> */}
             <Text className="ml-2 text-black">Options</Text>
           </TouchableOpacity>
         </View>

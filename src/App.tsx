@@ -8,9 +8,9 @@ import HeaderDefault from '~/components/Header';
 import Screens, {optionsList} from '~/screens';
 import CtxProviders from './contexts';
 import {useAuth} from './contexts/AuthContext';
-import NavigationProvider from './contexts/NavigationContext';
-import {PathListType} from './types/navigation';
 import {pathWithoutUserList, pathWithUserList} from './utils/navPaths';
+import type {PathListType} from './utils/navPaths/types';
+import NavigationProvider from './contexts/NavigationContext';
 
 const Stack = createStackNavigator();
 

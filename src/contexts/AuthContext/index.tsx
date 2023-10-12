@@ -1,17 +1,18 @@
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import {collectionRef} from '~/utils/firebase';
 import type {
   AuthContextType,
   AuthProviderProps,
   FirebaseAuthProfileProps,
-  InitialStatePropType,
-  InitialStateType,
-  MessagePromptType,
+  InitialState,
+  InitialStateProps,
+  MessagePrompt,
 } from './types';
-import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
+import type {CollectionPath} from 'mobile/../mobile/../../shared/types/firebase';
 
-const initialState: InitialStateType = {
+const initialState: InitialStateProps = {
   loading: false,
   initialRouteName: 'Landing',
   currentUser: null,
@@ -26,14 +27,11 @@ const AuthContext = createContext<AuthContextType>({
 const AuthProvider = ({children}: AuthProviderProps) => {
   GoogleSignin.configure({
     webClientId:
-      '786929223549-eqsm6uf50jsriqcs1oncc4lmp80tluj6.apps.googleusercontent.com',
+      '786929223549-qpbb1jebv0gqk6641tcj57k154bjhauu.apps.googleusercontent.com',
   });
   const [state, setState] = useState(initialState);
 
-  function handleState(
-    key: keyof InitialStateType,
-    value: InitialStatePropType,
-  ) {
+  function handleState(key: keyof InitialStateProps, value: InitialState) {
     setState(prevState => ({...prevState, [key]: value}));
   }
 
@@ -47,8 +45,8 @@ const AuthProvider = ({children}: AuthProviderProps) => {
   }
 
   async function onGoogleButtonPress(
-    path: FirestoreCollectionPath,
-  ): Promise<MessagePromptType> {
+    path: CollectionPath,
+  ): Promise<MessagePrompt> {
     handleState('initialRouteName', 'Loading');
     handleState('loading', true);
     try {

@@ -1,8 +1,8 @@
-import {icon, imageDimension} from 'cics-mobile-client/../../shared/images';
 import React from 'react';
 import {Image, TextInput, TouchableOpacity, View} from 'react-native';
 import {type ImagePickerResponse} from 'react-native-image-picker';
 import IconButton from '~/components/IconButton';
+import {icon, imageDimension} from '~/utils/image';
 
 interface InputContainerType {
   handleImagePicker: () => void;
@@ -26,16 +26,16 @@ const InputContainer = (props: InputContainerType) => {
   return (
     <View className="absolute bottom-0 right-0 h-12 w-3/4 flex-row items-center rounded-lg bg-primary p-2">
       <TouchableOpacity onPress={selectMultipleFile} className="mx-2">
-        <Image
+        {/* <Image
           source={require('~/assets/attach-image.png')}
           src={filePath === null ? '' : (filePath as string)}
           {...imageDimension(icon)}
-        />
+        /> */}
       </TouchableOpacity>
-      <IconButton
+      {/* <IconButton
         uri={require('~/assets/attach-image.png')}
         onPress={handleImagePicker}
-      />
+      /> */}
       <TextInput
         value={message}
         onChangeText={text => setMessage(text)}
@@ -43,10 +43,10 @@ const InputContainer = (props: InputContainerType) => {
         className="m-2 flex-1 rounded-full bg-paper p-4 text-lg"
         multiline
       />
-      <IconButton
+      {/* <IconButton
         uri={require('~/assets/send.png')}
         onPress={handleSendMessage}
-      />
+      /> */}
     </View>
   );
 };

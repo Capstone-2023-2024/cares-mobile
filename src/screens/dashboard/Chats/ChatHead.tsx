@@ -109,10 +109,10 @@ const AddChatIcon = () => {
   return (
     <View className="relative mt-4 h-12 w-12 items-center justify-center self-center overflow-hidden rounded-lg bg-paper">
       <View className="absolute">
-        <IconButton
+        {/* <IconButton
           onPress={handleToggleButton}
           uri={require('~/assets/icons/Award-Icon.png')}
-        />
+        /> */}
       </View>
       <Modal
         animationType="fade"

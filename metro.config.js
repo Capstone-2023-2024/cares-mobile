@@ -10,12 +10,17 @@ const path = require('path');
 
 const watchFolders = [
   //Relative path to packages directory
+  path.resolve(`${__dirname}/../shared/images`),
+  path.resolve(`${__dirname}/../shared/names`),
+  path.resolve(`${__dirname}/../shared/types/announcement`),
+  path.resolve(`${__dirname}/../shared/types/date`),
+  path.resolve(`${__dirname}/../shared/types/error`),
+  path.resolve(`${__dirname}/../shared/types/firebase`),
+  path.resolve(`${__dirname}/../shared/types/media`),
+  path.resolve(`${__dirname}/../shared/types/student`),
   path.resolve(`${__dirname}/../../node_modules`), // References `package_name/node_modules`
   path.resolve(`${__dirname}/../../node_modules/react-native`),
   path.resolve(`${__dirname}/../../node_modules/nativewind/tailwind`), // References `css`
-  path.resolve(`${__dirname}/../shared/types`),
-  path.resolve(`${__dirname}/../shared/names`),
-  path.resolve(`${__dirname}/../shared/images`),
 ];
 
 const config = {

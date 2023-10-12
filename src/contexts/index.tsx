@@ -2,7 +2,11 @@ import React, {type ReactNode} from 'react';
 import AuthProvider from './AuthContext';
 import ContentProvider from './ContentContext';
 
-const CtxProviders = ({children}: {children: ReactNode}) => {
+interface CtxProviderProps {
+  children: ReactNode;
+}
+
+const CtxProviders = ({children}: CtxProviderProps) => {
   return (
     <AuthProvider>
       <ContentProvider>{children}</ContentProvider>

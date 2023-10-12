@@ -1,9 +1,9 @@
-import type {StudInfoSortedType} from 'shared/types';
+import type {StudentCORProps} from 'mobile/../../shared/types/student';
 import type {UserCacheType} from '~/screens/authentication/Register/types';
 
 export interface StudentInfoProps {
   id: string;
-  data: () => Omit<StudInfoSortedType, 'studentNo'>;
+  data: () => Omit<StudentCORProps, 'studentNo'>;
 }
 
 export interface PushToCacheProps {

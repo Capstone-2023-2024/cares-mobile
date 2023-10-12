@@ -1,8 +1,8 @@
-import {icon, imageDimension} from 'cics-mobile-client/../../shared/images';
 import React from 'react';
 import {Image, ScrollView, View} from 'react-native';
 import {Text} from '~/components';
 import {useChat} from '~/contexts/ChatContext';
+import {icon, imageDimension} from '~/utils/image';
 
 const ChatBox = () => {
   const {chat, selectedChat} = useChat();
@@ -13,11 +13,12 @@ const ChatBox = () => {
       return selectedInbox.map(({content, type, id}) => (
         <View key={id}>
           {type === 'photo' && (
-            <Image
-              {...imageDimension(icon)}
-              source={require('~/assets/icons/Award-Icon.png')}
-              src={content}
-            />
+            <></>
+            // <Image
+            //   {...imageDimension(icon)}
+            //   source={require('~/assets/icons/Award-Icon.png')}
+            //   src={content}
+            // />
           )}
           {type === 'text' && <Text>{content}</Text>}
         </View>

@@ -1,12 +1,12 @@
-import {retrieveImageFBStorage} from '../../../../../shared/images';
-import type {AnnouncementType} from '../../../../../shared/types';
+import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
 import React from 'react';
 import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import {useContent} from '~/contexts/ContentContext';
-import {useNav} from '~/contexts/NavigationContext';
-import {announcementPreview1, cics} from '~/utils/imagePaths';
 import {HeadingTemplate, TabContainer} from './Usertab';
+import {CommonActions, useNavigation} from '@react-navigation/native';
+import type {PathListType} from '~/utils/navPaths/types';
+import {useNav} from '~/contexts/NavigationContext';
 
 const Announcements = () => {
   const {announcement} = useContent();
@@ -34,9 +34,15 @@ const Announcements = () => {
   );
 };
 
-const Container = (props: AnnouncementType) => {
-  const {navigateTo} = useNav();
-  const {department, message, photoUrl, docId} = props;
+const Container = (props: AnnouncementProps) => {
+  const {handleNavigation} = useNav();
+  const {department, message, photoUrl, id} = props;
+
+  function handlePressReadMore() {
+    //TODO: pass id in Announcements
+    handleNavigation('Announcements');
+  }
+
   // console.log(retrieveImageFBStorage(photoUrl ?? ''));
 
   return (
@@ -44,7 +50,7 @@ const Container = (props: AnnouncementType) => {
       <View className="flex-row">
         <View className="items-start">
           <View className="flex-row items-center justify-center">
-            <Image source={cics} className="h-6 w-6 " resizeMode="center" />
+            {/* <Image source={cics} className="h-6 w-6 " resizeMode="center" /> */}
             <View className="ml-6">
               <Text className="text-center text-base font-bold uppercase text-black">
                 {department}
@@ -57,19 +63,19 @@ const Container = (props: AnnouncementType) => {
           <Text className="w-48 text-xs">{message}</Text>
           <TouchableOpacity
             className="self-center"
-            onPress={() => navigateTo('Announcements', docId)}>
+            onPress={handlePressReadMore}>
             <Text className="justify-center rounded-full border-2 border-black p-1 text-xs">
               Read More
             </Text>
           </TouchableOpacity>
         </View>
         <View className="h-28 w-24 overflow-hidden rounded-full bg-primary/40">
-          <Image
+          {/* <Image
             className="h-full w-full "
             source={announcementPreview1}
             src={retrieveImageFBStorage(photoUrl ?? 'Image1.png')}
             resizeMode="cover"
-          />
+          /> */}
         </View>
       </View>
     </View>

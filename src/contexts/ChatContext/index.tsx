@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { collectionRef } from '~/utils/firebase';
-import { useAuth } from '../AuthContext';
+import React, {createContext, useContext, useEffect, useState} from 'react';
+import {collectionRef} from '~/utils/firebase';
+import {useAuth} from '../AuthContext';
 import type {
   ChatConfigProps,
   ChatContextProps,
@@ -21,12 +21,12 @@ const ChatContext = createContext<ChatContextProps>({
   ...initialProps,
   handleSelectedChat: (props: string | null) => props,
 });
-const ChatProvider = ({ children }: ChatProviderProps) => {
-  const { currentUser } = useAuth();
+const ChatProvider = ({children}: ChatProviderProps) => {
+  const {currentUser} = useAuth();
   const [state, setState] = useState(initialProps);
 
   function handleState(key: keyof InitialProps, value: InitialPropsType) {
-    setState(prevState => ({ ...prevState, [key]: value }));
+    setState(prevState => ({...prevState, [key]: value}));
   }
 
   function handleSelectedChat(props: string | null) {
@@ -45,7 +45,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
           snapshot.docs.forEach(doc => {
             const id = doc.id;
             const data = doc.data();
-            const chatHead = { id, ...data } as ChatConfigProps;
+            const chatHead = {id, ...data} as ChatConfigProps;
             const inbox: MessageProps[] = [];
             collectionRef('chat')
               .doc(doc.id)
@@ -63,7 +63,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
                   inbox.push(message);
                 });
               });
-            chatHeads.push({ ...chatHead, inbox });
+            chatHeads.push({...chatHead, inbox});
           });
           handleState('chat', chatHeads);
         }
@@ -85,7 +85,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
           snapshot.docs.forEach(doc => {
             const id = doc.id;
             const data = doc.data() as Omit<ChattableProps, 'id'>;
-            placeholder.push({ id, ...data });
+            placeholder.push({id, ...data});
           });
           handleState('chattables', placeholder);
         });
@@ -96,7 +96,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
   }, [currentUser]);
 
   return (
-    <ChatContext.Provider value={{ ...state, handleSelectedChat }}>
+    <ChatContext.Provider value={{...state, handleSelectedChat}}>
       {children}
     </ChatContext.Provider>
   );

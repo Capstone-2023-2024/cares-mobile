@@ -14,11 +14,11 @@ const ChatNav = () => {
     <View className="h-16 flex-row items-center bg-paper px-2">
       <TouchableOpacity onPress={handleGoBack}>
         <View>
-          <Image
+          {/* <Image
             className="h-7 w-7 rotate-180 p-2"
             source={require('~/assets/right-arrow.png')}
             resizeMode="center"
-          />
+          /> */}
         </View>
       </TouchableOpacity>
       <View className="flex-1 items-center justify-center">

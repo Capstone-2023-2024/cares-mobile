@@ -1,22 +1,29 @@
-import {projectName} from '../../../shared/names';
 import React from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
+import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {cics} from '~/utils/imagePaths';
-import {Text} from '~/components';
+import {projectName} from '../../../shared/names';
 
 function Header({}: {withBack?: boolean}) {
-  const {navigateTo} = useNav();
+  const {handleNavigation} = useNav();
   const {initialRouteName, currentUser} = useAuth();
+
+  function handlePressRoute() {
+    handleNavigation(initialRouteName);
+  }
+
+  function handlePressChats() {
+    handleNavigation('Chats');
+  }
 
   return (
     <View className="h-16 flex-row items-center justify-between bg-primary px-2">
       <TouchableOpacity
         className="flex-row items-center"
-        onPress={() => navigateTo(initialRouteName)}>
+        onPress={handlePressRoute}>
         <View className="h-12 w-12">
-          <Image source={cics} className="h-full w-full" resizeMode="center" />
+          {/* <Image source={cics} className="h-full w-full" resizeMode="center" /> */}
         </View>
         <Text className="ml-2 text-base font-bold uppercase text-white">
           {projectName}
@@ -26,11 +33,11 @@ function Header({}: {withBack?: boolean}) {
         <>
           <TouchableOpacity
             className="-top-0 mr-2 h-12 w-12 items-center"
-            onPress={() => navigateTo('Chats')}>
-            <Image
+            onPress={handlePressChats}>
+            {/* <Image
               className="h-full w-full"
               source={require('~/assets/messages.png')}
-            />
+            /> */}
           </TouchableOpacity>
         </>
       )}

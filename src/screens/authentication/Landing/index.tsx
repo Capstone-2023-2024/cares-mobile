@@ -3,19 +3,19 @@ import React from 'react';
 import {View} from 'react-native';
 import {Text} from '~/components';
 import {Button} from '~/components/Button';
-import {useNav} from '~/contexts/NavigationContext';
-import type {RoleType} from './types';
 import {useContent} from '~/contexts/ContentContext';
+import {useNav} from '~/contexts/NavigationContext';
+import type {Role} from './types';
 
 const Landing = () => {
-  const roles: RoleType[] = ['student', 'faculty'];
-  const {navigateTo} = useNav();
+  const roles: Role[] = ['student', 'faculty'];
+  const {handleNavigation} = useNav();
   const {handleRole} = useContent();
 
-  async function handleUserRole(role: RoleType) {
+  async function handleUserRole(role: Role) {
     await AsyncStorage.setItem('role', role);
     handleRole(role);
-    navigateTo('Login');
+    handleNavigation('Login');
   }
 
   return (

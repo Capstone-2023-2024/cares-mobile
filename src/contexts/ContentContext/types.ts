@@ -1,14 +1,14 @@
-import type {AnnouncementType} from 'shared/types';
-import type {RoleType} from '~/screens/authentication/Landing/types';
-import {MessagePromptType} from '../AuthContext/types';
+import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
+import type {Role} from '~/screens/authentication/Landing/types';
+import {MessagePrompt} from '../AuthContext/types';
 
-export interface InitialStateType {
-  message: MessagePromptType;
-  role: RoleType | null;
-  announcement: AnnouncementType[];
+export interface InitialStateProps {
+  message: MessagePrompt;
+  role: Role | null;
+  announcement: AnnouncementProps[];
 }
 
-export interface ContentContextType extends InitialStateType {
-  handleMessage: (props: MessagePromptType) => void;
-  handleRole: (props: RoleType) => void;
+export interface ContentContextType extends InitialStateProps {
+  handleMessage: (props: MessagePrompt) => void;
+  handleRole: (props: Role) => void;
 }

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, TouchableOpacity, View } from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Alert, TouchableOpacity, View} from 'react-native';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
@@ -8,13 +8,13 @@ import {
   ImagePickerResponse,
   launchImageLibrary,
 } from 'react-native-image-picker';
-import { Text } from '~/components';
+import {Text} from '~/components';
 import IconButton from '~/components/IconButton';
 import ChatBox from './ChatBox';
 import ChatHead from './ChatHead';
 import ChatNav from './ChatNav';
 import InputContainer from './InputContainer';
-import ChatProvider, { useChat } from '~/contexts/ChatContext';
+import ChatProvider, {useChat} from '~/contexts/ChatContext';
 
 const Chats = () => {
   return (
@@ -28,7 +28,7 @@ const ChatChildren = () => {
   const [message, setMessage] = useState('');
   const [file, setFile] = useState<DocumentPickerResponse[]>([]);
   const [filePath, setFilePath] = useState<ImagePickerResponse | null>(null);
-  const { selectedChat } = useChat();
+  const {selectedChat} = useChat();
 
   async function selectMultipleFile() {
     try {
@@ -63,7 +63,7 @@ const ChatChildren = () => {
     };
 
     launchImageLibrary(options, response => {
-      const { didCancel, errorCode, errorMessage } = response;
+      const {didCancel, errorCode, errorMessage} = response;
       if (didCancel) {
         Alert.alert('User cancelled image picker');
       } else if (errorCode === 'camera_unavailable') {
@@ -89,31 +89,33 @@ const ChatChildren = () => {
 
   useEffect(() => {
     return () => {
-      console.log({ selectedChat }, 'in Chats index');
+      console.log({selectedChat}, 'in Chats index');
     };
   }, [selectedChat]);
 
-  return <View className="relative flex-1 bg-violet-300">
-    <ChatNav />
-    <View className="absolute right-0 top-16 w-3/4 bg-tertiary">
-      <View className="w-full flex-row justify-around rounded-xl bg-primary p-2">
-        <Text className="text-lg font-semibold">{selectedChat ?? ''}</Text>
-        <IconOptions />
+  return (
+    <View className="relative flex-1 bg-violet-300">
+      <ChatNav />
+      <View className="absolute right-0 top-16 w-3/4 bg-tertiary">
+        <View className="w-full flex-row justify-around rounded-xl bg-primary p-2">
+          <Text className="text-lg font-semibold">{selectedChat ?? ''}</Text>
+          <IconOptions />
+        </View>
+        <Categories />
       </View>
-      <Categories />
+      <ChatHead />
+      <ChatBox />
+      <InputContainer {...inputContainerProps} />
     </View>
-    <ChatHead />
-    <ChatBox />
-    <InputContainer {...inputContainerProps} />
-  </View>
-}
+  );
+};
 
 const IconOptions = () => {
   return (
     <View className="flex-row items-center justify-center">
       {/* <IconButton uri={require('~/assets/phone-call.png')} /> */}
       {/* <IconButton uri={require('~/assets/video-call.png')} /> */}
-      <IconButton uri={require('~/assets/ellipsis.png')} />
+      {/* <IconButton uri={require('~/assets/ellipsis.png')} /> */}
     </View>
   );
 };
@@ -127,7 +129,7 @@ const Categories = () => {
   );
 };
 
-const CategoryButton = ({ name }: { name: string }) => {
+const CategoryButton = ({name}: {name: string}) => {
   return (
     <TouchableOpacity className="w-full border bg-paper">
       <Text className="px-2 text-center text-xs font-semibold text-black">

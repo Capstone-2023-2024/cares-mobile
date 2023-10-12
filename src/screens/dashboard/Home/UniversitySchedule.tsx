@@ -1,12 +1,13 @@
-import type {AnnouncementType} from 'cics-mobile-client/../../shared/types';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
+import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
 import {Text} from '~/components';
-import SvgContainer from '~/components/SvgContainer';
+import SvgContainer from '~/components/SVGContainer';
 import {useContent} from '~/contexts/ContentContext';
-import {useNav} from '~/contexts/NavigationContext';
 import {pin} from '~/utils/svgIcons';
 import {HeadingTemplate, TabContainer} from './Usertab';
+import type {PathListType} from '~/utils/navPaths/types';
 
 const UniversitySchedule = () => {
   const {announcement} = useContent();
@@ -34,14 +35,21 @@ const UniversitySchedule = () => {
   );
 };
 
-const Container = (props: AnnouncementType) => {
-  const {navigateTo} = useNav();
-  // const {dateCreated} = props;
-  // console.log(dateCreated);
+const Container = (props: AnnouncementProps) => {
+  const navigate = useNavigation();
+
+  function handleNavigation(path: PathListType) {
+    navigate.dispatch(CommonActions.navigate({name: path}));
+  }
+
+  function handleUniSched() {
+    handleNavigation('UniversitySchedule');
+  }
+
   return (
     <TouchableOpacity
       className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full border-2 bg-tertiary px-2 py-4"
-      onPress={() => navigateTo('UniversitySchedule')}>
+      onPress={handleUniSched}>
       <View className="flex-row items-center">
         <SvgContainer uri={pin} size="sm" />
         <Text className="ml-2 w-1/2 text-xs text-white">

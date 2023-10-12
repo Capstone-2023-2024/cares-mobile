@@ -92,9 +92,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.cics"
+    namespace "com.cares"
     defaultConfig {
-        applicationId "com.cics"
+        applicationId "com.cares"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

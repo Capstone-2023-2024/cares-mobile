@@ -1,4 +1,4 @@
-import type {StudInfoSortedType} from 'shared/types';
+import type {StudInfoSortedType} from 'mobile/../../shared/types';
 
 export interface FileType {
   uri: string;

@@ -1,8 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import type {
-  AnnouncementType,
-  StudInfoSortedType,
-} from 'cics-mobile-client/../../shared/types';
 import React, {
   createContext,
   useCallback,
@@ -11,19 +6,23 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import {RoleType} from '~/screens/authentication/Landing/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import type {Role} from '~/screens/authentication/Landing/types';
 import {currentMonth} from '~/utils/date';
-import {FirestoreCollectionPath, collectionRef} from '~/utils/firebase';
+import {collectionRef} from '~/utils/firebase';
 import {useAuth} from '../AuthContext';
-import {MessagePromptType} from '../AuthContext/types';
-import type {ContentContextType, InitialStateType} from './types';
+import {MessagePrompt} from '../AuthContext/types';
+import type {ContentContextType, InitialStateProps} from './types';
+import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
+import type {StudentCORProps} from 'mobile/../../shared/types/student';
+import type {CollectionPath} from 'mobile/../../shared/types/firebase';
 
 const firestoreCollection = {
   announcement: [],
   chat: [],
   schedule: [],
 };
-const initialState: InitialStateType = {
+const initialState: InitialStateProps = {
   message: null,
   role: null,
   ...firestoreCollection,
@@ -37,25 +36,25 @@ const ContentContext = createContext<ContentContextType>({
 
 // const chatColReference = collectionRef('chat');
 const ContentProvider = ({children}: {children: ReactNode}) => {
-  const [state, setState] = useState<InitialStateType>(initialState);
+  const [state, setState] = useState<InitialStateProps>(initialState);
   const {currentUser} = useAuth();
 
   function handleState(
-    name: keyof InitialStateType | FirestoreCollectionPath,
-    value: AnnouncementType[] | StudInfoSortedType | string | MessagePromptType,
+    name: keyof InitialStateProps | CollectionPath,
+    value: AnnouncementProps[] | StudentCORProps | string | MessagePrompt,
   ) {
     setState(prevState => ({...prevState, [name]: value}));
   }
 
-  function handleMessage(props: MessagePromptType) {
+  function handleMessage(props: MessagePrompt) {
     handleState('message', props);
   }
 
-  const handleRole = useCallback((props: RoleType) => {
+  const handleRole = useCallback((props: Role) => {
     handleState('role', props);
   }, []);
 
-  const handleSnapshot = useCallback((name: FirestoreCollectionPath) => {
+  const handleSnapshot = useCallback((name: CollectionPath) => {
     const newDate = new Date();
     const month = newDate.getMonth();
     const year = newDate.getFullYear();
@@ -65,10 +64,10 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
       .doc(MONTH)
       .collection(`${year}`)
       .onSnapshot(snapshot => {
-        const holder: AnnouncementType[] = [];
+        const holder: AnnouncementProps[] = [];
         if (snapshot.docs.length > 0) {
           snapshot.docs.forEach(doc => {
-            holder.push({...doc.data(), docId: doc.id} as AnnouncementType);
+            holder.push({...doc.data(), id: doc.id} as AnnouncementProps);
           });
         }
         handleState(
@@ -87,7 +86,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     async function getRole() {
       try {
         const role = await AsyncStorage.getItem('role');
-        handleRole(role as RoleType);
+        handleRole(role as Role);
       } catch (err) {
         console.log(err, 'Error in role');
       }

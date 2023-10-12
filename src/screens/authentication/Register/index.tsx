@@ -1,17 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {icon, imageDimension} from 'cics-mobile-client/../../shared/images';
-import type {StudInfoSortedType} from 'cics-mobile-client/../../shared/types';
 import React, {useState} from 'react';
-import {Alert, Image, TouchableOpacity, View} from 'react-native';
+import {Alert, TouchableOpacity, View} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {Extractor} from 'react-native-pdf-extractor';
 import type {Transient} from 'react-native-pdf-extractor/src/types';
+import type {Error} from 'mobile/../../shared/types/error';
+import type {StudentCORProps} from 'mobile/../../shared/types/student';
 import {Text} from '~/components';
 import {Button, Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
 import {useNav} from '~/contexts/NavigationContext';
-import {Error} from '~/utils/error';
 import {
   collectionRef,
   validateEmail,
@@ -21,10 +20,8 @@ import type {CORPatternsProps, FileType, UserCacheType} from './types';
 
 const Register = () => {
   const milToKB = 1000;
-  const {navigateTo} = useNav();
-  const [studentInfo, setStudentInfo] = useState<StudInfoSortedType | null>(
-    null,
-  );
+  const {handleNavigation} = useNav();
+  const [studentInfo, setStudentInfo] = useState<StudentCORProps | null>(null);
   const [email, setEmail] = useState('');
   const [file, setFile] = useState<FileType | null>(null);
   const CORPatterns: CORPatternsProps[] = [
@@ -48,8 +45,8 @@ const Register = () => {
     {name: 'scholarship', regex: /^Official Receipt: [^/d]*$/},
   ];
 
-  function navigateToLoginWithRole() {
-    navigateTo('Login');
+  function handleNavigationLoginWithRole() {
+    handleNavigation('Login');
   }
 
   async function handleCORUpload() {
@@ -78,7 +75,7 @@ const Register = () => {
       .get();
     const {count} = doc.data();
     const isCountGreaterZero = count > 0;
-    const {studentNo, ...rest} = studentInfo as StudInfoSortedType;
+    const {studentNo, ...rest} = studentInfo as StudentCORProps;
 
     if (!email) {
       Alert.alert('Empty Email', 'Please enter your email address.');
@@ -101,12 +98,12 @@ const Register = () => {
     );
 
     setStudentInfo(null);
-    navigateToLoginWithRole();
+    handleNavigationLoginWithRole();
   }
 
   async function handlePDFResult(data: Transient | null) {
     if (data !== null) {
-      let idHolder: Partial<StudInfoSortedType> = {};
+      let idHolder: Partial<StudentCORProps> = {};
       const bsuPortal = 'https://bulsu.priisms.online';
       const uniqueTextArray = Array.from(new Set(data.text));
 
@@ -122,14 +119,14 @@ const Register = () => {
 
       const result =
         Object.keys(idHolder).length >= CORPatterns.length &&
-        (idHolder as Required<StudInfoSortedType>);
+        (idHolder as Required<StudentCORProps>);
       if (!result) {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }
 
       const {name, studentNo, ...rest} = result;
       const cache: UserCacheType = {[studentNo]: {...rest, name, email}};
-      const emailFromCOR = validateEmailWithCOR(!name ? {name: ''} : {name});
+      const emailFromCOR = validateEmailWithCOR({name});
       if (email !== emailFromCOR) {
         setFile(null);
         return Alert.alert('Unauthorized access of email');
@@ -166,10 +163,10 @@ const Register = () => {
         onPress={handleCORUpload}>
         {file && <Text className="mb-2 text-xs">Change COR</Text>}
         <View className="flex-row gap-2">
-          <Image
+          {/* <Image
             source={require('~/assets/icons/pdfFilled.png')}
             {...imageDimension(icon)}
-          />
+          /> */}
           {file && (
             <View>
               <Text className="font-semibold">{`${file.name?.substring(
@@ -195,7 +192,7 @@ const Register = () => {
         <Text className="text-center text-xs">Already registered? </Text>
         <Link
           textStyle="text-primary/60 text-center"
-          onPress={navigateToLoginWithRole}>
+          onPress={handleNavigationLoginWithRole}>
           Login here
         </Link>
       </View>

@@ -1,18 +1,12 @@
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
-import {ResultType} from 'cics-mobile-client/../../shared/types';
-
-export type FirestoreCollectionPath =
-  | 'chat'
-  | 'announcement'
-  | 'about'
-  | 'student'
-  | 'faculty';
+import type {CollectionPath} from 'mobile/../../mobile/../../shared/types/firebase';
+import type {ResultType} from 'mobile/../../mobile/../../shared/types/student';
 
 const app = firebase.app();
 
 export const firestoreApp = firestore(app);
-export const collectionRef = (path: FirestoreCollectionPath) =>
+export const collectionRef = (path: CollectionPath) =>
   firestoreApp.collection(path);
 
 export const validateEmail = (email: string) => {

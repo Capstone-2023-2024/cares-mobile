@@ -1,35 +1,27 @@
-import {View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import {useNav} from '~/contexts/NavigationContext';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import {useContent} from '~/contexts/ContentContext';
+import {useNav} from '~/contexts/NavigationContext';
 
 const FooterNav = () => {
   const {role} = useContent();
-  const {navigateTo} = useNav();
+  const {handleNavigation} = useNav();
+
+  function handlePressProject() {
+    handleNavigation('ProjectSuggestions');
+  }
 
   return (
     <View className=" bottom-0 left-0 right-0">
       <View className="flex-row items-center justify-center border-t border-gray-400 bg-white px-12 pt-2">
-        {/* <TouchableOpacity className="mb-2" onPress={() => navigateTo('Takers')}>
-          <View className="items-center">
-            <Image
-              source={require('~/assets/contract.png')}
-              className="h-10 w-10"
-            />
-            <Text className="font-bold text-black">Apply Special Class</Text>
-          </View>
-        </TouchableOpacity> */}
-
         {role === 'student' && (
-          <TouchableOpacity
-            className="mb-2"
-            onPress={() => navigateTo('ProjectSuggestions')}>
+          <TouchableOpacity className="mb-2" onPress={handlePressProject}>
             <View className="items-center">
-              <Image
+              {/* <Image
                 source={require('~/assets/project.png')} // Assuming you have a different image for project suggestions
                 className="h-10 w-10"
-              />
+              /> */}
               <Text className="font-bold text-black">Project Suggestions</Text>
             </View>
           </TouchableOpacity>

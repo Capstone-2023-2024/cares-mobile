@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {useContent} from '~/contexts/ContentContext';
-// import type {UniversityScheduleType} from 'cics-mobile-client/../../shared/types';
+// import type {UniversityScheduleType} from 'mobile/../../mobile/../../shared/types';
 import type {MarkedDates} from 'react-native-calendars/src/types';
 import Announcements from './Announcements';
 
