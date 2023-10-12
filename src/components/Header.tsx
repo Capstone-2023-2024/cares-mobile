@@ -3,7 +3,7 @@ import {TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {projectName} from '../../../shared/names';
+import {projectName} from '~/utils/config';
 
 function Header({}: {withBack?: boolean}) {
   const {handleNavigation} = useNav();
