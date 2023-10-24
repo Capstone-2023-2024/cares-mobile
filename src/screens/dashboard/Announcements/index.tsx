@@ -5,6 +5,7 @@ import type {AnnouncementProps} from '~/types/announcement';
 import {useNavigation} from '@react-navigation/native';
 import {Text} from '~/components';
 import type {ContainerProps} from './types';
+import {retrieveImageFBStorage} from '~/utils/image';
 
 const Announcements = () => {
   const {announcement} = useContent();
@@ -38,17 +39,23 @@ const Container = (props: ContainerProps) => {
       {!photoUrl ? (
         <View className="h-32 w-full bg-primary" />
       ) : (
-        <></>
-        // <Image
-        //   className="h-2/3"
-        //   resizeMode="contain"
-        //   source={announcementPreview1}
-        //   src={retrieveImageFBStorage(photoUrl)}
-        // />
+        <Image
+          className="h-2/3"
+          resizeMode="contain"
+          source={require('~/assets/error.svg')}
+          src={retrieveImageFBStorage(photoUrl)}
+        />
       )}
       <View className="mx-auto w-11/12 p-2 shadow-sm">
-        <Text className="mb-2 text-xl font-black capitalize text-primary">{`${department} department`}</Text>
-        <Text className="text-black">{message}</Text>
+        <View className="scale-150 flex-row items-center justify-center">
+          <Image
+            source={require('~/assets/cics_icon.png')}
+            className="mr-2 h-8 w-8"
+            resizeMode="center"
+          />
+          <Text className="mb-2 text-xl font-black capitalize text-primary">{`${department} department`}</Text>
+        </View>
+        <Text className="text-center font-semibold text-black">{message}</Text>
       </View>
     </View>
   );

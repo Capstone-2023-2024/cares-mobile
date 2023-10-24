@@ -1,10 +1,11 @@
 import React from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View, Image} from 'react-native';
 import {Text} from '~/components';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import type {AnnouncementProps} from '~/types/announcement';
 import {HeadingTemplate, TabContainer} from './Usertab';
+import {retrieveImageFBStorage} from '~/utils/image';
 
 const Announcements = () => {
   const {announcement} = useContent();
@@ -42,11 +43,15 @@ const Container = (props: AnnouncementProps) => {
   }
 
   return (
-    <View className="ml-2 mr-2 items-center justify-center overflow-hidden rounded-3xl border-2 bg-white p-4 px-6 shadow-xl">
+    <View className="ml-2 mr-2 items-center justify-center overflow-hidden rounded-3xl bg-paper p-4 px-6 shadow-md">
       <View className="flex-row">
         <View className="items-start">
           <View className="flex-row items-center justify-center">
-            {/* <Image source={cics} className="h-6 w-6 " resizeMode="center" /> */}
+            <Image
+              source={require('~/assets/cics_icon.png')}
+              className="h-8 w-8 "
+              resizeMode="center"
+            />
             <View className="ml-6">
               <Text className="text-center text-base font-bold uppercase text-black">
                 {department}
@@ -66,12 +71,12 @@ const Container = (props: AnnouncementProps) => {
           </TouchableOpacity>
         </View>
         <View className="h-28 w-24 overflow-hidden rounded-full bg-primary/40">
-          {/* <Image
+          <Image
             className="h-full w-full "
-            source={announcementPreview1}
+            source={require('~/assets/error.svg')}
             src={retrieveImageFBStorage(photoUrl ?? 'Image1.png')}
             resizeMode="cover"
-          /> */}
+          />
         </View>
       </View>
     </View>

@@ -49,8 +49,12 @@ export const PinSvg = () => <Svg id="pin.svg" />;
 export const SendSvg = () => <Svg id="send.svg" />;
 export const UserSvg = () => <Svg id="user.svg" />;
 
-// export const ErrorSvg = () => <Svg id="error.svg" />;
-// export const FireworksSvg = () => <Svg id="fireworks.svg" />;
-// export const PadlockSvg = () => <Svg id="padlock.svg" />;
-// export const QuestionSvg = () => <Svg id="question.svg" />;
-// export const SadSvg = () => <Svg id="sad.svg" />;
+export function retrieveImageFBStorage(photoUrl: string) {
+  const BASE = 'https://firebasestorage.googleapis.com';
+  const BASE_DIVIDER = '/v0/b/';
+  const STORAGE_BUCKET = 'cics-a78de.appspot.com';
+  const PATH_DIVIDER = '/o/';
+  const PARAMS = '?alt=media';
+  const PATH = photoUrl.replace(/\//g, '%2F');
+  return `${BASE}${BASE_DIVIDER}${STORAGE_BUCKET}${PATH_DIVIDER}images%2F${PATH}${PARAMS}`;
+}

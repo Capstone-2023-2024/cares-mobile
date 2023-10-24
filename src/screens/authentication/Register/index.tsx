@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
-import {Alert, TouchableOpacity, View} from 'react-native';
+import {Alert, TouchableOpacity, View, Image} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {Extractor} from 'react-native-pdf-extractor';
 import type {Transient} from 'react-native-pdf-extractor/src/types';
@@ -94,7 +94,7 @@ const Register = () => {
     Alert.alert(
       isCountGreaterZero
         ? "You're already registered!\nPlease login"
-        : 'You can now login your Google BulSU Email',
+        : 'You may now use your Google BulSU Email to login',
     );
 
     setStudentInfo(null);
@@ -129,7 +129,7 @@ const Register = () => {
       const emailFromCOR = validateEmailWithCOR({name});
       if (email !== emailFromCOR) {
         setFile(null);
-        return Alert.alert('Unauthorized access of email');
+        return Alert.alert('Please check if your email address is valid');
       }
       await AsyncStorage.setItem('usersCache', JSON.stringify([cache]));
       setStudentInfo(result);
@@ -163,10 +163,12 @@ const Register = () => {
         onPress={handleCORUpload}>
         {file && <Text className="mb-2 text-xs">Change COR</Text>}
         <View className="flex-row gap-2">
-          {/* <Image
-            source={require('~/assets/icons/pdfFilled.png')}
-            {...imageDimension(icon)}
-          /> */}
+          <View className="h-8 w-8">
+            <Image
+              source={require('~/assets/pdfFilled.png')}
+              className="h-full w-full"
+            />
+          </View>
           {file && (
             <View>
               <Text className="font-semibold">{`${file.name?.substring(

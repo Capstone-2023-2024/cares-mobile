@@ -14,7 +14,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
-  const [mayor, setMayor] = useState<'active' | undefined>(undefined);
+  // const [mayor, setMayor] = useState<'active' | undefined>(undefined);
   const [state, setState] =
     useState<Omit<StudentWithClassSection, 'studentNo'>>();
   const [studNo, setStudNo] = useState('');
@@ -38,40 +38,40 @@ const UserInfo = () => {
     }
   }
 
-  async function handleMayorApplication() {
-    const date = new Date();
-    if (state !== undefined) {
-      const candidate = {
-        email: state.email,
-        name: state.name,
-        section: state.section,
-        yearLevel: state.yearLevel,
-        year: date.getFullYear().toString(),
-      };
-      try {
-        const snap = await collectionRef('mayor')
-          .where('email', '==', currentUser?.email)
-          .count()
-          .get();
-        if (snap.data().count <= 0) {
-          return await collectionRef('mayor').add(candidate);
-        }
-        const dataSnap = await collectionRef('mayor')
-          .where('email', '==', currentUser?.email)
-          .get();
-        const status = dataSnap.docs[0]?.data().status as 'active' | undefined;
-        if (status === undefined) {
-          return ToastAndroid.show(
-            "You've already submitted a entry",
-            ToastAndroid.SHORT,
-          );
-        }
-        setMayor(status);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }
+  // async function handleMayorApplication() {
+  //   const date = new Date();
+  //   if (state !== undefined) {
+  //     const candidate = {
+  //       email: state.email,
+  //       name: state.name,
+  //       section: state.section,
+  //       yearLevel: state.yearLevel,
+  //       year: date.getFullYear().toString(),
+  //     };
+  //     try {
+  //       const snap = await collectionRef('mayor')
+  //         .where('email', '==', currentUser?.email)
+  //         .count()
+  //         .get();
+  //       if (snap.data().count <= 0) {
+  //         return await collectionRef('mayor').add(candidate);
+  //       }
+  //       const dataSnap = await collectionRef('mayor')
+  //         .where('email', '==', currentUser?.email)
+  //         .get();
+  //       const status = dataSnap.docs[0]?.data().status as 'active' | undefined;
+  //       if (status === undefined) {
+  //         return ToastAndroid.show(
+  //           "You've already submitted a entry",
+  //           ToastAndroid.SHORT,
+  //         );
+  //       }
+  //       setMayor(status);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  // }
 
   async function handleSignout() {
     try {
@@ -110,14 +110,14 @@ const UserInfo = () => {
             });
             setState(studInfo);
           }
-          const snap = await collectionRef('mayor')
-            .where('email', '==', currentUser.email)
-            .where('status', '==', 'active')
-            .count()
-            .get();
-          if (snap.data().count > 0) {
-            setMayor('active');
-          }
+          // const snap = await collectionRef('mayor')
+          //   .where('email', '==', currentUser.email)
+          //   .where('status', '==', 'active')
+          //   .count()
+          //   .get();
+          // if (snap.data().count > 0) {
+          //   setMayor('active');
+          // }
         }
       }
       void fetchStudentId();
@@ -200,7 +200,7 @@ const UserInfo = () => {
               data={['a', 'b', 'c', 'd', 'e', 'f', 'g']}
               onSelect={handleSectionSelect}
             />
-            <TouchableOpacity
+            {/* <TouchableOpacity
               disabled={state?.section === undefined || mayor !== undefined}
               onPress={handleMayorApplication}
               className={`${
@@ -215,7 +215,7 @@ const UserInfo = () => {
                       0,
                     )}${state?.section.toUpperCase()} Mayor`}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </>
         )}
         <TouchableOpacity
@@ -257,11 +257,17 @@ const Hero = ({name, studentNo}: {name: string; studentNo: string}) => {
 };
 
 const TextRow = (props: TextRowType) => {
+  const cics = 'College of Information and Communications';
   const {title, value} = props;
   return (
     <View className="my-1 flex-row justify-between px-14">
       <Text className="capitalize">{title.replace(/_/, ' ')}</Text>
-      <Text className="font-sembold text-sm text-black">{value}</Text>
+      <Text
+        className={`${
+          value.length < 12 ? 'capitalize' : ''
+        } font-sembold w-3/5 text-right text-sm text-black`}>
+        {value === cics ? `${cics} Technology` : value}
+      </Text>
     </View>
   );
 };

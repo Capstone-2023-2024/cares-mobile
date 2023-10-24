@@ -48,7 +48,7 @@ const Container = (props: AnnouncementProps) => {
 
   return (
     <TouchableOpacity
-      className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full border-2 bg-tertiary px-2 py-4"
+      className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full bg-primary px-2 py-4 shadow-md"
       onPress={handleUniSched}>
       <View className="flex-row items-center">
         <SvgContainer uri={pin} size="sm" />

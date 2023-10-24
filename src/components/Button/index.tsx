@@ -7,7 +7,7 @@ export const Button = (props: ButtonProps) => {
   const {children, type, ...rest} = props;
 
   function style() {
-    let base = 'px-4 p-2 rounded-full shadow-sm';
+    let base = 'px-4 p-2 rounded-lg shadow-md active:scale-115';
     if (rest.disabled) {
       return `${base} bg-slate-300`;
     }

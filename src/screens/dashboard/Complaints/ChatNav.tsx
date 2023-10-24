@@ -13,7 +13,7 @@ const ChatNav = () => {
 
   function handleTicket() {
     ToastAndroid.show(
-      'Ticketing concernsm for escalation process',
+      'Ticketing concerns is not yet implemented',
       ToastAndroid.LONG,
     );
   }

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import {View} from 'react-native';
+import {ImageBackground, ToastAndroid, View} from 'react-native';
 import {Text} from '~/components';
 import {Button} from '~/components/Button';
 import {useContent} from '~/contexts/ContentContext';
@@ -13,6 +13,12 @@ const Landing = () => {
   const {handleRole} = useContent();
 
   async function handleUserRole(role: Role) {
+    if (role === 'faculty') {
+      return ToastAndroid.show(
+        'This path is currently unstable, temporarily blocked by devs',
+        ToastAndroid.LONG,
+      );
+    }
     await AsyncStorage.setItem('role', role);
     handleRole(role);
     handleNavigation('Login');
@@ -20,7 +26,15 @@ const Landing = () => {
 
   return (
     <View className="h-screen items-center justify-center">
-      <Text className="mb-2 text-center text-xl">I am a</Text>
+      <View className="absolute -bottom-12 right-0">
+        <ImageBackground
+          className="h-96 w-64"
+          source={require('~/assets/smarttechline.png')}
+          alt="https://pngtree.com/freepng/cool-dynamic-smart-technology-line-ray-background_3589532.html_image_from_pngtree.com"></ImageBackground>
+      </View>
+      <Text className="mb-2 text-center font-serif text-xl font-thin hover:font-sans">
+        I'm a
+      </Text>
       <View className="gap-2">
         {roles.map(value => {
           return (

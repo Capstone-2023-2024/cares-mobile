@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, TouchableOpacity, View} from 'react-native';
+import {TextInput, TouchableOpacity, View, Image} from 'react-native';
 import {type ImagePickerResponse} from 'react-native-image-picker';
 import {DocumentSvg, PhotoSvg, SendSvg} from '~/utils/image';
 
@@ -23,24 +23,27 @@ const InputContainer = (props: InputContainerType) => {
   } = props;
 
   return (
-    <View className="absolute bottom-0 h-16 w-full flex-row items-center rounded-lg bg-primary p-2">
+    <View className="border-top-1 absolute bottom-2 h-16 w-full flex-row items-center rounded-lg border-primary bg-paper p-2">
       <TouchableOpacity onPress={selectMultipleFile} className="mx-2">
-        <TouchableOpacity onPress={selectMultipleFile} className="w-8">
+        {/* <TouchableOpacity onPress={selectMultipleFile} className="w-8">
           <DocumentSvg />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleImagePicker} className="mr-2 w-8">
-        <PhotoSvg />
+      <TouchableOpacity onPress={handleImagePicker} className="mr-2">
+        <Image
+          source={require('~/assets/add_document.png')}
+          className="h-8 w-8"
+        />
       </TouchableOpacity>
       <TextInput
         value={message}
         onChangeText={text => setMessage(text)}
         placeholder="Type your message here..."
-        className="flex-1 rounded-lg bg-paper"
+        className="mr-2 flex-1 rounded-lg border border-primary bg-paper"
         // multiline
       />
-      <TouchableOpacity onPress={handleSendMessage} className="w-8">
-        <SendSvg />
+      <TouchableOpacity onPress={handleSendMessage}>
+        <Image source={require('~/assets/send.png')} className="h-8 w-8" />
       </TouchableOpacity>
     </View>
   );

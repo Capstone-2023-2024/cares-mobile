@@ -21,14 +21,14 @@ const Usertab = ({name}: UsertabProps) => {
   }
 
   return (
-    <View className=" border-b-2 p-12">
+    <View className=" border-b-2 border-primary p-12">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
           <ProfilePicture />
           <View className="ml-2">
             <Text className="text-sm font-bold">Welcome back</Text>
             <Text className="text-lg font-bold capitalize text-black">
-              {currentUser?.displayName ?? ''}
+              {currentUser?.displayName ?? ''}!
             </Text>
           </View>
         </View>
@@ -68,7 +68,7 @@ export const HeadingTemplate = (props: HeadingTemplateProps) => {
 };
 
 export const TabContainer = ({children}: {children: ReactNode}) => {
-  return <View className="border-b-2 py-6">{children}</View>;
+  return <View className="border-b-2 border-primary py-6">{children}</View>;
 };
 
 export default Usertab;

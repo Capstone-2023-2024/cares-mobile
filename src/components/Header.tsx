@@ -1,5 +1,6 @@
 import {useRoute} from '@react-navigation/native';
 import React from 'react';
+import {Image} from 'react-native';
 import {TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
@@ -21,24 +22,30 @@ function Header({}: {withBack?: boolean}) {
   }
 
   return (
-    <View className="h-16 flex-row items-center justify-between bg-primary px-2">
+    <View className="h-16 flex-row items-center justify-between bg-paper px-2 shadow-lg">
       <TouchableOpacity
         className="flex-row items-center"
         onPress={handlePressRoute}>
-        <View className="h-12 w-12">
-          <Text>cics_icon</Text>
-          {/* <Image source={cics} className="h-full w-full" resizeMode="center" /> */}
+        <View className="h-8 w-8 bg-paper">
+          <Image
+            source={require('~/assets/cares_icon.png')}
+            className="h-full w-full"
+            resizeMode="center"
+          />
         </View>
-        <Text className="ml-2 text-base font-bold uppercase text-white">
+        <Text className="ml-2 text-base font-bold uppercase text-primary">
           {projectName}
         </Text>
       </TouchableOpacity>
       {currentUser !== null && route.name !== 'Chats' && (
         <>
           <TouchableOpacity
-            className="-top-0 mr-2 h-12 w-12 items-center"
+            className="mr-2 h-8 w-8 items-center"
             onPress={handlePressChats}>
-            <MessageSvg />
+            <Image
+              source={require('~/assets/chat.png')}
+              className="h-full w-full"
+            />
           </TouchableOpacity>
         </>
       )}
