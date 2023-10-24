@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import {ScrollView, View, ToastAndroid} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {useContent} from '~/contexts/ContentContext';
-// import type {UniversityScheduleType} from 'mobile/../../mobile/../../shared/types';
+// import type {UniversityScheduleType} from 'mobile/../../~/types';
 import type {MarkedDates} from 'react-native-calendars/src/types';
 import Announcements from './Announcements';
 
@@ -33,7 +33,7 @@ const UniversitySchedule = () => {
     <View>
       {markedDates && (
         <Calendar
-          onDayPress={e => console.log(e)}
+          onDayPress={e => ToastAndroid.show(`${e}`, ToastAndroid.LONG)}
           markingType="period"
           markedDates={{...markedDates}}
         />

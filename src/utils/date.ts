@@ -1,4 +1,4 @@
-import type {DateType} from 'mobile/../../mobile/../../shared/types/date';
+import type {DateType} from 'mobile/../../~/types/date';
 
 export function currentMonth({month, year}: Omit<DateType, 'date'>) {
   const months = [

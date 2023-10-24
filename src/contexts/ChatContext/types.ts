@@ -26,16 +26,12 @@ export interface ChatProviderProps {
 export interface InitialProps {
   chat: ClientMessageProps[];
   chattables: ChattableProps[];
-  selectedChat: string | null;
 }
 export type InitialPropsType =
   | InitialProps['chat']
-  | InitialProps['chattables']
-  | InitialProps['selectedChat'];
+  | InitialProps['chattables'];
 
-export interface ChatContextProps extends InitialProps {
-  handleSelectedChat: (props: string | null) => void;
-}
+export interface ChatContextProps extends InitialProps {}
 
 export interface ChattableProps {
   id: string;

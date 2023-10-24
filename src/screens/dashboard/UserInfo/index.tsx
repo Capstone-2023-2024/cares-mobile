@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert, Image, TouchableOpacity, View} from 'react-native';
+import {Alert, TouchableOpacity, View, ToastAndroid} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useContent} from '~/contexts/ContentContext';
@@ -8,15 +8,15 @@ import {collectionRef, validateEmailWithCOR} from '~/utils/firebase';
 import {UserCacheType} from '../../authentication/Register/types';
 import type {StudentInfoProps} from '../Home/types';
 import type {TextRowType} from './types';
-import type {
-  StudentCORProps,
-  ResultType,
-} from 'mobile/../../mobile/../../shared/types/student';
+import type {StudentWithClassSection, ResultType} from '~/types/student';
 import ProfilePicture from '~/components/ProfilePicture';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
-  const [state, setState] = useState<Omit<StudentCORProps, 'studentNo'>>();
+  const [mayor, setMayor] = useState<'active' | undefined>(undefined);
+  const [state, setState] =
+    useState<Omit<StudentWithClassSection, 'studentNo'>>();
   const [studNo, setStudNo] = useState('');
   const isStudNotEmpty = studNo !== '';
   const {role} = useContent();
@@ -26,35 +26,51 @@ const UserInfo = () => {
   const lastName = validateEmailWithCOR(props('last') as ResultType);
   const middleInitial = validateEmailWithCOR(props('initial') as ResultType);
 
-  const setupForStudents = useCallback(async () => {
-    try {
-      async function fetchStudentId() {
-        const studInfo = await collectionRef('student')
+  async function handleSectionSelect(section: string) {
+    if (isStudNotEmpty) {
+      try {
+        await collectionRef('student').doc(studNo).update({
+          section,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  async function handleMayorApplication() {
+    const date = new Date();
+    if (state !== undefined) {
+      const candidate = {
+        email: state.email,
+        name: state.name,
+        section: state.section,
+        yearLevel: state.yearLevel,
+        year: date.getFullYear().toString(),
+      };
+      try {
+        const snap = await collectionRef('mayor')
+          .where('email', '==', currentUser?.email)
+          .count()
+          .get();
+        if (snap.data().count <= 0) {
+          return await collectionRef('mayor').add(candidate);
+        }
+        const dataSnap = await collectionRef('mayor')
           .where('email', '==', currentUser?.email)
           .get();
-        const doc = studInfo.docs[0] as unknown as StudentInfoProps | undefined;
-        if (doc !== undefined) {
-          setStudNo(doc.id);
+        const status = dataSnap.docs[0]?.data().status as 'active' | undefined;
+        if (status === undefined) {
+          return ToastAndroid.show(
+            "You've already submitted a entry",
+            ToastAndroid.SHORT,
+          );
         }
-        const getUserCache = await AsyncStorage.getItem('usersCache');
-        if (getUserCache !== null) {
-          const usersCache: UserCacheType[] = JSON.parse(getUserCache);
-          usersCache.forEach(uCache => {
-            const currentLogin = Object.values(uCache).filter(
-              values => currentUser?.email === values.email,
-            )[0];
-            setState(currentLogin);
-          });
-        }
+        setMayor(status);
+      } catch (err) {
+        console.log(err);
       }
-      void fetchStudentId();
-    } catch (err) {
-      console.log(err);
     }
-  }, [currentUser]);
-
-  function handleMayorApplication() {
-    console.log('mayor clicked');
   }
 
   async function handleSignout() {
@@ -69,17 +85,53 @@ const UserInfo = () => {
     }
   }
 
+  const setupForStudents = useCallback(async () => {
+    try {
+      async function fetchStudentId() {
+        if (currentUser !== null) {
+          const studInfo = await collectionRef('student')
+            .where('email', '==', currentUser.email)
+            .get();
+          const doc = studInfo.docs[0] as unknown as
+            | StudentInfoProps
+            | undefined;
+          if (doc !== undefined) {
+            setStudNo(doc.id);
+          }
+          const getUserCache = await AsyncStorage.getItem('usersCache');
+          if (getUserCache !== null) {
+            const usersCache: UserCacheType[] = JSON.parse(getUserCache);
+            let studInfo: typeof state;
+            usersCache.forEach(studentNo => {
+              const currentLogin = Object.values(studentNo).filter(
+                values => currentUser.email === values.email,
+              )[0];
+              studInfo = currentLogin;
+            });
+            setState(studInfo);
+          }
+          const snap = await collectionRef('mayor')
+            .where('email', '==', currentUser.email)
+            .where('status', '==', 'active')
+            .count()
+            .get();
+          if (snap.data().count > 0) {
+            setMayor('active');
+          }
+        }
+      }
+      void fetchStudentId();
+    } catch (err) {
+      console.log(err);
+    }
+  }, [currentUser]);
+
   useEffect(() => {
-    const unsub: void = void setupForStudents();
-    return () => {
-      unsub;
-    };
+    return void setupForStudents();
   }, [setupForStudents]);
 
-  console.log({state});
-
   return (
-    <View className="my-auto h-5/6 bg-paper">
+    <View className="my-auto bg-paper">
       <Hero
         name={
           role === 'faculty'
@@ -88,7 +140,7 @@ const UserInfo = () => {
         }
         studentNo={studNo}
       />
-      <Text className="m-8 text-3xl font-semibold capitalize text-black">
+      <Text className="mx-4 my-2 text-xl font-semibold capitalize text-black">
         {`${role} details`}
       </Text>
       {role === 'faculty' ? (
@@ -136,19 +188,40 @@ const UserInfo = () => {
           <TextRow title="age" value={`${isStudNotEmpty && state?.age}`} />
         </>
       )}
-
-      <View className="mt-14 self-center">
+      <View className="mt-2 self-center">
         {role !== 'faculty' && (
-          <TouchableOpacity
-            onPress={handleMayorApplication}
-            className="rounded-xl bg-primary p-4 px-10 shadow-sm">
-            <Text className="text-paper">Apply for Mayor</Text>
-          </TouchableOpacity>
+          <>
+            <SelectDropdown
+              disabled={state?.section !== undefined}
+              defaultValue={state?.section ? state.section : null}
+              buttonTextStyle={{textTransform: 'capitalize'}}
+              rowTextStyle={{textTransform: 'capitalize'}}
+              defaultButtonText="Choose section"
+              data={['a', 'b', 'c', 'd', 'e', 'f', 'g']}
+              onSelect={handleSectionSelect}
+            />
+            <TouchableOpacity
+              disabled={state?.section === undefined || mayor !== undefined}
+              onPress={handleMayorApplication}
+              className={`${
+                state?.section === undefined
+                  ? 'bg-slate-300 text-slate-400'
+                  : 'bg-primary text-primary'
+              } rounded-xl p-4 px-10 shadow-sm`}>
+              <Text className="text-center text-paper">
+                {mayor === undefined
+                  ? 'Apply for Mayor'
+                  : `${state?.yearLevel.charAt(
+                      0,
+                    )}${state?.section.toUpperCase()} Mayor`}
+              </Text>
+            </TouchableOpacity>
+          </>
         )}
         <TouchableOpacity
           onPress={handleSignout}
           className="rounded-xl bg-error p-4 px-10 shadow-sm">
-          <Text className="text-paper">Logout</Text>
+          <Text className="text-center text-paper">Logout</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -156,7 +229,6 @@ const UserInfo = () => {
 };
 
 const Hero = ({name, studentNo}: {name: string; studentNo: string}) => {
-  const DIMENSION = 40;
   const {role} = useContent();
   const {currentUser} = useAuth();
   const props = (type: ResultType['type']) =>

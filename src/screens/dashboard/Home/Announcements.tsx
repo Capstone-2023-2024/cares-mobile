@@ -1,12 +1,10 @@
-import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
 import React from 'react';
-import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import {useContent} from '~/contexts/ContentContext';
-import {HeadingTemplate, TabContainer} from './Usertab';
-import {CommonActions, useNavigation} from '@react-navigation/native';
-import type {PathListType} from '~/utils/navPaths/types';
 import {useNav} from '~/contexts/NavigationContext';
+import type {AnnouncementProps} from '~/types/announcement';
+import {HeadingTemplate, TabContainer} from './Usertab';
 
 const Announcements = () => {
   const {announcement} = useContent();
@@ -42,8 +40,6 @@ const Container = (props: AnnouncementProps) => {
     //TODO: pass id in Announcements
     handleNavigation('Announcements');
   }
-
-  // console.log(retrieveImageFBStorage(photoUrl ?? ''));
 
   return (
     <View className="ml-2 mr-2 items-center justify-center overflow-hidden rounded-3xl border-2 bg-white p-4 px-6 shadow-xl">

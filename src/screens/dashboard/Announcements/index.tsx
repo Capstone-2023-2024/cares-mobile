@@ -1,7 +1,7 @@
 import React from 'react';
 import {Image, ScrollView, View} from 'react-native';
 import {useContent} from '~/contexts/ContentContext';
-import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
+import type {AnnouncementProps} from '~/types/announcement';
 import {useNavigation} from '@react-navigation/native';
 import {Text} from '~/components';
 import type {ContainerProps} from './types';

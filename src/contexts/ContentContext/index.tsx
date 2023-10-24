@@ -13,9 +13,9 @@ import {collectionRef} from '~/utils/firebase';
 import {useAuth} from '../AuthContext';
 import {MessagePrompt} from '../AuthContext/types';
 import type {ContentContextType, InitialStateProps} from './types';
-import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
-import type {StudentCORProps} from 'mobile/../../shared/types/student';
-import type {CollectionPath} from 'mobile/../../shared/types/firebase';
+import type {AnnouncementProps} from '~/types/announcement';
+import type {StudentCORProps} from '~/types/student';
+import type {CollectionPath} from '~/types/firebase';
 
 const firestoreCollection = {
   announcement: [],
@@ -67,7 +67,8 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
         const holder: AnnouncementProps[] = [];
         if (snapshot.docs.length > 0) {
           snapshot.docs.forEach(doc => {
-            holder.push({...doc.data(), id: doc.id} as AnnouncementProps);
+            const data = doc.data() as Omit<AnnouncementProps, 'id'>;
+            holder.push({...data, id: doc.id} as AnnouncementProps);
           });
         }
         handleState(

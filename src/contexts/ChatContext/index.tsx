@@ -15,11 +15,9 @@ import type {
 const initialProps: InitialProps = {
   chat: [],
   chattables: [],
-  selectedChat: null,
 };
 const ChatContext = createContext<ChatContextProps>({
   ...initialProps,
-  handleSelectedChat: (props: string | null) => props,
 });
 const ChatProvider = ({children}: ChatProviderProps) => {
   const {currentUser} = useAuth();
@@ -27,10 +25,6 @@ const ChatProvider = ({children}: ChatProviderProps) => {
 
   function handleState(key: keyof InitialProps, value: InitialPropsType) {
     setState(prevState => ({...prevState, [key]: value}));
-  }
-
-  function handleSelectedChat(props: string | null) {
-    handleState('selectedChat', props);
   }
 
   useEffect(() => {
@@ -96,9 +90,7 @@ const ChatProvider = ({children}: ChatProviderProps) => {
   }, [currentUser]);
 
   return (
-    <ChatContext.Provider value={{...state, handleSelectedChat}}>
-      {children}
-    </ChatContext.Provider>
+    <ChatContext.Provider value={{...state}}>{children}</ChatContext.Provider>
   );
 };
 

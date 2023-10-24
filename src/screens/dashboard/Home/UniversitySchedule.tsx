@@ -1,7 +1,7 @@
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
-import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
+import type {AnnouncementProps} from '~/types/announcement';
 import {Text} from '~/components';
 import SvgContainer from '~/components/SVGContainer';
 import {useContent} from '~/contexts/ContentContext';

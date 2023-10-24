@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {Alert, View} from 'react-native';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
@@ -9,12 +9,12 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import {Text} from '~/components';
-import IconButton from '~/components/IconButton';
+import {useAuth} from '~/contexts/AuthContext';
+import ChatProvider from '~/contexts/ChatContext';
+import {collectionRef} from '~/utils/firebase';
 import ChatBox from './ChatBox';
-import ChatHead from './ChatHead';
 import ChatNav from './ChatNav';
 import InputContainer from './InputContainer';
-import ChatProvider, {useChat} from '~/contexts/ChatContext';
 
 const Chats = () => {
   return (
@@ -25,10 +25,10 @@ const Chats = () => {
 };
 
 const ChatChildren = () => {
+  const {currentUser} = useAuth();
   const [message, setMessage] = useState('');
   const [file, setFile] = useState<DocumentPickerResponse[]>([]);
   const [filePath, setFilePath] = useState<ImagePickerResponse | null>(null);
-  const {selectedChat} = useChat();
 
   async function selectMultipleFile() {
     try {
@@ -47,10 +47,34 @@ const ChatChildren = () => {
     }
   }
 
-  function handleSendMessage() {
-    if (message.trim() !== '') {
-      // chatColReference.
-      setMessage('');
+  async function handleSendMessage() {
+    try {
+      const studentSnap = await collectionRef('student')
+        .where('email', '==', currentUser?.email)
+        .get();
+      if (message.trim() !== '' && !studentSnap.empty) {
+        const id = studentSnap.docs[0]?.id;
+        const newDate = new Date();
+        const year = newDate.getFullYear().toString();
+        const month = newDate.getMonth().toString();
+        const date = newDate.getDate().toString();
+        await collectionRef('concerns')
+          .doc(id)
+          .set({dateUpdated: newDate.getTime()});
+        await collectionRef('concerns')
+          .doc(id)
+          .collection(`${year}-${month}-${date}`)
+          .add({
+            message,
+            withDocument: false,
+            sender: currentUser?.email,
+            dateCreated: newDate.getTime(),
+          });
+        // chatColReference.
+        setMessage('');
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -87,23 +111,9 @@ const ChatChildren = () => {
     filePath,
   };
 
-  useEffect(() => {
-    return () => {
-      console.log({selectedChat}, 'in Chats index');
-    };
-  }, [selectedChat]);
-
   return (
-    <View className="relative flex-1 bg-violet-300">
+    <View className="relative flex-1">
       <ChatNav />
-      <View className="absolute right-0 top-16 w-3/4 bg-tertiary">
-        <View className="w-full flex-row justify-around rounded-xl bg-primary p-2">
-          <Text className="text-lg font-semibold">{selectedChat ?? ''}</Text>
-          <IconOptions />
-        </View>
-        <Categories />
-      </View>
-      <ChatHead />
       <ChatBox />
       <InputContainer {...inputContainerProps} />
     </View>
@@ -113,29 +123,8 @@ const ChatChildren = () => {
 const IconOptions = () => {
   return (
     <View className="flex-row items-center justify-center">
-      {/* <IconButton uri={require('~/assets/phone-call.png')} /> */}
-      {/* <IconButton uri={require('~/assets/video-call.png')} /> */}
-      {/* <IconButton uri={require('~/assets/ellipsis.png')} /> */}
+      <Text>Info</Text>
     </View>
-  );
-};
-
-const Categories = () => {
-  return (
-    <View className="w-full flex-row">
-      <CategoryButton name="Complains/Concerns" />
-      {/* <CategoryButton name="Announcements" /> */}
-    </View>
-  );
-};
-
-const CategoryButton = ({name}: {name: string}) => {
-  return (
-    <TouchableOpacity className="w-full border bg-paper">
-      <Text className="px-2 text-center text-xs font-semibold text-black">
-        {name}
-      </Text>
-    </TouchableOpacity>
   );
 };
 

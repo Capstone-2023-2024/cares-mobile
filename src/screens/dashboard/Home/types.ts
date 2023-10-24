@@ -1,4 +1,4 @@
-import type {StudentCORProps} from 'mobile/../../shared/types/student';
+import type {StudentCORProps} from '~/types/student';
 import type {UserCacheType} from '~/screens/authentication/Register/types';
 
 export interface StudentInfoProps {

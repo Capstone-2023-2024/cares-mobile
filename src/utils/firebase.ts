@@ -1,7 +1,7 @@
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
-import type {CollectionPath} from 'mobile/../../mobile/../../shared/types/firebase';
-import type {ResultType} from 'mobile/../../mobile/../../shared/types/student';
+import type {CollectionPath} from '~/types/firebase';
+import type {ResultType} from '~/types/student';
 
 const app = firebase.app();
 

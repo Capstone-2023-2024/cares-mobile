@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, ToastAndroid} from 'react-native';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 
@@ -10,20 +10,26 @@ const Loading = () => {
   useEffect(() => {
     if (message === 'SUCCESS') {
       handleNavigation('Home');
-      return console.log('Success');
+      return ToastAndroid.show('Success', ToastAndroid.LONG);
     } else if (message === 'INVALID_USER') {
       setTimeout(() => {
         handleNavigation('Login');
       }, 1000);
-      return console.log('You need to use proper BulSU Email account');
+      return ToastAndroid.show(
+        'You need to use proper BulSU Email account',
+        ToastAndroid.LONG,
+      );
     } else if (message === 'NOT_EXIST') {
       setTimeout(() => {
         handleNavigation('Login');
       }, 1000);
-      return console.log('You need to register your COR');
+      return ToastAndroid.show(
+        'You need to register your COR',
+        ToastAndroid.LONG,
+      );
     }
     handleNavigation('Landing');
-    return console.log('Please contact your IT Admin');
+    return ToastAndroid.show('Please contact your IT Admin', ToastAndroid.LONG);
   }, [message, handleNavigation]);
 
   return (

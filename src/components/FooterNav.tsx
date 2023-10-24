@@ -18,10 +18,7 @@ const FooterNav = () => {
         {role === 'student' && (
           <TouchableOpacity className="mb-2" onPress={handlePressProject}>
             <View className="items-center">
-              {/* <Image
-                source={require('~/assets/project.png')} // Assuming you have a different image for project suggestions
-                className="h-10 w-10"
-              /> */}
+              <Text className="font-bold text-black">Icon</Text>
               <Text className="font-bold text-black">Project Suggestions</Text>
             </View>
           </TouchableOpacity>

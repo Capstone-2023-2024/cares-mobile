@@ -1,6 +1,6 @@
 import type {ReactNode} from 'react';
 import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import type {CollectionPath} from 'mobile/../../shared/types/firebase';
+import type {CollectionPath} from '~/types/firebase';
 
 export interface InitialStateProps {
   initialRouteName: 'Landing' | 'Home' | 'Loading';

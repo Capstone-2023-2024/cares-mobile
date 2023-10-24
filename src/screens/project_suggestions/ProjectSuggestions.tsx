@@ -1,18 +1,51 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import BackHeader from '~/components/BackHeader';
 import Background from '~/components/Background';
-import FooterNav from '~/components/FooterNav';
+import {collectionRef} from '~/utils/firebase';
+import type {EventWithIdProps, EventProps, PollStyledTextProps} from './types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useAuth} from '~/contexts/AuthContext';
 
 const ProjectSuggestions = () => {
+  const [state, setState] = useState<EventWithIdProps[]>([]);
+
+  function renderPolls() {
+    return state.map(props => (
+      <View
+        key={props.id}
+        className="w-full items-center rounded-lg bg-white/50 p-2">
+        <Poll {...props} />
+      </View>
+    ));
+  }
+
+  useEffect(() => {
+    const unsub = collectionRef('project_suggestion')
+      .limit(5)
+      .onSnapshot(snapshot => {
+        const placeholder: EventWithIdProps[] = [];
+        snapshot.forEach(doc => {
+          const data = doc.data() as EventProps;
+          const id = doc.id;
+          placeholder.push({...data, id});
+        });
+        setState(placeholder);
+      });
+    return () => {
+      unsub();
+    };
+  }, []);
+
   return (
     <View className="flex-1">
-      <ScrollView>
-        <Background>
-          <BackHeader />
-          {/* Project Suggestions Section */}
-          <View className="border-black-500 mb-5 w-full self-center border-2 bg-red-800">
+      <Background>
+        <ScrollView>
+          <View className="absolute left-0 top-0 z-10">
+            <BackHeader />
+          </View>
+          <View className="border-black-500 mb-5 w-full self-center bg-primary">
             <View className="m-5 flex-row items-center self-center">
               {/* <Image className="h-12 w-12" source={suggest} /> */}
               <Text className="flex-1 text-center text-lg font-bold text-white">
@@ -21,52 +54,86 @@ const ProjectSuggestions = () => {
               {/* <Image className="h-12 w-12" source={suggest} /> */}
             </View>
           </View>
-
-          <Suggestion />
-          <Suggestion />
-          <Suggestion />
-          <Suggestion />
-          <Suggestion />
-        </Background>
-      </ScrollView>
-      <View>
-        <FooterNav />
-      </View>
+          {renderPolls()}
+        </ScrollView>
+      </Background>
     </View>
   );
 };
 
-const Suggestion = () => {
+const Poll = ({question, options, id, votes}: EventProps) => {
+  const {currentUser} = useAuth();
+
+  async function handleOptionPress(value: string) {
+    try {
+      await AsyncStorage.setItem(id, value);
+      const storedValue = await AsyncStorage.getItem(id);
+      if (storedValue !== null && currentUser !== null) {
+        let index = -1;
+        options.forEach(({value}, i) => {
+          if (storedValue === value) {
+            index = i;
+          }
+        });
+        if (index > -1) {
+          const newVotes = {...votes, [currentUser.email ?? '']: storedValue};
+          await collectionRef('project_suggestion').doc(id).update({
+            votes: newVotes,
+          });
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  function renderOptions() {
+    function setSelectionStyle() {
+      if (currentUser !== null && votes !== undefined) {
+        const email = currentUser.email ?? '';
+        const result = Object.keys(votes ?? {}).filter(key => email === key)[0];
+        if (result !== undefined) {
+          const currentValue = votes.result ?? '';
+          return votes[result];
+        }
+      }
+      return '';
+    }
+
+    return options.map(({value}, index) => {
+      const result = Object.values(votes ?? {}).filter(val => value === val);
+      const CONDITION = setSelectionStyle() === value;
+
+      return (
+        <TouchableOpacity
+          key={index}
+          className={`${
+            CONDITION ? 'scale-110 bg-green-200/50' : 'bg-white'
+          } mb-2 w-fit flex-row justify-between rounded-lg p-2 shadow-sm duration-300 ease-in-out`}
+          onPress={() => void handleOptionPress(value)}>
+          <PollStyledText value={value} condition={CONDITION} />
+          <PollStyledText
+            value={JSON.stringify(result?.length ?? 0)}
+            condition={CONDITION}
+          />
+        </TouchableOpacity>
+      );
+    });
+  }
+
   return (
     <View>
-      {/* Individual Suggestion */}
-      <View className="mb-5 h-40 w-4/5 self-center rounded-3xl bg-gray-300">
-        <View className="m-2 flex-row justify-between">
-          <Text className="mt-2 text-black">Jhay Mark Reyes - BSIT 3A</Text>
-          <Text className="text-black">
-            24
-            {/* <Image source={sov} /> */}
-          </Text>
-        </View>
-        <Text className="mt-2 text-center text-lg font-semibold text-black">
-          IT Ball and kasama po ang mga Alumni
-        </Text>
-        <View className="m-10 flex-row items-center justify-around">
-          <TouchableOpacity className="flex-row items-center">
-            {/* <Image className="h-5 w-5" source={votes} /> */}
-            <Text className="ml-2 text-black">Vote</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="flex-row items-center">
-            {/* <Image className="h-5 w-5" source={message} /> */}
-            <Text className="ml-2 text-black">Comment</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="flex-row items-center">
-            {/* <Image className="h-5 w-5" source={menudots} /> */}
-            <Text className="ml-2 text-black">Options</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <Text className="mb-3 text-xl font-semibold">{question}</Text>
+      <View>{renderOptions()}</View>
     </View>
+  );
+};
+
+const PollStyledText = ({condition, value}: PollStyledTextProps) => {
+  return (
+    <Text className={`${condition ? 'text-green-400' : 'text-black'}`}>
+      {value}
+    </Text>
   );
 };
 

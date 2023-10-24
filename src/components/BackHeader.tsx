@@ -1,6 +1,7 @@
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {View, TouchableOpacity, Image} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
+import {NextSvg} from '~/utils/image';
 
 function BackHeader() {
   const navigation = useNavigation();
@@ -12,12 +13,8 @@ function BackHeader() {
   return (
     <View className="h-16 flex-row items-center px-2">
       <TouchableOpacity onPress={handleGoBack}>
-        <View className="h-3/4 w-9 rotate-180 p-2">
-          {/* <Image
-            source={require('~/assets/right-arrow.png')}
-            className="h-full w-full"
-            resizeMode="center"
-          /> */}
+        <View className="w-10 rotate-180">
+          <NextSvg />
         </View>
       </TouchableOpacity>
     </View>

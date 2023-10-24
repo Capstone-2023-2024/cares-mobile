@@ -1,4 +1,4 @@
-import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
+import type {AnnouncementProps} from '~/types/announcement';
 
 export interface ContainerProps extends Omit<AnnouncementProps, 'id'> {
   single?: boolean;

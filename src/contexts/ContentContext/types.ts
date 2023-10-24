@@ -1,4 +1,4 @@
-import type {AnnouncementProps} from 'mobile/../../shared/types/announcement';
+import type {AnnouncementProps} from '~/types/announcement';
 import type {Role} from '~/screens/authentication/Landing/types';
 import {MessagePrompt} from '../AuthContext/types';
 

@@ -10,7 +10,7 @@ import type {
   InitialStateProps,
   MessagePrompt,
 } from './types';
-import type {CollectionPath} from 'mobile/../mobile/../../shared/types/firebase';
+import type {CollectionPath} from '~/types/firebase';
 
 const initialState: InitialStateProps = {
   loading: false,

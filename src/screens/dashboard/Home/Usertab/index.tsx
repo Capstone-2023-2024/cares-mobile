@@ -58,7 +58,7 @@ export const HeadingTemplate = (props: HeadingTemplateProps) => {
     <View className="flex-row justify-between px-8">
       <Text className="text-lg capitalize text-black">{title}</Text>
       <TouchableOpacity
-        className={disabled ? 'text-gray-400' : ''}
+        className={disabled ? 'opacity-25' : 'opacity-100'}
         disabled={disabled}
         onPress={handlePressNavigation}>
         <SvgContainer disabled={disabled} uri={arrowUri} size="sm" />
