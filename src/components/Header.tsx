@@ -4,12 +4,14 @@ import {Image} from 'react-native';
 import {TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
+import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {projectName} from '~/utils/config';
 import {MessageSvg} from '~/utils/image';
 
 function Header({}: {withBack?: boolean}) {
   const {handleNavigation} = useNav();
+  const {role} = useContent();
   const {initialRouteName, currentUser} = useAuth();
   const route = useRoute();
 
@@ -37,7 +39,7 @@ function Header({}: {withBack?: boolean}) {
           {projectName}
         </Text>
       </TouchableOpacity>
-      {currentUser !== null && route.name !== 'Chats' && (
+      {currentUser !== null && route.name !== 'Chats' && role !== 'faculty' && (
         <>
           <TouchableOpacity
             className="mr-2 h-8 w-8 items-center"

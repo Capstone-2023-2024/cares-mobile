@@ -5,6 +5,7 @@ import {useContent} from '~/contexts/ContentContext';
 // import type {UniversityScheduleType} from 'mobile/../../~/types';
 import type {MarkedDates} from 'react-native-calendars/src/types';
 import Announcements from './Announcements';
+import { Text } from '~/components';
 
 const UniversitySchedule = () => {
   const {announcement} = useContent();
@@ -31,6 +32,7 @@ const UniversitySchedule = () => {
 
   return (
     <View>
+      <Text>Calendar of Events</Text>
       {markedDates && (
         <Calendar
           onDayPress={e =>

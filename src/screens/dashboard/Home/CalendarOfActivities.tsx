@@ -9,7 +9,7 @@ import {pin} from '~/utils/svgIcons';
 import {HeadingTemplate, TabContainer} from './Usertab';
 import type {PathListType} from '~/utils/navPaths/types';
 
-const UniversitySchedule = () => {
+const CalendarOfActivities = () => {
   const {announcement} = useContent();
   const stateLengthEmpty = announcement.length === 0;
 
@@ -17,8 +17,8 @@ const UniversitySchedule = () => {
     <TabContainer>
       <HeadingTemplate
         disabled={stateLengthEmpty}
-        title="university schedule"
-        navigation="UniversitySchedule"
+        title="calendar of activities"
+        navigation="CalendarOfActivities"
       />
       <ScrollView
         horizontal={!stateLengthEmpty}
@@ -43,7 +43,7 @@ const Container = (props: AnnouncementProps) => {
   }
 
   function handleUniSched() {
-    handleNavigation('UniversitySchedule');
+    handleNavigation('CalendarOfActivities');
   }
 
   return (
@@ -68,4 +68,4 @@ const PlaceHolder = ({text}: {text: string}) => {
   );
 };
 
-export default UniversitySchedule;
+export default CalendarOfActivities;

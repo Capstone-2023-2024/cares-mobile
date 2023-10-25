@@ -7,6 +7,10 @@
 
 - convert octet-stream to pdf in Android API 24
 
+# Fixed
+
+- Choosing another google account is now available
+
 # Known bugs
 
 - Logging in with different email other than bulsu.edu.ph domain causes a temporary login, this is due to the email of the user is only retrieve when logging in, the current workaround is sharing a protected and non-protected component, however it is not working as expected

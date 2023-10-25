@@ -13,12 +13,6 @@ const Landing = () => {
   const {handleRole} = useContent();
 
   async function handleUserRole(role: Role) {
-    if (role === 'faculty') {
-      return ToastAndroid.show(
-        'This path is currently unstable, temporarily blocked by devs',
-        ToastAndroid.LONG,
-      );
-    }
     await AsyncStorage.setItem('role', role);
     handleRole(role);
     handleNavigation('Login');

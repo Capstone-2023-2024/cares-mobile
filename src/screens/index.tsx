@@ -7,7 +7,6 @@ import Announcements from '~/screens/dashboard/Announcements';
 import UniversitySchedule from '~/screens/dashboard/UniversitySchedule';
 import UserInfo from '~/screens/dashboard/UserInfo';
 import ProjectSuggestions from '~/screens/project_suggestions/ProjectSuggestions';
-import WriteSuggestion from '~/screens/project_suggestions/WriteSuggestions';
 import Landing from '~/screens/authentication/Landing';
 
 import HeaderDefault from '~/components/Header';
@@ -22,7 +21,6 @@ const Screens = [
   UniversitySchedule,
   UserInfo,
   ProjectSuggestions,
-  WriteSuggestion,
   Landing,
   Loading,
 ];
@@ -34,7 +32,6 @@ const Header = () => {
 export const optionsList = [
   {name: UserInfo.name, options: {headerShown: false}},
   {name: ProjectSuggestions.name, options: {header: Header}},
-  {name: WriteSuggestion.name, options: {header: Header}},
   {name: Landing.name, options: {headerShown: false}},
   {name: Loading.name, options: {headerShown: false}},
 ];

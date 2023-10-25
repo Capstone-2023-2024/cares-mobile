@@ -4,10 +4,9 @@ export const register = 'Register';
 export const chats = 'Chats';
 export const home = 'Home';
 export const announce = 'Announcements';
-export const schedule = 'UniversitySchedule';
+export const schedule = 'CalendarOfActivities';
 export const userInfo = 'UserInfo';
 export const projSug = 'ProjectSuggestions';
-export const writeSug = 'WriteSuggestions';
 
 export const landing = 'Landing';
 export const loading = 'Loading';
@@ -20,7 +19,6 @@ export const pathWithUserList = [
   announce,
   chats,
   projSug,
-  writeSug,
 ] as const;
 export const pathWithoutUserList = [login, register, landing, loading] as const;
 

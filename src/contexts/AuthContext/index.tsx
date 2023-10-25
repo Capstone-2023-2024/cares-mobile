@@ -25,10 +25,13 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 const AuthProvider = ({children}: AuthProviderProps) => {
-  GoogleSignin.configure({
+  const config = {
     webClientId:
       '786929223549-qpbb1jebv0gqk6641tcj57k154bjhauu.apps.googleusercontent.com',
-  });
+  };
+
+  GoogleSignin.configure({...config});
+
   const [state, setState] = useState(initialState);
 
   function handleState(key: keyof InitialStateProps, value: InitialState) {
@@ -38,6 +41,7 @@ const AuthProvider = ({children}: AuthProviderProps) => {
   async function signout() {
     try {
       await auth().signOut();
+      GoogleSignin.revokeAccess();
       handleState('initialRouteName', 'Landing');
     } catch (err) {
       console.log(err);

@@ -9,7 +9,7 @@ import type {UserCacheType} from '~/screens/authentication/Register/types';
 import {collectionRef} from '~/utils/firebase';
 import Announcements from './Announcements';
 import Notifications from './Notifications';
-import UniversitySchedule from './UniversitySchedule';
+import UniversitySchedule from './CalendarOfActivities';
 import Usertab from './Usertab';
 import type {PushToCacheProps, StudentInfoProps} from './types';
 import {Text} from '~/components';
