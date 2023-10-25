@@ -33,7 +33,16 @@ const UniversitySchedule = () => {
     <View>
       {markedDates && (
         <Calendar
-          onDayPress={e => ToastAndroid.show(`${e}`, ToastAndroid.LONG)}
+          onDayPress={e =>
+            ToastAndroid.show(
+              `${
+                announcement.filter(
+                  ({markedDates}) => markedDates.indexOf(e.dateString) > -1,
+                )[0]?.message
+              } `,
+              ToastAndroid.SHORT,
+            )
+          }
           markingType="period"
           markedDates={{...markedDates}}
         />
