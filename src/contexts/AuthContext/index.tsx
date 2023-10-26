@@ -62,7 +62,7 @@ const AuthProvider = ({children}: AuthProviderProps) => {
       );
       const profile: Partial<FirebaseAuthProfileProps> | undefined =
         additionalUserInfo?.profile as Partial<FirebaseAuthProfileProps>;
-      const res = await collectionRef(path)
+      const res = await collectionRef(path === 'faculty' ? 'permission' : path)
         .where('email', '==', user.email)
         .count()
         .get();
@@ -74,6 +74,7 @@ const AuthProvider = ({children}: AuthProviderProps) => {
             .finally(() => {
               handleState('loading', false);
             });
+          GoogleSignin.revokeAccess();
           return 'NOT_EXIST';
         }
         handleState('loading', false);
@@ -85,6 +86,7 @@ const AuthProvider = ({children}: AuthProviderProps) => {
         .finally(() => {
           handleState('loading', false);
         });
+      GoogleSignin.revokeAccess();
       return 'INVALID_USER';
     } catch (err) {
       console.log(err);

@@ -23,6 +23,7 @@ const firestoreCollection = {
   schedule: [],
 };
 const initialState: InitialStateProps = {
+  privilege: false,
   message: null,
   role: null,
   ...firestoreCollection,
@@ -30,6 +31,7 @@ const initialState: InitialStateProps = {
 
 const ContentContext = createContext<ContentContextType>({
   ...initialState,
+  handlePrivilege: () => null,
   handleMessage: () => null,
   handleRole: () => null,
 });
@@ -41,7 +43,12 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
 
   function handleState(
     name: keyof InitialStateProps | CollectionPath,
-    value: AnnouncementProps[] | StudentCORProps | string | MessagePrompt,
+    value:
+      | AnnouncementProps[]
+      | StudentCORProps
+      | string
+      | MessagePrompt
+      | boolean,
   ) {
     setState(prevState => ({...prevState, [name]: value}));
   }
@@ -49,7 +56,9 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
   function handleMessage(props: MessagePrompt) {
     handleState('message', props);
   }
-
+  function handlePrivilege(props: boolean) {
+    handleState('privilege', props);
+  }
   const handleRole = useCallback((props: Role) => {
     handleState('role', props);
   }, []);
@@ -101,6 +110,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     <ContentContext.Provider
       value={{
         ...state,
+        handlePrivilege,
         handleMessage,
         handleRole,
       }}>

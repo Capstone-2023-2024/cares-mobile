@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert, TouchableOpacity, View, ToastAndroid} from 'react-native';
+import {Alert, TouchableOpacity, View, ToastAndroid, Modal} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useContent} from '~/contexts/ContentContext';
@@ -14,12 +14,12 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
-  // const [mayor, setMayor] = useState<'active' | undefined>(undefined);
   const [state, setState] =
     useState<Omit<StudentWithClassSection, 'studentNo'>>();
+  const [modalVisible, setModalVisible] = useState(false);
   const [studNo, setStudNo] = useState('');
   const isStudNotEmpty = studNo !== '';
-  const {role} = useContent();
+  const {role, handlePrivilege} = useContent();
   const props = (type: ResultType['type']) =>
     state?.name ? {name: state?.name, type} : {name: ''};
   const firstName = validateEmailWithCOR(props('first') as ResultType);
@@ -37,44 +37,9 @@ const UserInfo = () => {
       }
     }
   }
-
-  // async function handleMayorApplication() {
-  //   const date = new Date();
-  //   if (state !== undefined) {
-  //     const candidate = {
-  //       email: state.email,
-  //       name: state.name,
-  //       section: state.section,
-  //       yearLevel: state.yearLevel,
-  //       year: date.getFullYear().toString(),
-  //     };
-  //     try {
-  //       const snap = await collectionRef('mayor')
-  //         .where('email', '==', currentUser?.email)
-  //         .count()
-  //         .get();
-  //       if (snap.data().count <= 0) {
-  //         return await collectionRef('mayor').add(candidate);
-  //       }
-  //       const dataSnap = await collectionRef('mayor')
-  //         .where('email', '==', currentUser?.email)
-  //         .get();
-  //       const status = dataSnap.docs[0]?.data().status as 'active' | undefined;
-  //       if (status === undefined) {
-  //         return ToastAndroid.show(
-  //           "You've already submitted a entry",
-  //           ToastAndroid.SHORT,
-  //         );
-  //       }
-  //       setMayor(status);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  // }
-
   async function handleSignout() {
     try {
+      handlePrivilege(false);
       await signout();
     } catch (err) {
       interface Error {
@@ -110,14 +75,6 @@ const UserInfo = () => {
             });
             setState(studInfo);
           }
-          // const snap = await collectionRef('mayor')
-          //   .where('email', '==', currentUser.email)
-          //   .where('status', '==', 'active')
-          //   .count()
-          //   .get();
-          // if (snap.data().count > 0) {
-          //   setMayor('active');
-          // }
         }
       }
       void fetchStudentId();
@@ -190,36 +147,39 @@ const UserInfo = () => {
       )}
       <View className="mt-2 self-center">
         {role !== 'faculty' && (
-          <>
-            <SelectDropdown
-              disabled={state?.section !== undefined}
-              defaultValue={state?.section ? state.section : null}
-              buttonTextStyle={{textTransform: 'capitalize'}}
-              rowTextStyle={{textTransform: 'capitalize'}}
-              defaultButtonText="Choose section"
-              data={['a', 'b', 'c', 'd', 'e', 'f', 'g']}
-              onSelect={handleSectionSelect}
-            />
-            {/* <TouchableOpacity
-              disabled={state?.section === undefined || mayor !== undefined}
-              onPress={handleMayorApplication}
-              className={`${
-                state?.section === undefined
-                  ? 'bg-slate-300 text-slate-400'
-                  : 'bg-primary text-primary'
-              } rounded-xl p-4 px-10 shadow-sm`}>
-              <Text className="text-center text-paper">
-                {mayor === undefined
-                  ? 'Apply for Mayor'
-                  : `${state?.yearLevel.charAt(
-                      0,
-                    )}${state?.section.toUpperCase()} Mayor`}
-              </Text>
-            </TouchableOpacity> */}
-          </>
+          <SelectDropdown
+            disabled={state?.section !== undefined}
+            defaultValue={state?.section ? state.section : null}
+            buttonTextStyle={{textTransform: 'capitalize'}}
+            rowTextStyle={{textTransform: 'capitalize'}}
+            defaultButtonText="Choose section"
+            data={['a', 'b', 'c', 'd', 'e', 'f', 'g']}
+            onSelect={handleSectionSelect}
+          />
         )}
+        <Modal
+          transparent
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View className="h-screen items-center justify-center bg-white text-center">
+            <Text>Are you sure you want to logout?</Text>
+            <TouchableOpacity
+              className="w-32 rounded-lg bg-primary  p-2 text-center shadow-sm"
+              onPress={() => void handleSignout()}>
+              <Text className="text-white">Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="w-32 rounded-lg bg-red-500  p-2 text-center shadow-sm"
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text className="text-white">No</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
         <TouchableOpacity
-          onPress={handleSignout}
+          onPress={() => setModalVisible(true)}
           className="rounded-xl bg-error p-4 px-10 shadow-sm">
           <Text className="text-center text-paper">Logout</Text>
         </TouchableOpacity>

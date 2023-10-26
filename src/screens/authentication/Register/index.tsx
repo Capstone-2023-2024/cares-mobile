@@ -90,7 +90,7 @@ const Register = () => {
     !isCountGreaterZero &&
       collectionRef('student')
         .doc(studentNo)
-        .set({...rest, email});
+        .set({...rest, email, recipient: 'class_section'});
     Alert.alert(
       isCountGreaterZero
         ? "You're already registered!\nPlease login"

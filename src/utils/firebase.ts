@@ -4,6 +4,8 @@ import type {CollectionPath} from '~/types/firebase';
 import type {ResultType} from '~/types/student';
 
 const app = firebase.app();
+export const arrayUnion = (data: any) =>
+  firebase.firestore.FieldValue.arrayUnion(data);
 
 export const firestoreApp = firestore(app);
 export const collectionRef = (path: CollectionPath) =>

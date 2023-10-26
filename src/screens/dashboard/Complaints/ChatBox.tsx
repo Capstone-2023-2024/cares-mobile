@@ -11,18 +11,14 @@ const ChatBox = () => {
 
   const getConcerns = useCallback(async () => {
     try {
-      const newDate = new Date();
-      const year = newDate.getFullYear().toString();
-      const month = newDate.getMonth().toString();
-      const date = newDate.getDate().toString();
       const studentSnap = await collectionRef('student')
         .where('email', '==', currentUser?.email)
         .get();
       if (!studentSnap.empty) {
         const id = studentSnap.docs[0]?.id;
-        return collectionRef('concerns')
+        return collectionRef('student')
           .doc(id)
-          .collection(`${year}-${month}-${date}`)
+          .collection(`concerns`)
           .limit(12)
           .orderBy('dateCreated', 'desc')
           .onSnapshot(snapshot => {
@@ -57,9 +53,16 @@ const ChatBox = () => {
           className={`m-2 w-max rounded-lg p-2 shadow-sm ${
             sender === currentUser?.email
               ? 'self-end bg-blue-400'
+              : sender === 'system'
+              ? 'self-center text-center'
               : 'self-start bg-slate-200'
           }`}>
-          <ChatText text={sender} condition={sender === currentUser?.email} />
+          {sender !== 'system' && (
+            <ChatText
+              text={sender ?? currentUser?.displayName}
+              condition={sender === currentUser?.email}
+            />
+          )}
           <ChatText text={message} condition={sender === currentUser?.email} />
           <ChatText
             textSize="sm"
@@ -93,7 +96,17 @@ const ChatText = ({text, condition, textSize}: ChatTextProps) => {
   }
   return (
     <Text
-      className={`${condition ? 'text-white' : 'text-black'} ${getTextSize()}`}>
+      className={`${
+        condition
+          ? 'text-white'
+          : text === 'resolved'
+          ? 'text-green-400'
+          : text === 'rejected'
+          ? 'text-red-400'
+          : text.substring(0, 4) === 'turn'
+          ? 'text-yellow-400'
+          : 'text-black'
+      } ${getTextSize()}`}>
       {text}
     </Text>
   );

@@ -4,7 +4,7 @@ import Register from '~/screens/authentication/Register';
 import Chats from '~/screens/dashboard/Complaints';
 import Home from '~/screens/dashboard/Home';
 import Announcements from '~/screens/dashboard/Announcements';
-import UniversitySchedule from '~/screens/dashboard/UniversitySchedule';
+import UniversitySchedule from '~/screens/dashboard/CalendarOfActivities';
 import UserInfo from '~/screens/dashboard/UserInfo';
 import ProjectSuggestions from '~/screens/project_suggestions/ProjectSuggestions';
 import Landing from '~/screens/authentication/Landing';

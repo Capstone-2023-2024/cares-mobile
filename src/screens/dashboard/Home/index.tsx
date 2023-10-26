@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {StudentCORProps} from '~/types/student';
 import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View, Modal} from 'react-native';
 import Background from '~/components/Background';
 import FooterNav from '~/components/FooterNav';
 import {useAuth} from '~/contexts/AuthContext';
@@ -14,9 +14,11 @@ import Usertab from './Usertab';
 import type {PushToCacheProps, StudentInfoProps} from './types';
 import {Text} from '~/components';
 import {useNav} from '~/contexts/NavigationContext';
+import {useContent} from '~/contexts/ContentContext';
 
 const Home = () => {
-  const {currentUser} = useAuth();
+  const {currentUser, initialRouteName} = useAuth();
+  const {role, handlePrivilege} = useContent();
   const {handleNavigation} = useNav();
   const [state, setState] = useState<
     Omit<StudentCORProps, 'studentNo'> | undefined
@@ -93,10 +95,26 @@ const Home = () => {
     };
   }, [setupForStudents]);
 
+  useEffect(() => {
+    async function checkForPrivilege() {
+      const snap = await collectionRef(
+        role === 'student' ? 'mayor' : 'advisers',
+      )
+        .where('email', '==', currentUser?.email)
+        .count()
+        .get();
+      console.log(snap.data().count);
+      if (snap.data().count > 0) {
+        handlePrivilege(true);
+      }
+    }
+    return void checkForPrivilege();
+  }, []);
+
   return (
     <View className="flex-1">
       <Background>
-        {section === false && (
+        {section === false && role === 'student' && (
           <View className="flex-row justify-center bg-yellow-100 p-2">
             <Text className="mr-2 text-xs text-yellow-600">
               Looks like you didn't have your class section set-up.

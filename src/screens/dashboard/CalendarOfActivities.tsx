@@ -5,9 +5,9 @@ import {useContent} from '~/contexts/ContentContext';
 // import type {UniversityScheduleType} from 'mobile/../../~/types';
 import type {MarkedDates} from 'react-native-calendars/src/types';
 import Announcements from './Announcements';
-import { Text } from '~/components';
+import {Text} from '~/components';
 
-const UniversitySchedule = () => {
+const CalendarOfActivities = () => {
   const {announcement} = useContent();
   const [markedDates, setMarkedDates] = useState<MarkedDates>({});
 
@@ -56,4 +56,4 @@ const UniversitySchedule = () => {
   );
 };
 
-export default UniversitySchedule;
+export default CalendarOfActivities;

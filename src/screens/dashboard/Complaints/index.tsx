@@ -15,6 +15,11 @@ import {collectionRef} from '~/utils/firebase';
 import ChatBox from './ChatBox';
 import ChatNav from './ChatNav';
 import InputContainer from './InputContainer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StudentWithClassSection} from '~/types/student';
+import {ConcernProps} from '~/types/complaints';
+import {useContent} from '~/contexts/ContentContext';
+import ChatPrivilege from './ChatPrivilege';
 
 const Chats = () => {
   return (
@@ -26,6 +31,7 @@ const Chats = () => {
 
 const ChatChildren = () => {
   const {currentUser} = useAuth();
+  const {privilege} = useContent();
   const [message, setMessage] = useState('');
   const [file, setFile] = useState<DocumentPickerResponse[]>([]);
   const [filePath, setFilePath] = useState<ImagePickerResponse | null>(null);
@@ -46,38 +52,29 @@ const ChatChildren = () => {
       }
     }
   }
-
   async function handleSendMessage() {
     try {
-      const studentSnap = await collectionRef('student')
+      const studentQuery = await collectionRef('student')
         .where('email', '==', currentUser?.email)
         .get();
-      if (message.trim() !== '' && !studentSnap.empty) {
-        const id = studentSnap.docs[0]?.id;
-        const newDate = new Date();
-        const year = newDate.getFullYear().toString();
-        const month = newDate.getMonth().toString();
-        const date = newDate.getDate().toString();
-        await collectionRef('concerns')
+      if (message.trim() !== '' && !studentQuery.empty) {
+        const id = studentQuery.docs[0]?.id ?? '';
+        const concern: Omit<ConcernProps, 'id'> = {
+          message,
+          withDocument: false,
+          sender: currentUser?.email ?? '',
+          dateCreated: new Date().getTime(),
+        };
+        await collectionRef('student')
           .doc(id)
-          .set({dateUpdated: newDate.getTime()});
-        await collectionRef('concerns')
-          .doc(id)
-          .collection(`${year}-${month}-${date}`)
-          .add({
-            message,
-            withDocument: false,
-            sender: currentUser?.email,
-            dateCreated: newDate.getTime(),
-          });
-        // chatColReference.
+          .collection('concerns')
+          .add(concern);
         setMessage('');
       }
     } catch (err) {
       console.log(err);
     }
   }
-
   const handleImagePicker = useCallback(() => {
     const options: ImageLibraryOptions = {
       mediaType: 'photo',
@@ -101,7 +98,6 @@ const ChatChildren = () => {
       }
     });
   }, []);
-
   const inputContainerProps = {
     handleImagePicker,
     handleSendMessage,
@@ -111,8 +107,11 @@ const ChatChildren = () => {
     filePath,
   };
 
+  console.log({privilege});
+
   return (
     <View className="relative flex-1">
+      {privilege && <ChatPrivilege />}
       <ChatNav />
       <ChatBox />
       <InputContainer {...inputContainerProps} />

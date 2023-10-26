@@ -11,7 +11,7 @@ import {MessageSvg} from '~/utils/image';
 
 function Header({}: {withBack?: boolean}) {
   const {handleNavigation} = useNav();
-  const {role} = useContent();
+  const {privilege, role} = useContent();
   const {initialRouteName, currentUser} = useAuth();
   const route = useRoute();
 
@@ -22,7 +22,6 @@ function Header({}: {withBack?: boolean}) {
   function handlePressChats() {
     handleNavigation('Chats');
   }
-
   return (
     <View className="h-16 flex-row items-center justify-between bg-paper px-2 shadow-lg">
       <TouchableOpacity
@@ -39,7 +38,7 @@ function Header({}: {withBack?: boolean}) {
           {projectName}
         </Text>
       </TouchableOpacity>
-      {currentUser !== null && route.name !== 'Chats' && role !== 'faculty' && (
+      {currentUser !== null && route.name !== 'Chats' && role === 'student' && (
         <>
           <TouchableOpacity
             className="mr-2 h-8 w-8 items-center"
