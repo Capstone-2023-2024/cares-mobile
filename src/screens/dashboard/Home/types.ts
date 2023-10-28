@@ -1,11 +1,5 @@
-import type {StudentCORProps} from '~/types/student';
-import type {UserCacheType} from '~/screens/authentication/Register/types';
-
-export interface StudentInfoProps {
-  id: string;
-  data: () => Omit<StudentCORProps, 'studentNo'>;
-}
+import {StudentCORProps} from '~/types/student';
 
 export interface PushToCacheProps {
-  usersCache: UserCacheType[];
+  usersCache: StudentCORProps[];
 }

@@ -4,7 +4,7 @@ import {Text} from '~/components';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import type {AnnouncementProps} from '~/types/announcement';
-import {HeadingTemplate, TabContainer} from './Usertab';
+import {HeadingTemplate, TabContainer} from '../../../components/Home/Usertab';
 import {retrieveImageFBStorage} from '~/utils/image';
 
 const Announcements = () => {
@@ -35,7 +35,7 @@ const Announcements = () => {
 
 const Container = (props: AnnouncementProps) => {
   const {handleNavigation} = useNav();
-  const {department, message, photoUrl, id} = props;
+  const {department, message, photoUrl} = props;
 
   function handlePressReadMore() {
     //TODO: pass id in Announcements

@@ -1,7 +1,6 @@
 import React from 'react';
-import {TextInput, TouchableOpacity, View, Image} from 'react-native';
+import {Image, TextInput, TouchableOpacity, View} from 'react-native';
 import {type ImagePickerResponse} from 'react-native-image-picker';
-import {DocumentSvg, PhotoSvg, SendSvg} from '~/utils/image';
 
 interface InputContainerType {
   handleImagePicker: () => void;
@@ -18,7 +17,7 @@ const InputContainer = (props: InputContainerType) => {
     handleSendMessage,
     setMessage,
     message,
-    filePath,
+    // filePath,
     selectMultipleFile,
   } = props;
 

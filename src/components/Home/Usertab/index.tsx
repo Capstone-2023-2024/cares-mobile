@@ -3,39 +3,62 @@ import React, {type ReactNode} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {SvgUri} from 'react-native-svg';
 import {Text} from '~/components';
+import ProfilePicture from '~/components/ProfilePicture';
 import SvgContainer from '~/components/SVGContainer';
-import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
 import type {PathListType} from '~/utils/navPaths/types';
 import {arrowUri, menuDots} from '~/utils/svgIcons';
 import type {HeadingTemplateProps, UsertabProps} from './types';
-import {UserSvg} from '~/utils/image';
-import ProfilePicture from '~/components/ProfilePicture';
 
 const Usertab = ({name}: UsertabProps) => {
   const {handleNavigation} = useNav();
-  const {currentUser} = useAuth();
 
   function handlePressUserInfo() {
     handleNavigation('UserInfo');
   }
+  const renderNameAndGreeting = () => (
+    <View className="ml-2">
+      {name === 'null' ? (
+        <>
+          <Text className="text-sm font-bold">Loading</Text>
+          <Text className="text-lg font-bold capitalize text-black">...</Text>
+        </>
+      ) : (
+        <>
+          <Text className="text-sm font-bold">Welcome back</Text>
+          <Text className="text-lg font-bold capitalize text-black">
+            {name}
+          </Text>
+        </>
+      )}
+    </View>
+  );
+  const renderProfilePicture = () =>
+    name === 'null' ? (
+      <View className="rounded-full border-2 border-primary bg-primary p-5" />
+    ) : (
+      <ProfilePicture />
+    );
+  const renderDotsIcon = () =>
+    name === 'null' ? (
+      <View>
+        <Text className="text-xl">...</Text>
+      </View>
+    ) : (
+      <SvgUri width="100%" height="100%" uri={menuDots} />
+    );
 
   return (
     <View className=" border-b-2 border-primary p-12">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
-          <ProfilePicture />
-          <View className="ml-2">
-            <Text className="text-sm font-bold">Welcome back</Text>
-            <Text className="text-lg font-bold capitalize text-black">
-              {currentUser?.displayName ?? ''}!
-            </Text>
-          </View>
+          {renderProfilePicture()}
+          {renderNameAndGreeting()}
         </View>
         <TouchableOpacity
           onPress={handlePressUserInfo}
           className="h-10 w-10 overflow-hidden rounded-full">
-          <SvgUri width="100%" height="100%" uri={menuDots} />
+          {renderDotsIcon()}
         </TouchableOpacity>
       </View>
     </View>

@@ -1,1 +1,1 @@
-export type Role = 'student' | 'faculty';
+export type Role = 'student' | 'faculty' | 'mayor' | 'adviser';

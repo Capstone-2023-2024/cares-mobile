@@ -1,96 +1,82 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {collectionRef} from '~/utils/firebase';
+import React, {createContext, useContext, useEffect, useState} from 'react';
+import {useNav} from '../NavigationContext';
 import type {
   AuthContextType,
   AuthProviderProps,
-  FirebaseAuthProfileProps,
   InitialState,
   InitialStateProps,
-  MessagePrompt,
 } from './types';
-import type {CollectionPath} from '~/types/firebase';
+import {ToastAndroid} from 'react-native';
+import {useContent} from '../ContentContext';
+import {collectionRef} from '~/utils/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState: InitialStateProps = {
-  loading: false,
-  initialRouteName: 'Landing',
   currentUser: null,
 };
-
 const AuthContext = createContext<AuthContextType>({
   ...initialState,
   signout: async () => {},
-  onGoogleButtonPress: async () => null,
+  onGoogleButtonPress: async () => {},
 });
 
+const config = {
+  webClientId:
+    '786929223549-qpbb1jebv0gqk6641tcj57k154bjhauu.apps.googleusercontent.com',
+};
+
 const AuthProvider = ({children}: AuthProviderProps) => {
-  const config = {
-    webClientId:
-      '786929223549-qpbb1jebv0gqk6641tcj57k154bjhauu.apps.googleusercontent.com',
-  };
-
   GoogleSignin.configure({...config});
-
   const [state, setState] = useState(initialState);
+  const {handleNavigation} = useNav();
+  const {role, handleRole} = useContent();
 
   function handleState(key: keyof InitialStateProps, value: InitialState) {
     setState(prevState => ({...prevState, [key]: value}));
   }
-
+  async function handleMayorAdvisers() {
+    try {
+      const COLLECTION_PATH = role === 'faculty' ? 'permission' : 'mayor';
+      if (state.currentUser !== null) {
+        const EMPTY_LENGTH = 0;
+        const result = await collectionRef(COLLECTION_PATH)
+          .where('email', '==', state.currentUser.email)
+          .count()
+          .get();
+        if (result.data().count > EMPTY_LENGTH) {
+          const newRole =
+            COLLECTION_PATH === 'permission' ? 'adviser' : 'mayor';
+          handleRole(newRole);
+          await AsyncStorage.setItem('role', newRole);
+        }
+      }
+    } catch (err) {
+      return ToastAndroid.show(
+        'Error in handling mayor and adviser state',
+        ToastAndroid.SHORT,
+      );
+    }
+  }
   async function signout() {
     try {
       await auth().signOut();
-      GoogleSignin.revokeAccess();
-      handleState('initialRouteName', 'Landing');
+      await GoogleSignin.revokeAccess();
+      handleNavigation('Login');
     } catch (err) {
-      console.log(err);
+      ToastAndroid.show('Error in logging out', ToastAndroid.SHORT);
     }
   }
-
-  async function onGoogleButtonPress(
-    path: CollectionPath,
-  ): Promise<MessagePrompt> {
-    handleState('initialRouteName', 'Loading');
-    handleState('loading', true);
+  async function onGoogleButtonPress() {
     try {
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      const {additionalUserInfo, user} = await auth().signInWithCredential(
-        googleCredential,
-      );
-      const profile: Partial<FirebaseAuthProfileProps> | undefined =
-        additionalUserInfo?.profile as Partial<FirebaseAuthProfileProps>;
-      const res = await collectionRef(path === 'faculty' ? 'permission' : path)
-        .where('email', '==', user.email)
-        .count()
-        .get();
-
-      if (profile.hd === 'bulsu.edu.ph') {
-        if (res.data().count <= 0) {
-          await auth()
-            .signOut()
-            .finally(() => {
-              handleState('loading', false);
-            });
-          GoogleSignin.revokeAccess();
-          return 'NOT_EXIST';
-        }
-        handleState('loading', false);
-        handleState('initialRouteName', 'Home');
-        return 'SUCCESS';
-      }
-      await auth()
-        .signOut()
-        .finally(() => {
-          handleState('loading', false);
-        });
-      GoogleSignin.revokeAccess();
-      return 'INVALID_USER';
+      await auth().signInWithCredential(googleCredential);
+      handleMayorAdvisers();
     } catch (err) {
-      console.log(err);
-      return 'ERROR';
+      ToastAndroid.show('Sign in action cancelled', ToastAndroid.SHORT);
     }
   }
 
@@ -98,7 +84,7 @@ const AuthProvider = ({children}: AuthProviderProps) => {
     const unsub = auth().onAuthStateChanged(user => {
       handleState('currentUser', user);
     });
-    return () => unsub();
+    return unsub;
   }, []);
 
   return (

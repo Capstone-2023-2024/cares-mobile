@@ -1,11 +1,12 @@
-import {Alert, Modal, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {ToastAndroid, Modal, TouchableOpacity, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {Text} from '~/components';
-import {collectionRef, firestoreApp} from '~/utils/firebase';
-import {firebase} from '@react-native-firebase/auth';
+import {useAuth} from '~/contexts/AuthContext';
+import {useContent} from '~/contexts/ContentContext';
 import {ConcernProps} from '~/types/complaints';
 import {StudentWithClassSection} from '~/types/student';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {collectionRef, firestoreApp} from '~/utils/firebase';
 
 interface ChatPrivilegeProps {
   modalVisible: boolean;
@@ -27,6 +28,8 @@ const ChatPrivilege = () => {
     concerns: [],
   };
   const [state, setState] = useState(initState);
+  const {currentUser} = useAuth();
+  const {handleUsersCache} = useContent();
 
   function handleState(
     key: keyof ChatPrivilegeProps,
@@ -50,19 +53,22 @@ const ChatPrivilege = () => {
         });
         handleState('concerns', placeholder);
       });
-    return unsub();
+    return unsub;
+    //TODO: Push concern contents inside ChatContext then render inside the main Complaint Box -> Complaints.tsx
   }
-  const renderStudent = () => {
-    return state.students.map(({studentNo}) => {
+  const renderStudent = () =>
+    state.students.map(({studentNo, name}) => {
+      const comaIndex = name.indexOf(',');
       return (
         <TouchableOpacity
+          className="absolute z-10 self-center rounded-lg border border-black bg-purple-500 p-2 shadow-sm"
           onPress={() => handleStudentPress(studentNo)}
           key={studentNo}>
-          <Text>{studentNo}</Text>
+          <Text>{name.substring(0, comaIndex)}</Text>
         </TouchableOpacity>
       );
     });
-  };
+
   const renderConcerns = () => {
     return state.concerns.map(({id, message, sender, dateCreated}) => {
       const date = new Date();
@@ -79,30 +85,45 @@ const ChatPrivilege = () => {
   };
 
   useEffect(() => {
-    const unsub = firestoreApp
-      .collection('student')
-      .where('recipient', '==', 'class_section')
-      .limit(12)
-      .onSnapshot(snapshot => {
-        const placeholder: StudentWithClassSection[] = [];
-        snapshot.forEach(doc => {
-          const data = doc.data() as Omit<StudentWithClassSection, 'studentNo'>;
-          const studentNo = doc.id;
-          placeholder.push({...data, studentNo});
-        });
-        handleState('students', placeholder);
+    handleUsersCache()
+      .then(array => {
+        const filteredArray = array.filter(
+          ({email}) => currentUser?.email === email,
+        );
+        const section = filteredArray[0]?.section;
+        const unsub = firestoreApp
+          .collection('student')
+          .where('recipient', '==', 'class_section')
+          .where('section', '==', section)
+          .where('email', '!=', currentUser?.email)
+          .limit(12)
+          .onSnapshot(snapshot => {
+            const placeholder: StudentWithClassSection[] = [];
+            snapshot.forEach(doc => {
+              const data = doc.data() as StudentWithClassSection;
+              placeholder.push({...data});
+            });
+            handleState('students', placeholder);
+          });
+        return unsub;
+      })
+      .catch(err => {
+        console.log(err);
       });
-    return unsub();
-  }, []);
+  }, [currentUser, handleUsersCache]);
 
   return (
     <Modal
       visible={state.modalVisible}
       onRequestClose={() => {
-        Alert.alert('Closing modal');
+        ToastAndroid.show('Closing modal', ToastAndroid.SHORT);
         handleState('modalVisible', false);
       }}>
-      <View>{renderStudent()}</View>
+      <ScrollView className=" bg-blue-400">
+        <View className="relative h-screen flex-col items-center justify-center bg-yellow-300">
+          {renderStudent()}
+        </View>
+      </ScrollView>
       {state.concerns.length > 0 && <View>{renderConcerns()}</View>}
     </Modal>
   );

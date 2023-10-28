@@ -1,13 +1,13 @@
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
-import type {AnnouncementProps} from '~/types/announcement';
 import {Text} from '~/components';
 import SvgContainer from '~/components/SVGContainer';
 import {useContent} from '~/contexts/ContentContext';
-import {pin} from '~/utils/svgIcons';
-import {HeadingTemplate, TabContainer} from './Usertab';
+import type {AnnouncementProps} from '~/types/announcement';
 import type {PathListType} from '~/utils/navPaths/types';
+import {pin} from '~/utils/svgIcons';
+import {HeadingTemplate, TabContainer} from '../../../components/Home/Usertab';
 
 const CalendarOfActivities = () => {
   const {announcement} = useContent();

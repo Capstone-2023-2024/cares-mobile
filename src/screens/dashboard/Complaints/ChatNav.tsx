@@ -1,11 +1,8 @@
-import {TouchableOpacity, View, TextInput, Modal, Alert} from 'react-native';
-import React, {useState} from 'react';
-import {Text} from '~/components';
 import {useNavigation} from '@react-navigation/native';
+import React from 'react';
+import {TouchableOpacity, View} from 'react-native';
+import {Text} from '~/components';
 import {NextSvg} from '~/utils/image';
-import {arrayUnion, collectionRef, firestoreApp} from '~/utils/firebase';
-import {useAuth} from '~/contexts/AuthContext';
-import {getRandomInt} from '~/utils/random';
 
 export interface ChatNavProps {
   modalVisible: boolean;
@@ -28,18 +25,21 @@ export interface TicketInfoProps {
 }
 
 const ChatNav = () => {
-  const initState: ChatNavProps = {
-    modalVisible: false,
-    title: '',
-    about: '',
-  };
-  const [state, setState] = useState(initState);
+  // const initState: ChatNavProps = {
+  //   modalVisible: false,
+  //   title: '',
+  //   about: '',
+  // };
+  // const [state, setState] = useState(initState);
   const navigation = useNavigation();
-  const {currentUser} = useAuth();
 
-  function handleState(key: keyof ChatNavProps, value: ChatNavValue) {
-    setState(prevState => ({...prevState, [key]: value}));
-  }
+  /*TODO: Render a two options for mayors:
+    Student Concerns, Personal Concern by the mayor.
+    Complaints/concerns by mayors will be escalated to BM
+  */
+  // function handleState(key: keyof ChatNavProps, value: ChatNavValue) {
+  //   setState(prevState => ({...prevState, [key]: value}));
+  // }
   function handleGoBack() {
     navigation.goBack();
   }

@@ -8,18 +8,15 @@ import {
   ImagePickerResponse,
   launchImageLibrary,
 } from 'react-native-image-picker';
-import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import ChatProvider from '~/contexts/ChatContext';
+import {useContent} from '~/contexts/ContentContext';
+import {ConcernProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
 import ChatBox from './ChatBox';
 import ChatNav from './ChatNav';
-import InputContainer from './InputContainer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StudentWithClassSection} from '~/types/student';
-import {ConcernProps} from '~/types/complaints';
-import {useContent} from '~/contexts/ContentContext';
 import ChatPrivilege from './ChatPrivilege';
+import InputContainer from './InputContainer';
 
 const Chats = () => {
   return (
@@ -31,7 +28,7 @@ const Chats = () => {
 
 const ChatChildren = () => {
   const {currentUser} = useAuth();
-  const {privilege} = useContent();
+  const {role} = useContent();
   const [message, setMessage] = useState('');
   const [file, setFile] = useState<DocumentPickerResponse[]>([]);
   const [filePath, setFilePath] = useState<ImagePickerResponse | null>(null);
@@ -107,11 +104,9 @@ const ChatChildren = () => {
     filePath,
   };
 
-  console.log({privilege});
-
   return (
     <View className="relative flex-1">
-      {privilege && <ChatPrivilege />}
+      {(role === 'adviser' || role === 'mayor') && <ChatPrivilege />}
       <ChatNav />
       <ChatBox />
       <InputContainer {...inputContainerProps} />
@@ -119,12 +114,12 @@ const ChatChildren = () => {
   );
 };
 
-const IconOptions = () => {
-  return (
-    <View className="flex-row items-center justify-center">
-      <Text>Info</Text>
-    </View>
-  );
-};
+// const IconOptions = () => {
+//   return (
+//     <View className="flex-row items-center justify-center">
+//       <Text>Info</Text>
+//     </View>
+//   );
+// };
 
 export default Chats;

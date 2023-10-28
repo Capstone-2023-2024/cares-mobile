@@ -1,11 +1,10 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Image, ScrollView, View} from 'react-native';
-import {useContent} from '~/contexts/ContentContext';
-import type {AnnouncementProps} from '~/types/announcement';
-import {useNavigation} from '@react-navigation/native';
 import {Text} from '~/components';
-import type {ContainerProps} from './types';
+import {useContent} from '~/contexts/ContentContext';
 import {retrieveImageFBStorage} from '~/utils/image';
+import type {ContainerProps} from './types';
 
 const Announcements = () => {
   const {announcement} = useContent();

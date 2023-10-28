@@ -18,7 +18,7 @@ const ChatBox = () => {
         const id = studentSnap.docs[0]?.id;
         return collectionRef('student')
           .doc(id)
-          .collection(`concerns`)
+          .collection('concerns')
           .limit(12)
           .orderBy('dateCreated', 'desc')
           .onSnapshot(snapshot => {
@@ -37,11 +37,11 @@ const ChatBox = () => {
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     return void getConcerns();
-  }, []);
+  }, [getConcerns]);
 
   function renderChatBox() {
     return state.map(({id, sender, message, dateCreated}) => {

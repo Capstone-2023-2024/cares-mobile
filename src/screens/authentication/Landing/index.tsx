@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import {ImageBackground, ToastAndroid, View} from 'react-native';
+import {ImageBackground, View} from 'react-native';
 import {Text} from '~/components';
 import {Button} from '~/components/Button';
 import {useContent} from '~/contexts/ContentContext';
@@ -24,7 +24,8 @@ const Landing = () => {
         <ImageBackground
           className="h-96 w-64"
           source={require('~/assets/smarttechline.png')}
-          alt="https://pngtree.com/freepng/cool-dynamic-smart-technology-line-ray-background_3589532.html_image_from_pngtree.com"></ImageBackground>
+          alt="https://pngtree.com/freepng/cool-dynamic-smart-technology-line-ray-background_3589532.html_image_from_pngtree.com"
+        />
       </View>
       <Text className="mb-2 text-center font-serif text-xl font-thin hover:font-sans">
         I'm a

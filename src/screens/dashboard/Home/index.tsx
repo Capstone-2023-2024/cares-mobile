@@ -1,136 +1,154 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import type {StudentCORProps} from '~/types/student';
-import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, TouchableOpacity, View, Modal} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Alert,
+  ScrollView,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {Text} from '~/components';
 import Background from '~/components/Background';
 import FooterNav from '~/components/FooterNav';
+import {Announcements, CalendarOfActivities, Usertab} from '~/components/Home';
 import {useAuth} from '~/contexts/AuthContext';
-import type {UserCacheType} from '~/screens/authentication/Register/types';
-import {collectionRef} from '~/utils/firebase';
-import Announcements from './Announcements';
-import Notifications from './Notifications';
-import UniversitySchedule from './CalendarOfActivities';
-import Usertab from './Usertab';
-import type {PushToCacheProps, StudentInfoProps} from './types';
-import {Text} from '~/components';
-import {useNav} from '~/contexts/NavigationContext';
 import {useContent} from '~/contexts/ContentContext';
+import {useNav} from '~/contexts/NavigationContext';
+import type {StudentCORProps} from '~/types/student';
+import {collectionRef} from '~/utils/firebase';
 
 const Home = () => {
-  const {currentUser, initialRouteName} = useAuth();
-  const {role, handlePrivilege} = useContent();
   const {handleNavigation} = useNav();
-  const [state, setState] = useState<
-    Omit<StudentCORProps, 'studentNo'> | undefined
-  >();
-  const [section, setSection] = useState<boolean | undefined>(undefined);
+  const {role, handleUsersCache, handleRole} = useContent();
+  const {currentUser} = useAuth();
+  const [state, setState] = useState<StudentCORProps | undefined>(undefined);
 
   function setUpSection() {
     handleNavigation('UserInfo');
   }
+  // const getSection = useCallback(async () => {
+  //   try {
+  //     const sectionAsync = await AsyncStorage.getItem('section');
+  //     console.log({sectionAsync});
+  //     if (sectionAsync !== null) {
+  //       return setSection(JSON.parse(sectionAsync));
+  //     }
+  //     await AsyncStorage.setItem('section', 'false');
+  //     const unsub = collectionRef('student')
+  //       .where('email', '==', currentUser?.email)
+  //       .onSnapshot(snapshot => {
+  //         const isSectionExist = snapshot.docs[0]?.data().section;
+  //         return setSection(isSectionExist === undefined);
+  //       });
+  //     return unsub();
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }, [currentUser, section]);
 
-  const getSection = useCallback(async () => {
-    if (currentUser !== null) {
-      const snap = await collectionRef('student')
-        .where('email', '==', currentUser.email)
-        .get();
-      const isSectionExist = snap.docs[0]?.data().section;
-      return setSection(isSectionExist !== undefined);
-    }
-  }, [currentUser]);
-
-  void getSection();
-
-  const setupForStudents = useCallback(async () => {
-    try {
-      async function fetchStudentInfo() {
-        if (currentUser !== null) {
-          const studInfo = await collectionRef('student')
-            .where('email', '==', currentUser.email)
-            .get();
-          const doc = studInfo.docs[0] as unknown as
-            | StudentInfoProps
-            | undefined;
-          return doc;
+  const renderSectionBannerSetup = () => {
+    return (
+      true && (
+        <View className="flex-row justify-center bg-yellow-100 p-2">
+          <Text className="mr-2 text-xs text-yellow-600">
+            Looks like you didn't have your class section set-up.
+          </Text>
+          <TouchableOpacity onPress={setUpSection}>
+            <Text className="text-xs text-yellow-600 underline">Tap here</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    );
+  };
+  useEffect(() => {
+    async function setupForStudents() {
+      try {
+        async function fetchStudentInfo() {
+          if (currentUser !== null) {
+            const studInfo = await collectionRef('student')
+              .where('email', '==', currentUser.email)
+              .get();
+            const data = studInfo.docs[0]?.data();
+            // console.log({data});
+            // TODO: Swap auth uid to student no
+            return data;
+          }
         }
-      }
-      async function pushToCache({usersCache}: PushToCacheProps) {
-        const doc = await fetchStudentInfo();
-        if (doc !== undefined) {
-          setState(doc.data());
-          usersCache.push({
-            [doc.id]: {...doc.data()},
-          });
-          return await AsyncStorage.setItem(
-            'usersCache',
-            JSON.stringify(usersCache),
+        async function checkIfStudentIsMayor(email: string) {
+          const result = await collectionRef('mayor')
+            .where('email', '==', email)
+            .count()
+            .get();
+          return result.data().count;
+        }
+        const array = await handleUsersCache();
+        const filteredArray: StudentCORProps[] | undefined = array.filter(
+          ({email}) => currentUser?.email === email,
+        );
+        if (filteredArray.length === 0) {
+          const snapshot = await fetchStudentInfo();
+          if (snapshot !== undefined) {
+            const data = snapshot as StudentCORProps;
+            const result = await handleUsersCache(data);
+            const filteredResult: StudentCORProps[] | undefined = result.filter(
+              ({email}) => currentUser?.email === email,
+            );
+            const selectedEmail = filteredResult[0]?.email ?? '';
+            // console.log('Newly inserted into cache array', {selectedEmail});
+            const count = await checkIfStudentIsMayor(selectedEmail);
+            setState(filteredResult[0]);
+            return handleRole(count > 0 ? 'mayor' : role);
+          }
+        } else if (filteredArray === undefined) {
+          return Alert.alert(
+            "Error in fetching student info, you're not registered",
           );
         }
-        return console.log('Document in firestore is Empty');
-      }
-      const getUserCache = await AsyncStorage.getItem('usersCache');
-      if (getUserCache !== null) {
-        const usersCache: UserCacheType[] = JSON.parse(getUserCache);
-        let studInfo: typeof state;
-        usersCache.forEach(user => {
-          const currentLogin = Object.values(user).filter(
-            values => currentUser?.email === values.email,
-          )[0];
-          studInfo = currentLogin;
-        });
-        setState(studInfo);
-        if (studInfo === undefined) {
-          return void pushToCache({usersCache});
-        }
-      }
-      void pushToCache({usersCache: []});
-    } catch (err) {
-      console.log(err);
-    }
-  }, [currentUser, state]);
-
-  useEffect(() => {
-    return () => {
-      void setupForStudents();
-    };
-  }, [setupForStudents]);
-
-  useEffect(() => {
-    async function checkForPrivilege() {
-      const snap = await collectionRef(
-        role === 'student' ? 'mayor' : 'advisers',
-      )
-        .where('email', '==', currentUser?.email)
-        .count()
-        .get();
-      console.log(snap.data().count);
-      if (snap.data().count > 0) {
-        handlePrivilege(true);
+        const selectedEmail = filteredArray[0]?.email ?? '';
+        // console.log('Existing inside cache array', {selectedEmail});
+        const count = await checkIfStudentIsMayor(selectedEmail);
+        setState(filteredArray[0]);
+        handleRole(count > 0 ? 'mayor' : role);
+      } catch (err) {
+        ToastAndroid.show(
+          'Error in setting up student in Home',
+          ToastAndroid.SHORT,
+        );
       }
     }
-    return void checkForPrivilege();
-  }, []);
+    return void setupForStudents();
+  }, [handleUsersCache, handleRole, role, currentUser]);
 
   return (
     <View className="flex-1">
+      {/* <TouchableOpacity
+        onPress={async () => {
+          const foo = {
+            studentNo: '2023200771',
+            college: 'College of Information and Communications',
+            schoolYear: '1st',
+            name: 'CARRANZA, Ggg A.',
+            course: 'BSIT',
+            gender: 'M',
+            major: 'N/A',
+            curriculum: 'BSIT (2018 -2019)',
+            age: '65',
+            section: 'e',
+            yearLevel: '4th Year',
+            scholarship: 'Official Receipt: Unifast Scholar',
+            email: 'carranzagcarlo@gmail.com',
+          };
+          await collectionRef('student')
+            .doc(foo.studentNo)
+            .set({...foo});
+        }}>
+        <Text>Dummy</Text>
+      </TouchableOpacity> */}
       <Background>
-        {section === false && role === 'student' && (
-          <View className="flex-row justify-center bg-yellow-100 p-2">
-            <Text className="mr-2 text-xs text-yellow-600">
-              Looks like you didn't have your class section set-up.
-            </Text>
-            <TouchableOpacity onPress={setUpSection}>
-              <Text className="text-xs text-yellow-600 underline">
-                Tap here
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        {renderSectionBannerSetup()}
         <ScrollView>
-          <Usertab name={state?.name ?? ''} />
-          <UniversitySchedule />
+          <Usertab name={state === undefined ? 'null' : `${state.name}!`} />
+          <CalendarOfActivities />
           <Announcements />
-          <Notifications />
         </ScrollView>
       </Background>
       <View>

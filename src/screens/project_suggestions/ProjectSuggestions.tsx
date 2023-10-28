@@ -93,7 +93,7 @@ const Poll = ({question, options, id, votes}: EventProps) => {
         const email = currentUser.email ?? '';
         const result = Object.keys(votes ?? {}).filter(key => email === key)[0];
         if (result !== undefined) {
-          const currentValue = votes.result ?? '';
+          // const currentValue = votes.result ?? '';
           return votes[result];
         }
       }

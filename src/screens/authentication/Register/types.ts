@@ -1,5 +1,3 @@
-import type {StudInfoSortedType} from '~/types';
-
 export interface FileType {
   uri: string;
   name: string | null;
@@ -23,7 +21,3 @@ export interface CORPatternsProps {
   name: CORNameType;
   regex: RegExp;
 }
-
-export type UserCacheType = {
-  [x: string]: Omit<StudInfoSortedType, 'studentNo'>;
-};

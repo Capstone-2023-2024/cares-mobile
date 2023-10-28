@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   createContext,
   useCallback,
@@ -6,70 +7,97 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import type {Role} from '~/screens/authentication/Landing/types';
+import {ToastAndroid} from 'react-native';
+import type {AnnouncementProps} from '~/types/announcement';
+import {StudentWithClassSection} from '~/types/student';
 import {currentMonth} from '~/utils/date';
 import {collectionRef} from '~/utils/firebase';
-import {useAuth} from '../AuthContext';
 import {MessagePrompt} from '../AuthContext/types';
-import type {ContentContextType, InitialStateProps} from './types';
-import type {AnnouncementProps} from '~/types/announcement';
-import type {StudentCORProps} from '~/types/student';
-import type {CollectionPath} from '~/types/firebase';
+import type {
+  ContentContextType,
+  InitialStateProps,
+  InitialStateValues,
+} from './types';
 
-const firestoreCollection = {
-  announcement: [],
-  chat: [],
-  schedule: [],
-};
 const initialState: InitialStateProps = {
-  privilege: false,
   message: null,
   role: null,
-  ...firestoreCollection,
+  announcement: [],
 };
 
 const ContentContext = createContext<ContentContextType>({
   ...initialState,
-  handlePrivilege: () => null,
   handleMessage: () => null,
   handleRole: () => null,
+  handleUsersCache: async () => {
+    const holder: StudentWithClassSection[] = [];
+    return holder;
+  },
 });
 
-// const chatColReference = collectionRef('chat');
 const ContentProvider = ({children}: {children: ReactNode}) => {
   const [state, setState] = useState<InitialStateProps>(initialState);
-  const {currentUser} = useAuth();
 
   function handleState(
-    name: keyof InitialStateProps | CollectionPath,
-    value:
-      | AnnouncementProps[]
-      | StudentCORProps
-      | string
-      | MessagePrompt
-      | boolean,
+    name: keyof InitialStateProps,
+    value: InitialStateValues,
   ) {
     setState(prevState => ({...prevState, [name]: value}));
   }
-
   function handleMessage(props: MessagePrompt) {
     handleState('message', props);
   }
-  function handlePrivilege(props: boolean) {
-    handleState('privilege', props);
-  }
-  const handleRole = useCallback((props: Role) => {
+  const handleRole = useCallback((props: InitialStateProps['role']) => {
     handleState('role', props);
   }, []);
+  async function handleUsersCache(studentCORProps?: StudentWithClassSection) {
+    const USER_KEY = 'usersCache';
+    try {
+      const usersCache = await AsyncStorage.getItem(USER_KEY);
+      if (studentCORProps === undefined) {
+        return JSON.parse(usersCache ?? '[]') as StudentWithClassSection[];
+      }
+      if (typeof usersCache === 'string') {
+        const parsedUserCache = JSON.parse(
+          usersCache,
+        ) as StudentWithClassSection[];
+        const filteredParsedUserCache = parsedUserCache.filter(
+          ({studentNo}) => studentCORProps.studentNo === studentNo,
+        );
+        if (filteredParsedUserCache.length < 1) {
+          parsedUserCache.push(studentCORProps);
+          const arrayHolder = [...parsedUserCache];
+          await AsyncStorage.setItem(USER_KEY, JSON.stringify(arrayHolder));
+          return arrayHolder;
+        }
+        // Alert.alert('Data is already present in the users cache');
+        return [];
+      }
+      await AsyncStorage.setItem(USER_KEY, JSON.stringify([studentCORProps]));
+      return [studentCORProps];
+    } catch (err) {
+      ToastAndroid.show('Error in handling user cache', ToastAndroid.SHORT);
+      return [];
+    }
+  }
+  const handleRoleAsyncStorage = useCallback(async () => {
+    try {
+      const role = await AsyncStorage.getItem('role');
+      handleRole(role as InitialStateProps['role']);
+    } catch (err) {
+      ToastAndroid.show(
+        'item in async storage maybe null => ContentContext.tsx',
+        ToastAndroid.SHORT,
+      );
+    }
+  }, [handleRole]);
 
-  const handleSnapshot = useCallback((name: CollectionPath) => {
+  useEffect(() => {
     const newDate = new Date();
     const month = newDate.getMonth();
     const year = newDate.getFullYear();
     const MONTH = currentMonth({month, year})?.name.toUpperCase();
-
-    return collectionRef(name)
+    const unsub = collectionRef('announcement')
       .doc(MONTH)
       .collection(`${year}`)
       .onSnapshot(snapshot => {
@@ -81,38 +109,23 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
           });
         }
         handleState(
-          name,
+          'announcement',
           holder.sort((a, b) => b.dateCreated - a.dateCreated),
         );
       });
-  }, []);
-
+    return void unsub;
+  }, []); // Announcement Snapshot
   useEffect(() => {
-    const unsub = handleSnapshot('announcement');
-    return () => unsub();
-  }, [handleSnapshot]);
-
-  useEffect(() => {
-    async function getRole() {
-      try {
-        const role = await AsyncStorage.getItem('role');
-        handleRole(role as Role);
-      } catch (err) {
-        console.log(err, 'Error in role');
-      }
-    }
-    return () => {
-      void getRole();
-    };
-  }, [currentUser, handleRole]);
+    return void handleRoleAsyncStorage();
+  }, [handleRoleAsyncStorage]);
 
   return (
     <ContentContext.Provider
       value={{
         ...state,
-        handlePrivilege,
         handleMessage,
         handleRole,
+        handleUsersCache,
       }}>
       {children}
     </ContentContext.Provider>

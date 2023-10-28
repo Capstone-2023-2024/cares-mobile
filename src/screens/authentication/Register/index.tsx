@@ -1,28 +1,30 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
-import {Alert, TouchableOpacity, View, Image} from 'react-native';
+import {Alert, Image, TouchableOpacity, View} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {Extractor} from 'react-native-pdf-extractor';
 import type {Transient} from 'react-native-pdf-extractor/src/types';
-import type {Error} from '~/types/error';
-import type {StudentCORProps} from '~/types/student';
 import {Text} from '~/components';
 import {Button, Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
+import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
+import type {Error} from '~/types/error';
+import type {StudentCORProps} from '~/types/student';
 import {
   collectionRef,
   validateEmail,
   validateEmailWithCOR,
 } from '~/utils/firebase';
-import type {CORPatternsProps, FileType, UserCacheType} from './types';
+import type {CORPatternsProps, FileType} from './types';
 
 const Register = () => {
   const milToKB = 1000;
   const {handleNavigation} = useNav();
+  const {handleUsersCache} = useContent();
   const [studentInfo, setStudentInfo] = useState<StudentCORProps | null>(null);
   const [email, setEmail] = useState('');
+  const emailValidation = email.match('@bulsu.edu.ph') === null;
   const [file, setFile] = useState<FileType | null>(null);
   const CORPatterns: CORPatternsProps[] = [
     {name: 'studentNo', regex: /^[0-9]{10}$/},
@@ -45,10 +47,6 @@ const Register = () => {
     {name: 'scholarship', regex: /^Official Receipt: [^/d]*$/},
   ];
 
-  function handleNavigationLoginWithRole() {
-    handleNavigation('Login');
-  }
-
   async function handleCORUpload() {
     try {
       const {uri, size, name, type} = await DocumentPicker.pickSingle();
@@ -67,40 +65,6 @@ const Register = () => {
       }
     }
   }
-
-  async function handleRegisterPress() {
-    const doc = await collectionRef('student')
-      .where('email', '==', email)
-      .count()
-      .get();
-    const {count} = doc.data();
-    const isCountGreaterZero = count > 0;
-    const {studentNo, ...rest} = studentInfo as StudentCORProps;
-
-    if (!email) {
-      Alert.alert('Empty Email', 'Please enter your email address.');
-      return;
-    }
-    if (!validateEmail(email)) {
-      return Alert.alert(
-        'Invalid Email',
-        'Please enter a valid email address.',
-      );
-    }
-    !isCountGreaterZero &&
-      collectionRef('student')
-        .doc(studentNo)
-        .set({...rest, email, recipient: 'class_section'});
-    Alert.alert(
-      isCountGreaterZero
-        ? "You're already registered!\nPlease login"
-        : 'You may now use your Google BulSU Email to login',
-    );
-
-    setStudentInfo(null);
-    handleNavigationLoginWithRole();
-  }
-
   async function handlePDFResult(data: Transient | null) {
     if (data !== null) {
       let idHolder: Partial<StudentCORProps> = {};
@@ -123,16 +87,48 @@ const Register = () => {
       if (!result) {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }
-
-      const {name, studentNo, ...rest} = result;
-      const cache: UserCacheType = {[studentNo]: {...rest, name, email}};
-      const emailFromCOR = validateEmailWithCOR({name});
+      const cache: Omit<StudentCORProps, 'email'> = result;
+      const emailFromCOR = validateEmailWithCOR({name: result.name});
       if (email !== emailFromCOR) {
         setFile(null);
         return Alert.alert('Please check if your email address is valid');
       }
-      await AsyncStorage.setItem('usersCache', JSON.stringify([cache]));
-      setStudentInfo(result);
+      if (cache !== null) {
+        const modifiedCache = {...cache, email};
+        const students = await handleUsersCache(modifiedCache);
+        const filtered =
+          students.filter(student => email === student.email)[0] ??
+          modifiedCache;
+        setStudentInfo(filtered);
+      }
+    }
+  }
+  async function handleRegisterPress() {
+    function reset() {
+      setStudentInfo(null);
+      handleNavigation('Login');
+    }
+    if (!validateEmail(email)) {
+      return Alert.alert(
+        'Invalid Email',
+        'Please enter a valid email address.',
+      );
+    }
+    if (studentInfo !== null) {
+      const EMPTY_LENGTH = 0;
+      const result = await collectionRef('student')
+        .where('email', '==', email)
+        .count()
+        .get();
+      if (result.data().count === EMPTY_LENGTH) {
+        await collectionRef('student')
+          .doc(studentInfo.studentNo)
+          .set({...studentInfo, email, recipient: 'class_section'});
+        Alert.alert('You may now use your Google BulSU Email to login');
+        return reset();
+      }
+      Alert.alert("You're already registered!\nPlease login");
+      reset();
     }
   }
 
@@ -159,7 +155,12 @@ const Register = () => {
         </Text>
       </View>
       <TouchableOpacity
-        className="mx-auto mb-2 w-2/3 items-center rounded-xl border-2 border-dashed py-12"
+        disabled={emailValidation}
+        className={`${
+          emailValidation
+            ? 'border-slate-300 bg-slate-200'
+            : 'border-dashed border-black bg-transparent'
+        } mx-auto mb-2 w-2/3 items-center rounded-xl border-2 py-12 duration-300 ease-in-out`}
         onPress={handleCORUpload}>
         {file && <Text className="mb-2 text-xs">Change COR</Text>}
         <View className="flex-row gap-2">
@@ -181,7 +182,14 @@ const Register = () => {
             </View>
           )}
         </View>
-        {!file && <Text className="text-xs">Upload your COR here</Text>}
+        {!file && (
+          <Text
+            className={`${
+              emailValidation ? 'text-slate-300' : 'text-black'
+            } text-xs duration-300 ease-in-out`}>
+            Upload your COR here
+          </Text>
+        )}
       </TouchableOpacity>
       <View className="mb-2 w-1/3 self-center">
         <Button
@@ -194,7 +202,7 @@ const Register = () => {
         <Text className="text-center text-xs">Already registered? </Text>
         <Link
           textStyle="text-primary/60 text-center"
-          onPress={handleNavigationLoginWithRole}>
+          onPress={() => handleNavigation('Login')}>
           Login here
         </Link>
       </View>

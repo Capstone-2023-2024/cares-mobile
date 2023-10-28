@@ -1,27 +1,40 @@
 import {useRoute} from '@react-navigation/native';
 import React from 'react';
-import {Image} from 'react-native';
-import {TouchableOpacity, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {projectName} from '~/utils/config';
-import {MessageSvg} from '~/utils/image';
 
 function Header({}: {withBack?: boolean}) {
   const {handleNavigation} = useNav();
-  const {privilege, role} = useContent();
-  const {initialRouteName, currentUser} = useAuth();
+  const {role} = useContent();
+  const {currentUser} = useAuth();
   const route = useRoute();
 
   function handlePressRoute() {
     handleNavigation('Home');
   }
-
   function handlePressChats() {
     handleNavigation('Chats');
   }
+  const renderChatIcon = () =>
+    role !== 'faculty' &&
+    route.name !== 'Chats' &&
+    currentUser !== null && (
+      <>
+        <TouchableOpacity
+          className="mr-2 h-8 w-8 items-center"
+          onPress={handlePressChats}>
+          <Image
+            source={require('~/assets/chat.png')}
+            className="h-full w-full"
+          />
+        </TouchableOpacity>
+      </>
+    );
+
   return (
     <View className="h-16 flex-row items-center justify-between bg-paper px-2 shadow-lg">
       <TouchableOpacity
@@ -38,18 +51,7 @@ function Header({}: {withBack?: boolean}) {
           {projectName}
         </Text>
       </TouchableOpacity>
-      {currentUser !== null && route.name !== 'Chats' && role === 'student' && (
-        <>
-          <TouchableOpacity
-            className="mr-2 h-8 w-8 items-center"
-            onPress={handlePressChats}>
-            <Image
-              source={require('~/assets/chat.png')}
-              className="h-full w-full"
-            />
-          </TouchableOpacity>
-        </>
-      )}
+      {renderChatIcon()}
     </View>
   );
 }

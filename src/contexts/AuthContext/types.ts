@@ -1,21 +1,15 @@
 import type {ReactNode} from 'react';
 import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import type {CollectionPath} from '~/types/firebase';
 
 export interface InitialStateProps {
-  initialRouteName: 'Landing' | 'Home' | 'Loading';
-  loading: boolean;
   currentUser: FirebaseAuthTypes.User | null;
 }
 
-export type InitialState =
-  | InitialStateProps['initialRouteName']
-  | InitialStateProps['currentUser']
-  | InitialStateProps['loading'];
+export type InitialState = InitialStateProps['currentUser'];
 
 export interface AuthContextType extends InitialStateProps {
   signout: () => Promise<void>;
-  onGoogleButtonPress: (path: CollectionPath) => Promise<MessagePrompt>;
+  onGoogleButtonPress: () => Promise<void>;
 }
 
 export interface AuthProviderProps {

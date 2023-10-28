@@ -1,11 +1,9 @@
 import React from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
-import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 
 const FooterNav = () => {
-  const {role} = useContent();
   const {handleNavigation} = useNav();
 
   function handlePressProject() {

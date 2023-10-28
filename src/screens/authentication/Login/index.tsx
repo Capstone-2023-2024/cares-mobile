@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Text, ToastAndroid, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
@@ -9,25 +9,19 @@ import {useNav} from '~/contexts/NavigationContext';
 import {GoogleSvg} from '~/utils/image';
 
 const Login = () => {
-  const DIMENSION = 20;
-  const {handleMessage} = useContent();
-  const {onGoogleButtonPress} = useAuth();
   const {role} = useContent();
+  const {onGoogleButtonPress} = useAuth();
   const {handleNavigation} = useNav();
 
   function handleRegisterPress() {
     handleNavigation('Register');
   }
-
   async function handleLogin() {
     try {
-      if (role !== null) {
-        const message = await onGoogleButtonPress(role);
-        handleMessage(message);
-        handleNavigation('Home');
-      }
+      await onGoogleButtonPress();
+      // handleNavigation('Loading');
     } catch (err) {
-      console.log(err);
+      ToastAndroid.show('Error in handling Google Signin', ToastAndroid.SHORT);
     }
   }
 

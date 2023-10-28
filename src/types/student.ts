@@ -14,7 +14,7 @@ export interface StudentCORProps {
 }
 
 export interface StudentWithClassSection extends StudentCORProps {
-  section: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g';
+  section?: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g';
 }
 
 export interface ResultType extends Pick<StudentCORProps, 'name'> {
