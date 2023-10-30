@@ -21,6 +21,7 @@ const Home = () => {
   const {role, handleUsersCache, handleRole} = useContent();
   const {currentUser} = useAuth();
   const [state, setState] = useState<StudentCORProps | undefined>(undefined);
+  const [section, setSection] = useState<string | null | undefined>(null);
 
   function setUpSection() {
     handleNavigation('UserInfo');
@@ -44,10 +45,9 @@ const Home = () => {
   //     console.log(err);
   //   }
   // }, [currentUser, section]);
-
   const renderSectionBannerSetup = () => {
     return (
-      true && (
+      section === undefined && (
         <View className="flex-row justify-center bg-yellow-100 p-2">
           <Text className="mr-2 text-xs text-yellow-600">
             Looks like you didn't have your class section set-up.
@@ -61,6 +61,11 @@ const Home = () => {
   };
   useEffect(() => {
     async function setupForStudents() {
+      const usersCache = await handleUsersCache();
+      const filteredUsersCache = usersCache.filter(
+        ({email}) => currentUser?.email === email,
+      );
+      setSection(filteredUsersCache[0]?.section ?? undefined);
       try {
         async function fetchStudentInfo() {
           if (currentUser !== null) {
@@ -96,6 +101,10 @@ const Home = () => {
             // console.log('Newly inserted into cache array', {selectedEmail});
             const count = await checkIfStudentIsMayor(selectedEmail);
             setState(filteredResult[0]);
+            count > 0 &&
+              (await collectionRef('student')
+                .doc(filteredResult[0]?.studentNo)
+                .update({recipient: 'bm'}));
             return handleRole(count > 0 ? 'mayor' : role);
           }
         } else if (filteredArray === undefined) {
@@ -107,6 +116,10 @@ const Home = () => {
         // console.log('Existing inside cache array', {selectedEmail});
         const count = await checkIfStudentIsMayor(selectedEmail);
         setState(filteredArray[0]);
+        count > 0 &&
+          (await collectionRef('student')
+            .doc(filteredArray[0]?.studentNo)
+            .update({recipient: 'bm'}));
         handleRole(count > 0 ? 'mayor' : role);
       } catch (err) {
         ToastAndroid.show(
@@ -120,29 +133,6 @@ const Home = () => {
 
   return (
     <View className="flex-1">
-      {/* <TouchableOpacity
-        onPress={async () => {
-          const foo = {
-            studentNo: '2023200771',
-            college: 'College of Information and Communications',
-            schoolYear: '1st',
-            name: 'CARRANZA, Ggg A.',
-            course: 'BSIT',
-            gender: 'M',
-            major: 'N/A',
-            curriculum: 'BSIT (2018 -2019)',
-            age: '65',
-            section: 'e',
-            yearLevel: '4th Year',
-            scholarship: 'Official Receipt: Unifast Scholar',
-            email: 'carranzagcarlo@gmail.com',
-          };
-          await collectionRef('student')
-            .doc(foo.studentNo)
-            .set({...foo});
-        }}>
-        <Text>Dummy</Text>
-      </TouchableOpacity> */}
       <Background>
         {renderSectionBannerSetup()}
         <ScrollView>

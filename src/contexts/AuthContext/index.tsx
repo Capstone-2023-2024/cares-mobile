@@ -1,6 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import React, {createContext, useContext, useEffect, useState} from 'react';
+import {ToastAndroid} from 'react-native';
 import {useNav} from '../NavigationContext';
 import type {
   AuthContextType,
@@ -8,10 +9,6 @@ import type {
   InitialState,
   InitialStateProps,
 } from './types';
-import {ToastAndroid} from 'react-native';
-import {useContent} from '../ContentContext';
-import {collectionRef} from '~/utils/firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState: InitialStateProps = {
   currentUser: null,
@@ -31,33 +28,9 @@ const AuthProvider = ({children}: AuthProviderProps) => {
   GoogleSignin.configure({...config});
   const [state, setState] = useState(initialState);
   const {handleNavigation} = useNav();
-  const {role, handleRole} = useContent();
 
   function handleState(key: keyof InitialStateProps, value: InitialState) {
     setState(prevState => ({...prevState, [key]: value}));
-  }
-  async function handleMayorAdvisers() {
-    try {
-      const COLLECTION_PATH = role === 'faculty' ? 'permission' : 'mayor';
-      if (state.currentUser !== null) {
-        const EMPTY_LENGTH = 0;
-        const result = await collectionRef(COLLECTION_PATH)
-          .where('email', '==', state.currentUser.email)
-          .count()
-          .get();
-        if (result.data().count > EMPTY_LENGTH) {
-          const newRole =
-            COLLECTION_PATH === 'permission' ? 'adviser' : 'mayor';
-          handleRole(newRole);
-          await AsyncStorage.setItem('role', newRole);
-        }
-      }
-    } catch (err) {
-      return ToastAndroid.show(
-        'Error in handling mayor and adviser state',
-        ToastAndroid.SHORT,
-      );
-    }
   }
   async function signout() {
     try {
@@ -74,7 +47,6 @@ const AuthProvider = ({children}: AuthProviderProps) => {
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       await auth().signInWithCredential(googleCredential);
-      handleMayorAdvisers();
     } catch (err) {
       ToastAndroid.show('Sign in action cancelled', ToastAndroid.SHORT);
     }

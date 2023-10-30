@@ -1,12 +1,18 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import {ScrollView, View, Image, Modal} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
+import {useChat} from '~/contexts/ChatContext';
+import {useContent} from '~/contexts/ContentContext';
 import type {ChatTextProps, ConcernProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
+import storage from '@react-native-firebase/storage';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ChatBox = () => {
+  const {role} = useContent();
   const {currentUser} = useAuth();
+  const {selectedChat, otherConcerns} = useChat();
   const [state, setState] = useState<ConcernProps[]>([]);
 
   const getConcerns = useCallback(async () => {
@@ -23,14 +29,19 @@ const ChatBox = () => {
           .orderBy('dateCreated', 'desc')
           .onSnapshot(snapshot => {
             const placeholder: ConcernProps[] = [];
-            if (!snapshot.empty) {
-              const reversedArray = snapshot.docs.reverse();
-              reversedArray.forEach(doc => {
-                const data = doc.data() as Omit<ConcernProps, 'id'>;
-                const id = doc.id;
-                placeholder.push({...data, id});
+            const reversedArray = snapshot.docs.reverse();
+            reversedArray.forEach(async doc => {
+              const id = doc.id;
+              const data = doc.data() as Omit<ConcernProps, 'id'>;
+              const fileHolder: string[] = [];
+              data.files?.forEach(async fileName => {
+                const url = await storage()
+                  .ref(`concerns/${currentUser?.email}/${fileName}`)
+                  .getDownloadURL();
+                fileHolder.push(url);
               });
-            }
+              placeholder.push({...data, id, files: fileHolder});
+            });
             setState(placeholder);
           });
       }
@@ -40,43 +51,85 @@ const ChatBox = () => {
   }, [currentUser]);
 
   useEffect(() => {
+    if (role === 'mayor') {
+      if (selectedChat === 'board_member') {
+        return void getConcerns();
+      }
+      return;
+    }
     return void getConcerns();
-  }, [getConcerns]);
+  }, [getConcerns, role, selectedChat]);
 
-  function renderChatBox() {
-    return state.map(({id, sender, message, dateCreated}) => {
-      const date = new Date();
-      date.setTime(dateCreated);
-      return (
-        <View
-          key={id}
-          className={`m-2 w-max rounded-lg p-2 shadow-sm ${
-            sender === currentUser?.email
-              ? 'self-end bg-blue-400'
-              : sender === 'system'
-              ? 'self-center text-center'
-              : 'self-start bg-slate-200'
-          }`}>
-          {sender !== 'system' && (
+  function renderChatBox(concerns: ConcernProps[]) {
+    return concerns.map(
+      ({id, sender, message, dateCreated, withDocument, files}) => {
+        const date = new Date();
+        date.setTime(dateCreated);
+        return (
+          <View
+            key={id}
+            className={`m-2 w-max rounded-lg p-2 shadow-sm ${
+              sender === currentUser?.email
+                ? 'self-end bg-blue-400'
+                : sender === 'system'
+                ? 'self-center text-center'
+                : 'self-start bg-slate-200'
+            }`}>
+            {withDocument && (
+              <View>
+                {files?.map((value, index) => {
+                  return (
+                    <TouchableOpacity key={index}>
+                      <Modal>
+                        <Image
+                          source={require('~/assets/error.svg')}
+                          src={value}
+                          className="h-screen w-screen"
+                        />
+                      </Modal>
+                      <Image
+                        source={require('~/assets/error.svg')}
+                        src={value}
+                        className="h-32 w-32"
+                      />
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )}
+            {sender !== 'system' && (
+              <ChatText
+                text={sender ?? currentUser?.displayName}
+                condition={sender === currentUser?.email}
+              />
+            )}
             <ChatText
-              text={sender ?? currentUser?.displayName}
+              text={message}
               condition={sender === currentUser?.email}
             />
-          )}
-          <ChatText text={message} condition={sender === currentUser?.email} />
-          <ChatText
-            textSize="sm"
-            text={date.toLocaleTimeString()}
-            condition={sender === currentUser?.email}
-          />
-        </View>
-      );
-    });
+            <ChatText
+              textSize="sm"
+              text={date.toLocaleTimeString()}
+              condition={sender === currentUser?.email}
+            />
+          </View>
+        );
+      },
+    );
   }
 
   return (
-    <View className="mt-4 h-4/5">
-      <ScrollView>{renderChatBox()}</ScrollView>
+    <View
+      className={`${
+        role === 'mayor' || role === 'adviser' ? 'h-3/5' : 'h-4/5'
+      } mt-4`}>
+      <ScrollView>
+        {renderChatBox(
+          selectedChat === 'board_member' || role !== 'mayor'
+            ? state
+            : otherConcerns,
+        )}
+      </ScrollView>
     </View>
   );
 };

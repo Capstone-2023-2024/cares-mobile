@@ -1,34 +1,36 @@
 import React, {useEffect, useState} from 'react';
-import {ToastAndroid, Modal, TouchableOpacity, View} from 'react-native';
+import {Modal, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
+import {useChat} from '~/contexts/ChatContext';
 import {useContent} from '~/contexts/ContentContext';
 import {ConcernProps} from '~/types/complaints';
 import {StudentWithClassSection} from '~/types/student';
 import {collectionRef, firestoreApp} from '~/utils/firebase';
+import {NextSvg} from '~/utils/image';
 
 interface ChatPrivilegeProps {
-  modalVisible: boolean;
   studentNoSelected: string | null;
   students: StudentWithClassSection[];
-  concerns: ConcernProps[];
 }
 type ChatPrivilegeValues =
-  | ChatPrivilegeProps['modalVisible']
   | ChatPrivilegeProps['studentNoSelected']
-  | ChatPrivilegeProps['students']
-  | ChatPrivilegeProps['concerns'];
+  | ChatPrivilegeProps['students'];
 
 const ChatPrivilege = () => {
   const initState: ChatPrivilegeProps = {
-    modalVisible: true,
     studentNoSelected: null,
     students: [],
-    concerns: [],
   };
   const [state, setState] = useState(initState);
   const {currentUser} = useAuth();
+  const {
+    chatModalVisible,
+    handleSelectedChat,
+    handleChatModalVisible,
+    handleOtherConcerns,
+  } = useChat();
   const {handleUsersCache} = useContent();
 
   function handleState(
@@ -42,19 +44,25 @@ const ChatPrivilege = () => {
     const unsub = collectionRef('student')
       .doc(studentNo)
       .collection('concerns')
-      .orderBy('dateCreated', 'desc')
       .limit(12)
+      .orderBy('dateCreated', 'desc')
       .onSnapshot(snapshot => {
-        const placeholder: ConcernProps[] = [];
-        snapshot.forEach(doc => {
+        const concernsArray: ConcernProps[] = [];
+        const reversedArray = snapshot.docs.reverse();
+        reversedArray.forEach(doc => {
           const data = doc.data() as Omit<ConcernProps, 'id'>;
           const id = doc.id;
-          placeholder.push({...data, id});
+          concernsArray.push({...data, id});
         });
-        handleState('concerns', placeholder);
+        handleSelectedChat(studentNo);
+        handleOtherConcerns(concernsArray);
+        handleExitModal();
       });
     return unsub;
-    //TODO: Push concern contents inside ChatContext then render inside the main Complaint Box -> Complaints.tsx
+  }
+  function handleExitModal() {
+    ToastAndroid.show('Chat modal closed', ToastAndroid.SHORT);
+    handleChatModalVisible(false);
   }
   const renderStudent = () =>
     state.students.map(({studentNo, name}) => {
@@ -68,21 +76,6 @@ const ChatPrivilege = () => {
         </TouchableOpacity>
       );
     });
-
-  const renderConcerns = () => {
-    return state.concerns.map(({id, message, sender, dateCreated}) => {
-      const date = new Date();
-      date.setTime(dateCreated);
-
-      return (
-        <View key={id}>
-          <Text>{sender}</Text>
-          <Text>{message}</Text>
-          <Text>{date.toLocaleTimeString()}</Text>
-        </View>
-      );
-    });
-  };
 
   useEffect(() => {
     handleUsersCache()
@@ -113,18 +106,18 @@ const ChatPrivilege = () => {
   }, [currentUser, handleUsersCache]);
 
   return (
-    <Modal
-      visible={state.modalVisible}
-      onRequestClose={() => {
-        ToastAndroid.show('Closing modal', ToastAndroid.SHORT);
-        handleState('modalVisible', false);
-      }}>
-      <ScrollView className=" bg-blue-400">
-        <View className="relative h-screen flex-col items-center justify-center bg-yellow-300">
+    <Modal visible={chatModalVisible} onRequestClose={handleExitModal}>
+      <View className="h-12 flex-row items-center justify-around bg-primary">
+        <TouchableOpacity className="w-12 rotate-180" onPress={handleExitModal}>
+          <NextSvg />
+        </TouchableOpacity>
+        <Text className="text-paper">List of student with concerns</Text>
+      </View>
+      <ScrollView>
+        <View className="relative h-screen flex-col items-center justify-center">
           {renderStudent()}
         </View>
       </ScrollView>
-      {state.concerns.length > 0 && <View>{renderConcerns()}</View>}
     </Modal>
   );
 };
