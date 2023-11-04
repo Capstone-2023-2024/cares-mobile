@@ -8,7 +8,7 @@ import {useChat} from '~/contexts/ChatContext';
 import {useContent} from '~/contexts/ContentContext';
 import {ConcernProps} from '~/types/complaints';
 import {StudentWithClassSection} from '~/types/student';
-import {collectionRef, firestoreApp} from '~/utils/firebase';
+import {collectionRef} from '~/utils/firebase';
 import {arrowUri} from '~/utils/svgIcons';
 
 interface ChatPrivilegeProps {

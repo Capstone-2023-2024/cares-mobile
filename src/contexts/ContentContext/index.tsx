@@ -10,7 +10,6 @@ import React, {
 import {ToastAndroid} from 'react-native';
 import type {AnnouncementProps} from '~/types/announcement';
 import {StudentWithClassSection} from '~/types/student';
-import {currentMonth} from '~/utils/date';
 import {collectionRef} from '~/utils/firebase';
 import {MessagePrompt} from '../AuthContext/types';
 import type {
@@ -48,7 +47,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     handleState('message', props);
   }
   const handleRole = useCallback((props: InitialStateProps['role']) => {
-    console.log({props});
+    // console.log({props});
     handleState('role', props);
   }, []);
   async function handleUsersCache(studentCORProps?: StudentWithClassSection) {
@@ -94,9 +93,6 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
   }, [handleRole]);
 
   useEffect(() => {
-    const newDate = new Date();
-    const month = newDate.getMonth();
-    const year = newDate.getFullYear();
     const unsub = collectionRef('announcement')
       .where('type', '==', 'event')
       .where('endDate', '>', new Date().getTime())

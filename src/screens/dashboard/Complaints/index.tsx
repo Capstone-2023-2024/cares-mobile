@@ -17,7 +17,7 @@ const Chats = () => {
 const ChatChildren = () => {
   const {role} = useContent();
   const {selectedChat} = useChat();
-  console.log({role});
+  // console.log({role});
 
   return (
     <View className="relative flex-1">

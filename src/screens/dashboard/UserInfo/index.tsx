@@ -168,7 +168,7 @@ const UserInfo = () => {
       }
     }
     return void setup();
-  }, [currentUser]);
+  }, [currentUser, role]);
 
   return (
     <View className="my-auto bg-paper">

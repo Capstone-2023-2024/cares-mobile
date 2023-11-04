@@ -60,7 +60,8 @@ const Home = () => {
             handleRole('faculty');
           }
         } catch (err) {
-          console.log(err);
+          ToastAndroid.show('Error in email advisers', ToastAndroid.SHORT);
+          // console.log(err);
         }
       }
       if (role === 'faculty' || role === 'adviser') {
@@ -132,7 +133,7 @@ const Home = () => {
       }
     }
     return void setup();
-  }, [currentUser]);
+  }, [currentUser, role, handleUsersCache, handleRole]);
 
   return (
     <View className="flex-1">

@@ -1,6 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {ToastAndroid, TouchableOpacity, Modal, View} from 'react-native';
+import {Modal, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import BackHeader from '~/components/BackHeader';
 import {useChat} from '~/contexts/ChatContext';
@@ -17,13 +16,13 @@ const ChatNav = () => {
     selectedChat,
     handleOtherConcerns,
   } = useChat();
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [modal, setModal] = useState(false);
   const condition = selectedChat === null || selectedChat === 'board_member';
 
-  function handleGoBack() {
-    navigation.goBack();
-  }
+  // function handleGoBack() {
+  //   navigation.goBack();
+  // }
   async function handleActionEvent(type: 'resolve' | 'reject' | 'turnover') {
     const concern: Omit<ConcernProps, 'id'> = {
       sender: 'system',

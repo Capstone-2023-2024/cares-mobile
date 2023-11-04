@@ -48,7 +48,8 @@ const InputContainer = () => {
       if (DocumentPicker.isCancel(err)) {
         Alert.alert('Canceled from multiple doc picker');
       } else {
-        console.log(err);
+        Alert.alert('Image picker error');
+        // console.log(err);
       }
     }
   }
@@ -103,7 +104,8 @@ const InputContainer = () => {
       });
       handleState('files', []);
     } catch (err) {
-      console.log(err);
+      ToastAndroid.show('Error', ToastAndroid.SHORT);
+      // console.log(err);
     }
   }
 

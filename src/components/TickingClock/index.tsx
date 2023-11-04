@@ -19,7 +19,7 @@ const TickingClock = ({expiration, title}: TickingClockProps) => {
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [expiration]);
 
   const date = time.getDate() - 1;
   const hours = time.getHours();

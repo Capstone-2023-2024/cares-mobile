@@ -1,13 +1,11 @@
+import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import React from 'react';
 import {Text, ToastAndroid, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {useAuth} from '~/contexts/AuthContext';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {GoogleSvg} from '~/utils/image';
-import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
 
 const Login = () => {
   const {role} = useContent();

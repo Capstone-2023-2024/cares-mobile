@@ -1,9 +1,8 @@
-import React from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {View, TouchableOpacity} from 'react-native';
-import {NextSvg} from '~/utils/image';
-import SvgContainer from './SVGContainer';
+import React from 'react';
+import {TouchableOpacity, View} from 'react-native';
 import {arrowUri} from '~/utils/svgIcons';
+import SvgContainer from './SVGContainer';
 
 function BackHeader() {
   const navigation = useNavigation();

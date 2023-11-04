@@ -157,7 +157,7 @@ const Poll = ({
       }
       setPollState(initState);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       ToastAndroid.show('Error in submitting idea', ToastAndroid.SHORT);
     }
   }

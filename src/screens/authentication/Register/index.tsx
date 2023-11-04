@@ -11,11 +11,7 @@ import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import type {Error} from '~/types/error';
 import type {StudentCORProps} from '~/types/student';
-import {
-  collectionRef,
-  validateEmail,
-  validateEmailWithCOR,
-} from '~/utils/firebase';
+import {collectionRef} from '~/utils/firebase';
 import type {CORPatternsProps, FileType} from './types';
 
 const Register = () => {
