@@ -31,7 +31,7 @@ const InputContainer = () => {
     files: [],
   };
   const {currentUser} = useAuth();
-  const {handleUsersCache} = useContent();
+  const {role, handleUsersCache} = useContent();
   const {selectedChat} = useChat();
   const [state, setState] = useState(initProps);
 
@@ -69,28 +69,35 @@ const InputContainer = () => {
         };
         if (isImage && state.files !== null) {
           const holder: DocumentProps['files'] = [];
-          state.files.forEach(({name}) => {
-            holder.push(name ?? '');
+          state.files.forEach((v, index) => {
+            const date = new Date();
+            const ISOString = date
+              .toISOString()
+              .substring(0, 10)
+              .replace(/-/g, '_');
+            const time = date.toTimeString().substring(0, 5).replace(':', '');
+            const divider = '_';
+            const fileName = `${ISOString}${divider}${time}${divider}${index}.png`;
+            holder.push(fileName ?? '');
           });
           concern = {...concern, files: holder};
+          isImage && handleUploadImage(holder);
         }
         await collectionRef('student')
           .doc(selectedChat === 'board_member' ? id : selectedChat ?? id)
           .collection('concerns')
           .add(concern);
         handleState('message', initProps.message);
-        isImage && handleUploadImage();
       }
     } catch (err) {
       ToastAndroid.show('Error in sending message', ToastAndroid.SHORT);
     }
   }
-  async function handleUploadImage() {
+  async function handleUploadImage(names: string[]) {
     try {
-      void state.files.forEach(async ({uri}) => {
-        const name = new Date().toDateString();
+      void state.files.forEach(async ({uri}, index) => {
         const reference = storage().ref(
-          `concerns/${currentUser?.email}/${name}`,
+          `concerns/${currentUser?.email}/${names[index]}`,
         );
         await reference.putFile(uri);
       });
@@ -102,12 +109,10 @@ const InputContainer = () => {
 
   return (
     <View className="border-top-1 absolute bottom-2 h-16 w-full flex-row items-center rounded-lg border-primary bg-paper p-2">
-      {/* <TouchableOpacity onPress={selectMultipleFile} className="mx-2"> */}
-      {/* <TouchableOpacity onPress={selectMultipleFile} className="w-8">
-          <DocumentSvg />
-        </TouchableOpacity> */}
-      {/* </TouchableOpacity> */}
-      <TouchableOpacity onPress={selectMultipleFile} className="mr-2">
+      <TouchableOpacity
+        disabled={role === null}
+        onPress={selectMultipleFile}
+        className="mr-2">
         <Image
           source={require('~/assets/add_document.png')}
           className="h-8 w-8"
@@ -115,12 +120,16 @@ const InputContainer = () => {
       </TouchableOpacity>
       <TextInput
         value={state.message}
-        onChangeText={text => handleState('message', text)}
+        onChangeText={text =>
+          role !== null
+            ? handleState('message', text)
+            : Alert.alert('Cannot enter message')
+        }
         placeholder="Type your message here..."
         className="mr-2 flex-1 rounded-lg border border-primary bg-paper"
-        // multiline
+        multiline
       />
-      <TouchableOpacity onPress={handleSendMessage}>
+      <TouchableOpacity disabled={role === null} onPress={handleSendMessage}>
         <Image source={require('~/assets/send.png')} className="h-8 w-8" />
       </TouchableOpacity>
     </View>

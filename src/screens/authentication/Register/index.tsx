@@ -24,7 +24,7 @@ const Register = () => {
   const {handleUsersCache} = useContent();
   const [studentInfo, setStudentInfo] = useState<StudentCORProps | null>(null);
   const [email, setEmail] = useState('');
-  const emailValidation = email.match('@bulsu.edu.ph') === null;
+  const emailValidation = email.trim() === '';
   const [file, setFile] = useState<FileType | null>(null);
   const CORPatterns: CORPatternsProps[] = [
     {name: 'studentNo', regex: /^[0-9]{10}$/},
@@ -88,11 +88,11 @@ const Register = () => {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }
       const cache: Omit<StudentCORProps, 'email'> = result;
-      const emailFromCOR = validateEmailWithCOR({name: result.name});
-      if (email !== emailFromCOR) {
-        setFile(null);
-        return Alert.alert('Please check if your email address is valid');
-      }
+      // const emailFromCOR = validateEmailWithCOR({name: result.name});
+      // if (email !== emailFromCOR) {
+      //   setFile(null);
+      //   return Alert.alert('Please check if your email address is valid');
+      // }
       if (cache !== null) {
         const modifiedCache = {...cache, email};
         const students = await handleUsersCache(modifiedCache);
@@ -108,19 +108,18 @@ const Register = () => {
       setStudentInfo(null);
       handleNavigation('Login');
     }
-    if (!validateEmail(email)) {
-      return Alert.alert(
-        'Invalid Email',
-        'Please enter a valid email address.',
-      );
-    }
     if (studentInfo !== null) {
-      const EMPTY_LENGTH = 0;
       const result = await collectionRef('student')
-        .where('email', '==', email)
+        .where('studentNo', '==', studentInfo.studentNo)
         .count()
         .get();
-      if (result.data().count === EMPTY_LENGTH) {
+      const count = result.data().count;
+      const stringYear = String(new Date().getFullYear());
+      const currentSchoolyear = studentInfo.schoolYear.match(stringYear);
+      if (!currentSchoolyear) {
+        return Alert.alert('Please use your current COR');
+      }
+      if (count === 0) {
         await collectionRef('student')
           .doc(studentInfo.studentNo)
           .set({...studentInfo, email, recipient: 'class_section'});

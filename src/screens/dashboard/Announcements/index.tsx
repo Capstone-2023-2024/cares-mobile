@@ -42,7 +42,9 @@ const Container = (props: ContainerProps) => {
           className="h-2/3"
           resizeMode="contain"
           source={require('~/assets/error.svg')}
-          src={retrieveImageFBStorage(photoUrl)}
+          src={
+            photoUrl !== undefined ? retrieveImageFBStorage(photoUrl ?? '') : ''
+          }
         />
       )}
       <View className="mx-auto w-11/12 p-2 shadow-sm">

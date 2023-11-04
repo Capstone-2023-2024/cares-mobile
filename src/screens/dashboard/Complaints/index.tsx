@@ -17,11 +17,13 @@ const Chats = () => {
 const ChatChildren = () => {
   const {role} = useContent();
   const {selectedChat} = useChat();
+  console.log({role});
 
   return (
     <View className="relative flex-1">
       <ChatNav />
-      {(!(role === 'mayor') || !(selectedChat === null)) && (
+      {(!(role === 'mayor' || role === 'adviser') ||
+        !(selectedChat === null)) && (
         <>
           <ChatBox />
           <InputContainer />

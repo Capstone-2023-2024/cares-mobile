@@ -57,6 +57,9 @@ const UserInfo = () => {
       <TextRow title="name" value={currentUser?.displayName ?? ''} />
       <TextRow title="email" value={currentUser?.email ?? ''} />
       <TextRow title="phone number" value={currentUser?.phoneNumber ?? ''} />
+      {role === 'adviser' && (
+        <TextRow title="Year Level" value={String(state?.yearLevel)} />
+      )}
     </>
   );
   const renderStudentUI = () => (
@@ -80,10 +83,12 @@ const UserInfo = () => {
     </>
   );
   const renderSelectDropDown = () => {
-    return (
+    return role === null ? (
+      <></>
+    ) : (
       <SelectDropdown
         disabled={state?.section !== undefined}
-        defaultValue={state?.section ? state.section : null}
+        defaultValue={state?.section}
         buttonTextStyle={{textTransform: 'capitalize'}}
         rowTextStyle={{textTransform: 'capitalize'}}
         defaultButtonText="Choose section"
@@ -117,8 +122,33 @@ const UserInfo = () => {
   );
 
   useEffect(() => {
-    async function setupForStudents() {
+    async function setup() {
       try {
+        if (role === 'adviser') {
+          const snapshot = collectionRef('advisers')
+            .where('email', '==', currentUser?.email)
+            .get();
+          const {section, yearLevel} = (await snapshot).docs[0]?.data() as {
+            section: StudentWithClassSection['section'];
+            yearLevel: StudentWithClassSection['yearLevel'];
+          };
+          const placeholder: StudentWithClassSection = {
+            studentNo: 'string',
+            college: 'string',
+            schoolYear: 'string',
+            name: 'string',
+            course: 'string',
+            gender: 'string',
+            major: 'string',
+            curriculum: 'string',
+            age: 'string',
+            yearLevel: 'string',
+            scholarship: 'string',
+            email: 'string',
+          };
+          setState({...placeholder, section, yearLevel});
+          return;
+        }
         const array = await AsyncStorage.getItem('usersCache');
         if (array !== null) {
           const parsedArray = JSON.parse(array) as StudentWithClassSection[];
@@ -137,7 +167,7 @@ const UserInfo = () => {
         );
       }
     }
-    return void setupForStudents();
+    return void setup();
   }, [currentUser]);
 
   return (
@@ -146,7 +176,9 @@ const UserInfo = () => {
       <Text className="mx-4 my-2 text-xl font-semibold capitalize text-black">
         {`${role} details`}
       </Text>
-      {role === 'faculty' ? renderFacultyUI() : renderStudentUI()}
+      {role === 'faculty' || role === 'adviser'
+        ? renderFacultyUI()
+        : renderStudentUI()}
       <View className="mt-2 self-center">
         {role !== 'faculty' && renderSelectDropDown()}
         {renderLogoutModal()}
@@ -197,7 +229,9 @@ const Hero = ({studentNo, name}: HeroProps) => {
   return (
     <View className="mx-auto w-11/12 flex-row rounded-xl bg-accent p-6">
       <ProfilePicture />
-      {role === 'faculty' ? renderFacultyUI() : renderStudentUI()}
+      {role === 'faculty' || role === 'adviser'
+        ? renderFacultyUI()
+        : renderStudentUI()}
     </View>
   );
 };

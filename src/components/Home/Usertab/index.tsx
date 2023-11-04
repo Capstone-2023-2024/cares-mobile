@@ -9,44 +9,52 @@ import {useNav} from '~/contexts/NavigationContext';
 import type {PathListType} from '~/utils/navPaths/types';
 import {arrowUri, menuDots} from '~/utils/svgIcons';
 import type {HeadingTemplateProps, UsertabProps} from './types';
+import {useContent} from '~/contexts/ContentContext';
+import {useAuth} from '~/contexts/AuthContext';
 
 const Usertab = ({name}: UsertabProps) => {
   const {handleNavigation} = useNav();
+  const {currentUser} = useAuth();
+  const {role} = useContent();
 
   function handlePressUserInfo() {
     handleNavigation('UserInfo');
   }
   const renderNameAndGreeting = () => (
     <View className="ml-2">
-      {name === 'null' ? (
+      {/* {name === 'null' ? (
         <>
           <Text className="text-sm font-bold">Loading</Text>
           <Text className="text-lg font-bold capitalize text-black">...</Text>
         </>
-      ) : (
-        <>
-          <Text className="text-sm font-bold">Welcome back</Text>
-          <Text className="text-lg font-bold capitalize text-black">
-            {name}
-          </Text>
-        </>
-      )}
+      ) : ( */}
+      <>
+        <Text className="text-sm font-bold">Welcome back</Text>
+        <Text className="text-lg font-bold capitalize text-black">
+          {name === 'null' && role !== 'mayor' && role !== 'student'
+            ? currentUser?.displayName
+            : name}
+        </Text>
+      </>
+      {/* )} */}
     </View>
   );
-  const renderProfilePicture = () =>
-    name === 'null' ? (
-      <View className="rounded-full border-2 border-primary bg-primary p-5" />
-    ) : (
-      <ProfilePicture />
-    );
-  const renderDotsIcon = () =>
-    name === 'null' ? (
-      <View>
-        <Text className="text-xl">...</Text>
-      </View>
-    ) : (
-      <SvgUri width="100%" height="100%" uri={menuDots} />
-    );
+  const renderProfilePicture = () => (
+    // name === 'null' ? (
+    // <View className="rounded-full border-2 border-primary bg-primary p-5" />
+    // ) : (
+    <ProfilePicture />
+  );
+  // );
+  const renderDotsIcon = () => (
+    // name === 'null' ? (
+    // <View>
+    //   <Text className="text-xl">...</Text>
+    // </View>
+    // ) : (
+    <SvgUri width="100%" height="100%" uri={menuDots} />
+  );
+  // );
 
   return (
     <View className=" border-b-2 border-primary p-12">

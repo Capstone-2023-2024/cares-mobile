@@ -48,6 +48,7 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     handleState('message', props);
   }
   const handleRole = useCallback((props: InitialStateProps['role']) => {
+    console.log({props});
     handleState('role', props);
   }, []);
   async function handleUsersCache(studentCORProps?: StudentWithClassSection) {
@@ -96,11 +97,11 @@ const ContentProvider = ({children}: {children: ReactNode}) => {
     const newDate = new Date();
     const month = newDate.getMonth();
     const year = newDate.getFullYear();
-    const MONTH = currentMonth({month, year})?.name.toUpperCase();
     const unsub = collectionRef('announcement')
-      .doc(MONTH)
-      .collection(`${year}`)
+      .where('type', '==', 'event')
+      .where('endDate', '>', new Date().getTime())
       .onSnapshot(snapshot => {
+        // console.log(snapshot.size, 'Announcements');
         const holder: AnnouncementProps[] = [];
         if (snapshot.docs.length > 0) {
           snapshot.docs.forEach(doc => {

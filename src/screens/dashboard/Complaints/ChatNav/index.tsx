@@ -1,13 +1,13 @@
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
-import {ToastAndroid, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
+import {ToastAndroid, TouchableOpacity, Modal, View} from 'react-native';
 import {Text} from '~/components';
+import BackHeader from '~/components/BackHeader';
 import {useChat} from '~/contexts/ChatContext';
 import {useContent} from '~/contexts/ContentContext';
-import {NextSvg} from '~/utils/image';
-import ChatPrivilege from '../ChatPrivilege';
 import {ConcernProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
+import ChatPrivilege from '../ChatPrivilege';
 
 const ChatNav = () => {
   const {role} = useContent();
@@ -18,6 +18,7 @@ const ChatNav = () => {
     handleOtherConcerns,
   } = useChat();
   const navigation = useNavigation();
+  const [modal, setModal] = useState(false);
   const condition = selectedChat === null || selectedChat === 'board_member';
 
   function handleGoBack() {
@@ -54,12 +55,29 @@ const ChatNav = () => {
 
   return (
     <View className="bg-primary">
+      <Modal
+        animationType="slide"
+        visible={modal}
+        transparent
+        onRequestClose={() => setModal(false)}>
+        <View className="m-auto h-1/4 w-5/6 rounded-lg bg-primary p-6 shadow-sm">
+          <Text className="text-center text-lg font-bold text-paper">Info</Text>
+          <Text className="my-auto h-max text-paper">
+            Communicate with your class mayor and adviser direcly here regarding
+            concerns, if it is not resolved, it will be escalated to higher
+            position in CICS
+          </Text>
+        </View>
+      </Modal>
       <View className="h-16 flex-row items-center px-2">
-        <TouchableOpacity className="w-10 rotate-180" onPress={handleGoBack}>
-          <NextSvg />
-        </TouchableOpacity>
+        <BackHeader />
         <View className="flex-1 flex-row items-center justify-center">
           <Text className="text-xl text-white">Complaints/Concerns</Text>
+          <TouchableOpacity onPress={() => setModal(true)}>
+            <Text className="ml-2 rounded-full border border-paper px-3 py-1 text-sm text-paper">
+              i
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
       <ChatPrivilege />

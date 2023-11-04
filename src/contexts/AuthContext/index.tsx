@@ -1,7 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {ToastAndroid} from 'react-native';
+import {Alert, ToastAndroid} from 'react-native';
 import {useNav} from '../NavigationContext';
 import type {
   AuthContextType,
@@ -9,6 +9,9 @@ import type {
   InitialState,
   InitialStateProps,
 } from './types';
+import {collectionRef} from '~/utils/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useContent} from '../ContentContext';
 
 const initialState: InitialStateProps = {
   currentUser: null,
@@ -21,7 +24,7 @@ const AuthContext = createContext<AuthContextType>({
 
 const config = {
   webClientId:
-    '786929223549-qpbb1jebv0gqk6641tcj57k154bjhauu.apps.googleusercontent.com',
+    '622310668633-i7mpvf5v83051snfvqj96vkhd6iverlr.apps.googleusercontent.com',
 };
 
 const AuthProvider = ({children}: AuthProviderProps) => {
@@ -46,8 +49,27 @@ const AuthProvider = ({children}: AuthProviderProps) => {
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCredential);
+      const {additionalUserInfo} = await auth().signInWithCredential(
+        googleCredential,
+      );
+      const role = await AsyncStorage.getItem('role');
+      const profile = additionalUserInfo?.profile;
+      const student = role === 'mayor' || role === 'student';
+      const result = await collectionRef(student ? 'student' : 'permission')
+        .where('email', '==', profile?.email)
+        .count()
+        .get();
+      if (result.data().count < 1) {
+        await signout();
+        await AsyncStorage.removeItem('usersCache');
+        return Alert.alert(
+          student
+            ? 'Please register your Email along with your COR'
+            : 'You do not have the permission to login as faculty member of cics',
+        );
+      }
     } catch (err) {
+      console.log(err);
       ToastAndroid.show('Sign in action cancelled', ToastAndroid.SHORT);
     }
   }

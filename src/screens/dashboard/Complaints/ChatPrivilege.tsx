@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {Modal, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Text} from '~/components';
+import SvgContainer from '~/components/SVGContainer';
 import {useAuth} from '~/contexts/AuthContext';
 import {useChat} from '~/contexts/ChatContext';
 import {useContent} from '~/contexts/ContentContext';
 import {ConcernProps} from '~/types/complaints';
 import {StudentWithClassSection} from '~/types/student';
 import {collectionRef, firestoreApp} from '~/utils/firebase';
-import {NextSvg} from '~/utils/image';
+import {arrowUri} from '~/utils/svgIcons';
 
 interface ChatPrivilegeProps {
   studentNoSelected: string | null;
@@ -31,7 +32,7 @@ const ChatPrivilege = () => {
     handleChatModalVisible,
     handleOtherConcerns,
   } = useChat();
-  const {handleUsersCache} = useContent();
+  const {role, handleUsersCache} = useContent();
 
   function handleState(
     key: keyof ChatPrivilegeProps,
@@ -47,6 +48,7 @@ const ChatPrivilege = () => {
       .limit(12)
       .orderBy('dateCreated', 'desc')
       .onSnapshot(snapshot => {
+        // console.log(snapshot.size, 'student, concerns');
         const concernsArray: ConcernProps[] = [];
         const reversedArray = snapshot.docs.reverse();
         reversedArray.forEach(doc => {
@@ -78,38 +80,66 @@ const ChatPrivilege = () => {
     });
 
   useEffect(() => {
-    handleUsersCache()
-      .then(array => {
-        const filteredArray = array.filter(
-          ({email}) => currentUser?.email === email,
-        );
-        const section = filteredArray[0]?.section;
-        const unsub = firestoreApp
-          .collection('student')
-          .where('recipient', '==', 'class_section')
-          .where('section', '==', section)
-          .where('email', '!=', currentUser?.email)
-          .limit(12)
-          .onSnapshot(snapshot => {
-            const placeholder: StudentWithClassSection[] = [];
+    const studentSetup = () =>
+      handleUsersCache()
+        .then(array => {
+          const filteredArray = array.filter(
+            ({email}) => currentUser?.email === email,
+          );
+          const section = filteredArray[0]?.section;
+          const unsub = collectionRef('student')
+            .where('recipient', '==', 'class_section')
+            .where('section', '==', section)
+            .where('email', '!=', currentUser?.email)
+            .limit(12)
+            .onSnapshot(snapshot => {
+              // console.log(snapshot.size, 'Concerns for mayor');
+              const placeholder: StudentWithClassSection[] = [];
+              if (snapshot !== null) {
+                snapshot.forEach(doc => {
+                  const data = doc.data() as StudentWithClassSection;
+                  placeholder.push({...data});
+                });
+              }
+              handleState('students', placeholder);
+            });
+          return unsub;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    const adviserSetup = async () => {
+      // handleRole('adviser')
+      const snapshot = await collectionRef('advisers')
+        .where('email', '==', currentUser?.email)
+        .get();
+      const {section} = snapshot.docs[0]?.data() as {section: string};
+      const unsub = collectionRef('student')
+        .where('recipient', '==', 'class_section')
+        .where('section', '==', section)
+        .where('email', '!=', currentUser?.email)
+        .limit(12)
+        .onSnapshot(snapshot => {
+          // console.log(snapshot.size, 'Concerns for mayor');
+          const placeholder: StudentWithClassSection[] = [];
+          if (snapshot !== null) {
             snapshot.forEach(doc => {
               const data = doc.data() as StudentWithClassSection;
               placeholder.push({...data});
             });
-            handleState('students', placeholder);
-          });
-        return unsub;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, [currentUser, handleUsersCache]);
+          }
+          handleState('students', placeholder);
+        });
+      return unsub;
+    };
+    return role === 'mayor' ? void studentSetup() : void adviserSetup();
+  }, [currentUser, role, handleUsersCache]);
 
   return (
     <Modal visible={chatModalVisible} onRequestClose={handleExitModal}>
       <View className="h-12 flex-row items-center justify-around bg-primary">
         <TouchableOpacity className="w-12 rotate-180" onPress={handleExitModal}>
-          <NextSvg />
+          <SvgContainer uri={arrowUri} size="sm" />
         </TouchableOpacity>
         <Text className="text-paper">List of student with concerns</Text>
       </View>

@@ -25,6 +25,7 @@ function Header({}: {withBack?: boolean}) {
     currentUser !== null && (
       <>
         <TouchableOpacity
+          disabled={role === null}
           className="mr-2 h-8 w-8 items-center"
           onPress={handlePressChats}>
           <Image

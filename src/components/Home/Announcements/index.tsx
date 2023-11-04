@@ -35,7 +35,7 @@ const Announcements = () => {
 
 const Container = (props: AnnouncementProps) => {
   const {handleNavigation} = useNav();
-  const {department, message, photoUrl} = props;
+  const {department, message, photoUrl, postedBy, type} = props;
 
   function handlePressReadMore() {
     //TODO: pass id in Announcements
@@ -60,6 +60,9 @@ const Container = (props: AnnouncementProps) => {
                 DEPARTMENT
               </Text>
             </View>
+            <View className="rounded-lg bg-primary px-2 py-1 ">
+              <Text className="text-xs capitalize text-paper">{type}</Text>
+            </View>
           </View>
           <Text className="w-48 text-xs">{message}</Text>
           <TouchableOpacity
@@ -79,6 +82,7 @@ const Container = (props: AnnouncementProps) => {
           />
         </View>
       </View>
+      <Text className="text-xs">{`Posted by: ${postedBy}`}</Text>
     </View>
   );
 };

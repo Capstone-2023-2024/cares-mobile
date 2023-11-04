@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
@@ -26,28 +27,11 @@ const Home = () => {
   function setUpSection() {
     handleNavigation('UserInfo');
   }
-  // const getSection = useCallback(async () => {
-  //   try {
-  //     const sectionAsync = await AsyncStorage.getItem('section');
-  //     console.log({sectionAsync});
-  //     if (sectionAsync !== null) {
-  //       return setSection(JSON.parse(sectionAsync));
-  //     }
-  //     await AsyncStorage.setItem('section', 'false');
-  //     const unsub = collectionRef('student')
-  //       .where('email', '==', currentUser?.email)
-  //       .onSnapshot(snapshot => {
-  //         const isSectionExist = snapshot.docs[0]?.data().section;
-  //         return setSection(isSectionExist === undefined);
-  //       });
-  //     return unsub();
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [currentUser, section]);
   const renderSectionBannerSetup = () => {
     return (
-      section === undefined && (
+      section === undefined &&
+      role !== 'faculty' &&
+      role !== 'adviser' && (
         <View className="flex-row justify-center bg-yellow-100 p-2">
           <Text className="mr-2 text-xs text-yellow-600">
             Looks like you didn't have your class section set-up.
@@ -60,21 +44,40 @@ const Home = () => {
     );
   };
   useEffect(() => {
-    async function setupForStudents() {
-      const usersCache = await handleUsersCache();
-      const filteredUsersCache = usersCache.filter(
-        ({email}) => currentUser?.email === email,
-      );
-      setSection(filteredUsersCache[0]?.section ?? undefined);
+    async function setup() {
+      async function setUpForFaculty() {
+        try {
+          if (currentUser !== null && currentUser.email !== null) {
+            const result = await collectionRef('advisers')
+              .where('email', '==', currentUser.email)
+              .count()
+              .get();
+            if (result.data().count > 0) {
+              await AsyncStorage.setItem('role', 'adviser');
+              return handleRole('adviser');
+            }
+            await AsyncStorage.setItem('role', 'faculty');
+            handleRole('faculty');
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+      if (role === 'faculty' || role === 'adviser') {
+        return void setUpForFaculty();
+      }
       try {
+        const usersCache = await handleUsersCache();
+        const filteredUsersCache = usersCache.filter(
+          ({email}) => currentUser?.email === email,
+        );
+        setSection(filteredUsersCache[0]?.section ?? undefined);
         async function fetchStudentInfo() {
           if (currentUser !== null) {
             const studInfo = await collectionRef('student')
               .where('email', '==', currentUser.email)
               .get();
             const data = studInfo.docs[0]?.data();
-            // console.log({data});
-            // TODO: Swap auth uid to student no
             return data;
           }
         }
@@ -128,8 +131,8 @@ const Home = () => {
         );
       }
     }
-    return void setupForStudents();
-  }, [handleUsersCache, handleRole, role, currentUser]);
+    return void setup();
+  }, [currentUser]);
 
   return (
     <View className="flex-1">

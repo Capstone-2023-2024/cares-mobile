@@ -7,6 +7,7 @@ import {useAuth} from '~/contexts/AuthContext';
 import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {GoogleSvg} from '~/utils/image';
+import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
 
 const Login = () => {
   const {role} = useContent();
@@ -28,15 +29,8 @@ const Login = () => {
   return (
     <View className="h-2/3 justify-center">
       <Heading>Login</Heading>
-      <View className="mb-2 w-1/3 self-center">
-        <TouchableOpacity
-          className="flex-row items-center justify-center rounded-full border p-2 px-4 shadow-sm"
-          onPress={handleLogin}>
-          <View className="h-6 w-6">
-            <GoogleSvg />
-          </View>
-          <Text>Google</Text>
-        </TouchableOpacity>
+      <View className="self-center">
+        <GoogleSigninButton onPress={handleLogin} />
       </View>
       {role === 'student' && (
         <View className="flex-row gap-2 self-center">

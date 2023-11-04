@@ -1,19 +1,19 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, View, Image, Modal} from 'react-native';
+import {Image, Modal, ScrollView, ToastAndroid, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useChat} from '~/contexts/ChatContext';
 import {useContent} from '~/contexts/ContentContext';
 import type {ChatTextProps, ConcernProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
-import storage from '@react-native-firebase/storage';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ChatBox = () => {
   const {role} = useContent();
   const {currentUser} = useAuth();
   const {selectedChat, otherConcerns} = useChat();
   const [state, setState] = useState<ConcernProps[]>([]);
+  const [imageToggle, setImageToggle] = useState<boolean[]>([]);
 
   const getConcerns = useCallback(async () => {
     try {
@@ -28,27 +28,105 @@ const ChatBox = () => {
           .limit(12)
           .orderBy('dateCreated', 'desc')
           .onSnapshot(snapshot => {
+            // console.log(snapshot.size, 'Concerns');
             const placeholder: ConcernProps[] = [];
             const reversedArray = snapshot.docs.reverse();
             reversedArray.forEach(async doc => {
               const id = doc.id;
               const data = doc.data() as Omit<ConcernProps, 'id'>;
-              const fileHolder: string[] = [];
-              data.files?.forEach(async fileName => {
-                const url = await storage()
-                  .ref(`concerns/${currentUser?.email}/${fileName}`)
-                  .getDownloadURL();
-                fileHolder.push(url);
-              });
-              placeholder.push({...data, id, files: fileHolder});
+              placeholder.push({...data, id});
             });
             setState(placeholder);
           });
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
+      ToastAndroid.show('Error in getting concerns', ToastAndroid.SHORT);
     }
   }, [currentUser]);
+
+  async function handleDownload({name}: {name: string}) {
+    // const reference = storage().ref(`concerns/${currentUser?.email}/${name}`);
+    // const url = await reference.getDownloadURL();
+    ToastAndroid.show(`${name}`, ToastAndroid.SHORT);
+  }
+  function toggleIndex(value: boolean, index: number) {
+    let holder = [...imageToggle];
+    holder[index] = value;
+    setImageToggle(holder);
+  }
+  const renderPhotos = (array?: string[]) => {
+    const STORAGE_BUCKET = 'cares-dummy.appspot.com';
+    return array?.map((value, index) => {
+      const URL = `https://firebasestorage.googleapis.com/v0/b/${STORAGE_BUCKET}/o/concerns%2Fandrei.calderon.t%40bulsu.edu.ph%2F${value}?alt=media`;
+      return (
+        <TouchableOpacity
+          key={value}
+          onLongPress={() => handleDownload({name: value})}
+          onPress={() => toggleIndex(true, index)}>
+          <Modal
+            visible={
+              imageToggle[index] === undefined ? false : imageToggle[index]
+            }
+            animationType="fade"
+            onRequestClose={() => toggleIndex(false, index)}>
+            <View className="bg-primary p-2">
+              <Text className="text-paper">{value}</Text>
+            </View>
+            <Image
+              source={require('~/assets/error.svg')}
+              src={URL}
+              className="h-screen w-screen"
+            />
+          </Modal>
+          <Image
+            source={require('~/assets/error.svg')}
+            src={URL}
+            className="h-32 w-32"
+          />
+        </TouchableOpacity>
+      );
+    });
+  };
+
+  function renderChatBox(concerns: ConcernProps[]) {
+    return concerns.map(({id, sender, message, dateCreated, files}) => {
+      const date = new Date();
+      date.setTime(dateCreated);
+      return (
+        <View
+          key={id}
+          className={`m-2 w-max rounded-lg p-2 shadow-sm ${
+            sender === currentUser?.email
+              ? 'self-end bg-blue-400'
+              : sender === 'system'
+              ? 'self-center text-center'
+              : 'self-start bg-slate-200'
+          }`}>
+          {sender !== 'system' && (
+            <ChatText
+              text={sender ?? currentUser?.displayName}
+              condition={sender === currentUser?.email}
+            />
+          )}
+          {files !== undefined && files.length > 0 && (
+            <View
+              className={`${
+                files.length > 0 ? 'justify-between' : 'justify-center'
+              } w-full items-center`}>
+              {renderPhotos(files)}
+            </View>
+          )}
+          <ChatText text={message} condition={sender === currentUser?.email} />
+          <ChatText
+            textSize="sm"
+            text={date.toLocaleTimeString()}
+            condition={sender === currentUser?.email}
+          />
+        </View>
+      );
+    });
+  }
 
   useEffect(() => {
     if (role === 'mayor') {
@@ -59,64 +137,6 @@ const ChatBox = () => {
     }
     return void getConcerns();
   }, [getConcerns, role, selectedChat]);
-
-  function renderChatBox(concerns: ConcernProps[]) {
-    return concerns.map(
-      ({id, sender, message, dateCreated, withDocument, files}) => {
-        const date = new Date();
-        date.setTime(dateCreated);
-        return (
-          <View
-            key={id}
-            className={`m-2 w-max rounded-lg p-2 shadow-sm ${
-              sender === currentUser?.email
-                ? 'self-end bg-blue-400'
-                : sender === 'system'
-                ? 'self-center text-center'
-                : 'self-start bg-slate-200'
-            }`}>
-            {withDocument && (
-              <View>
-                {files?.map((value, index) => {
-                  return (
-                    <TouchableOpacity key={index}>
-                      <Modal>
-                        <Image
-                          source={require('~/assets/error.svg')}
-                          src={value}
-                          className="h-screen w-screen"
-                        />
-                      </Modal>
-                      <Image
-                        source={require('~/assets/error.svg')}
-                        src={value}
-                        className="h-32 w-32"
-                      />
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            )}
-            {sender !== 'system' && (
-              <ChatText
-                text={sender ?? currentUser?.displayName}
-                condition={sender === currentUser?.email}
-              />
-            )}
-            <ChatText
-              text={message}
-              condition={sender === currentUser?.email}
-            />
-            <ChatText
-              textSize="sm"
-              text={date.toLocaleTimeString()}
-              condition={sender === currentUser?.email}
-            />
-          </View>
-        );
-      },
-    );
-  }
 
   return (
     <View
