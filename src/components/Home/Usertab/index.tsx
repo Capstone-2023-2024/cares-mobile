@@ -5,47 +5,44 @@ import {SvgUri} from 'react-native-svg';
 import {Text} from '~/components';
 import ProfilePicture from '~/components/ProfilePicture';
 import SvgContainer from '~/components/SVGContainer';
+import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
+import {useUser} from '~/contexts/UserContext';
 import type {PathListType} from '~/utils/navPaths/types';
 import {arrowUri, menuDots} from '~/utils/svgIcons';
 import type {HeadingTemplateProps, UsertabProps} from './types';
-import {useContent} from '~/contexts/ContentContext';
-import {useAuth} from '~/contexts/AuthContext';
 
 const Usertab = ({name}: UsertabProps) => {
   const {handleNavigation} = useNav();
   const {currentUser} = useAuth();
-  const {role} = useContent();
+  const {currentStudent} = useUser();
+  const {role} = useUser();
 
   function handlePressUserInfo() {
     handleNavigation('UserInfo');
   }
   const renderNameAndGreeting = () => (
     <View className="ml-2">
-      {/* {name === 'null' ? (
-        <>
-          <Text className="text-sm font-bold">Loading</Text>
-          <Text className="text-lg font-bold capitalize text-black">...</Text>
-        </>
-      ) : ( */}
-      <>
-        <Text className="text-sm font-bold">Welcome back</Text>
+      <Text className="text-sm font-bold">
+        {currentStudent.email === 'null' ? '......' : 'Welcome back'}
+      </Text>
+      {currentStudent.email === 'null' ? (
+        <View className="h-6 w-24 bg-primary" />
+      ) : (
         <Text className="text-lg font-bold capitalize text-black">
           {name === 'null' && role !== 'mayor' && role !== 'student'
             ? currentUser?.displayName
             : name}
         </Text>
-      </>
-      {/* )} */}
+      )}
     </View>
   );
-  const renderProfilePicture = () => (
-    // name === 'null' ? (
-    // <View className="rounded-full border-2 border-primary bg-primary p-5" />
-    // ) : (
-    <ProfilePicture />
-  );
-  // );
+  const renderProfilePicture = () =>
+    currentStudent.email === 'null' ? (
+      <View className="h-8 w-8 rounded-full bg-secondary" />
+    ) : (
+      <ProfilePicture />
+    );
   const renderDotsIcon = () => (
     // name === 'null' ? (
     // <View>
@@ -86,8 +83,8 @@ export const HeadingTemplate = (props: HeadingTemplateProps) => {
   }
 
   return (
-    <View className="flex-row justify-between px-8">
-      <Text className="text-lg capitalize text-black">{title}</Text>
+    <View className="flex-row justify-between px-8 py-6">
+      <Text className="text-xl font-bold capitalize text-black">{title}</Text>
       <TouchableOpacity
         className={disabled ? 'opacity-25' : 'opacity-100'}
         disabled={disabled}

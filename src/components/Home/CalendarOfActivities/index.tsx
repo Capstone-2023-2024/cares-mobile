@@ -1,71 +1,65 @@
-import {CommonActions, useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
-import {Text} from '~/components';
-import SvgContainer from '~/components/SVGContainer';
-import {useContent} from '~/contexts/ContentContext';
-import type {AnnouncementProps} from '~/types/announcement';
-import type {PathListType} from '~/utils/navPaths/types';
-import {pin} from '~/utils/svgIcons';
-import {HeadingTemplate, TabContainer} from '../../../components/Home/Usertab';
+import {HeadingTemplate, TabContainer} from '~/components/Home/Usertab';
+import {useAnnouncement} from '~/contexts/AnnouncementContext';
+import {useUser} from '~/contexts/UserContext';
 
 const CalendarOfActivities = () => {
-  const {announcement} = useContent();
-  const stateLengthEmpty = announcement.length === 0;
+  const {data} = useAnnouncement();
+  const {currentStudent} = useUser();
 
   return (
     <TabContainer>
       <HeadingTemplate
-        disabled={stateLengthEmpty}
+        disabled={data.length === 0 || currentStudent.email === 'null'}
         title="calendar of activities"
         navigation="CalendarOfActivities"
       />
-      <ScrollView
+      {/* <ScrollView
         horizontal={!stateLengthEmpty}
         showsHorizontalScrollIndicator={!stateLengthEmpty}>
         {stateLengthEmpty ? (
           <PlaceHolder text="Currently no Schedule" />
         ) : (
-          announcement.map((props, i) => {
+          data.map((props, i) => {
             return <Container {...props} key={i} />;
           })
         )}
-      </ScrollView>
+      </ScrollView> */}
     </TabContainer>
   );
 };
 
-const Container = (props: AnnouncementProps) => {
-  const navigate = useNavigation();
+// const Container = (props: AnnouncementProps) => {
+//   const navigate = useNavigation();
 
-  function handleNavigation(path: PathListType) {
-    navigate.dispatch(CommonActions.navigate({name: path}));
-  }
+//   function handleNavigation(path: PathListType) {
+//     navigate.dispatch(CommonActions.navigate({name: path}));
+//   }
 
-  function handleUniSched() {
-    handleNavigation('CalendarOfActivities');
-  }
+//   function handleUniSched() {
+//     handleNavigation('CalendarOfActivities');
+//   }
 
-  return (
-    <TouchableOpacity
-      className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full bg-primary px-2 py-4 shadow-md"
-      onPress={handleUniSched}>
-      <View className="flex-row items-center">
-        <SvgContainer uri={pin} size="sm" />
-        <Text className="ml-2 w-1/2 text-xs text-white">
-          {props.message.substring(0, 15)}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
+//   return (
+//     <TouchableOpacity
+//       className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full bg-primary px-2 py-4 shadow-md"
+//       onPress={handleUniSched}>
+//       <View className="flex-row items-center">
+//         <SvgContainer uri={pin} size="sm" />
+//         <Text className="ml-2 w-1/2 text-xs text-white">
+//           {props.message.substring(0, 15)}
+//         </Text>
+//       </View>
+//     </TouchableOpacity>
+//   );
+// };
 
-const PlaceHolder = ({text}: {text: string}) => {
-  return (
-    <View className="my-2 min-h-max w-full items-center px-[0.6rem] py-5">
-      <Text className="text-xl">{text}</Text>
-    </View>
-  );
-};
+// const PlaceHolder = ({text}: {text: string}) => {
+//   return (
+//     <View className="my-2 min-h-max w-full items-center px-[0.6rem] py-5">
+//       <Text className="text-xl">{text}</Text>
+//     </View>
+//   );
+// };
 
 export default CalendarOfActivities;

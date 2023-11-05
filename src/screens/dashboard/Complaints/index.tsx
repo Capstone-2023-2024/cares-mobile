@@ -4,7 +4,7 @@ import ChatProvider, {useChat} from '~/contexts/ChatContext';
 import ChatBox from './ChatBox';
 import ChatNav from './ChatNav';
 import InputContainer from './InputContainer';
-import {useContent} from '~/contexts/ContentContext';
+import {useUser} from '~/contexts/UserContext';
 
 const Chats = () => {
   return (
@@ -15,7 +15,7 @@ const Chats = () => {
 };
 
 const ChatChildren = () => {
-  const {role} = useContent();
+  const {role} = useUser();
   const {selectedChat} = useChat();
   // console.log({role});
 

@@ -38,6 +38,5 @@ export const uri = {
   send: `${svgIconBasePath}/Send.svg`,
   specialClass: `${svgIconBasePath}/SpecialClass.svg`,
   specialClass2: `${svgIconBasePath}/SpecialClass2.svg`,
-  user: `${svgIconBasePath}/User.svg`,
   vote: `${svgIconBasePath}/Vote.svg`,
 };

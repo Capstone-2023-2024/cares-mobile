@@ -1,54 +1,49 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect, useState} from 'react';
-import {Alert, Modal, ToastAndroid, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, Modal, TouchableOpacity, View} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {Text} from '~/components';
 import ProfilePicture from '~/components/ProfilePicture';
 import {useAuth} from '~/contexts/AuthContext';
-import {useContent} from '~/contexts/ContentContext';
-import type {ResultType, StudentWithClassSection} from '~/types/student';
-import {collectionRef, validateEmailWithCOR} from '~/utils/firebase';
+import {useUser} from '~/contexts/UserContext';
+import type {StudentWithClassSection} from '~/types/student';
+import {CURRENT_STUDENT_KEY} from '~/utils/config';
+import {collectionRef} from '~/utils/firebase';
 import type {TextRowType} from './types';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
-  const [state, setState] = useState<StudentWithClassSection>();
   const [modalVisible, setModalVisible] = useState(false);
-  const {role, handleUsersCache} = useContent();
-  const props = (type: ResultType['type']) =>
-    state?.name ? {name: state?.name, type} : {name: ''};
-  const firstName = validateEmailWithCOR(props('first') as ResultType);
-  const lastName = validateEmailWithCOR(props('last') as ResultType);
-  const middleInitial = validateEmailWithCOR(props('initial') as ResultType);
+  const {role, currentStudent, setSection} = useUser();
+  const {
+    name,
+    college,
+    yearLevel,
+    schoolYear,
+    curriculum,
+    scholarship,
+    major,
+    gender,
+    age,
+  } = currentStudent;
 
   function handleSignout() {
-    void signout();
+    signout();
   }
   async function handleSectionSelect(
     section: StudentWithClassSection['section'],
   ) {
-    if (state !== undefined) {
-      try {
-        const userCacheArray = await handleUsersCache();
-        const indexInArray = userCacheArray.findIndex(
-          ({email}) => currentUser?.email === email,
-        );
-        const restOfTheArray = userCacheArray.filter(
-          ({email}) => currentUser?.email !== email,
-        );
-        const selectedArray = userCacheArray[indexInArray];
-        if (selectedArray !== undefined) {
-          const studentSectionToCache = {...selectedArray, section};
-          const newArray = [...restOfTheArray];
-          newArray.push(studentSectionToCache);
-          await AsyncStorage.setItem('usersCache', JSON.stringify(newArray));
-          await collectionRef('student').doc(state.studentNo).update({
-            section,
-          });
-        }
-      } catch (err) {
-        ToastAndroid.show('Handle section selection error', ToastAndroid.SHORT);
-      }
+    try {
+      await AsyncStorage.setItem(
+        CURRENT_STUDENT_KEY,
+        JSON.stringify({...currentStudent, section}),
+      );
+      await collectionRef('student').doc(currentStudent.studentNo).update({
+        section,
+      });
+      setSection(section);
+    } catch (err) {
+      Alert.alert('Section selection error');
     }
   }
 
@@ -57,38 +52,59 @@ const UserInfo = () => {
       <TextRow title="name" value={currentUser?.displayName ?? ''} />
       <TextRow title="email" value={currentUser?.email ?? ''} />
       <TextRow title="phone number" value={currentUser?.phoneNumber ?? ''} />
-      {role === 'adviser' && (
+      {/* {role === 'adviser' && (
         <TextRow title="Year Level" value={String(state?.yearLevel)} />
-      )}
+      )} */}
     </>
   );
-  const renderStudentUI = () => (
-    <>
-      <TextRow title="first_name" value={state ? firstName : ''} />
-      <TextRow title="middle_initial" value={state ? middleInitial : ''} />
-      <TextRow title="last_name" value={state ? lastName : ''} />
-      <TextRow title="college" value={state ? state?.college : ''} />
-      <TextRow title="year_level" value={state ? state?.yearLevel : ''} />
-      <TextRow title="school_year" value={state ? state?.schoolYear : ''} />
-      <TextRow title="curriculum" value={state ? state?.curriculum : ''} />
-      <TextRow
-        title="scholarship"
-        value={
-          state ? state?.scholarship?.replace(/Official Receipt:/y, '') : ''
-        }
-      />
-      <TextRow title="major" value={state ? state?.major : ''} />
-      <TextRow title="sex" value={state ? state?.gender : ''} />
-      <TextRow title="age" value={state ? state?.age : ''} />
-    </>
-  );
+  const renderStudentUI = () => {
+    const splitName = name.split(',');
+    const splitNameResult = splitName[1]?.trim().split('.');
+    const lastName = splitName[0] ?? 'lastname';
+    const splitNameResultFirstLength = splitNameResult?.[0]?.length ?? -1;
+    const firstName =
+      splitNameResult?.[0]
+        ?.substring(0, splitNameResultFirstLength - 1)
+        .trim() ?? 'firstname';
+    const middleInitial = () => {
+      let middleStart = '';
+      if (splitNameResult?.length === 1) {
+        return middleStart;
+      }
+      for (let x = 0; x < (splitNameResult?.length ?? 1) - 1; x++) {
+        const target = splitNameResult?.[x] ?? '';
+        middleStart +=
+          x === 0 ? target.substring(target.length - 1, target.length) : target;
+      }
+      return middleStart;
+    };
+    return (
+      <>
+        <TextRow title="first_name" value={firstName} />
+        <TextRow title="middle_initial" value={middleInitial()} />
+        <TextRow title="last_name" value={lastName} />
+        <TextRow title="college" value={college} />
+        <TextRow title="year_level" value={yearLevel} />
+        <TextRow title="school_year" value={schoolYear} />
+        <TextRow title="curriculum" value={curriculum} />
+        <TextRow title="scholarship" value={scholarship} />
+        <TextRow title="major" value={major} />
+        <TextRow title="sex" value={gender} />
+        <TextRow title="age" value={age} />
+        <View className="self-center">{renderSelectDropDown()}</View>
+      </>
+    );
+  };
   const renderSelectDropDown = () => {
     return role === null ? (
       <></>
     ) : (
       <SelectDropdown
-        disabled={state?.section !== undefined}
-        defaultValue={state?.section}
+        disabled={
+          currentStudent.section !== undefined ||
+          currentStudent.email === 'null'
+        }
+        defaultValue={currentStudent.section}
         buttonTextStyle={{textTransform: 'capitalize'}}
         rowTextStyle={{textTransform: 'capitalize'}}
         defaultButtonText="Choose section"
@@ -109,7 +125,7 @@ const UserInfo = () => {
         <Text>Are you sure you want to logout?</Text>
         <TouchableOpacity
           className="w-32 rounded-lg bg-primary  p-2 text-center shadow-sm"
-          onPress={() => void handleSignout()}>
+          onPress={handleSignout}>
           <Text className="text-white">Yes</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -121,58 +137,9 @@ const UserInfo = () => {
     </Modal>
   );
 
-  useEffect(() => {
-    async function setup() {
-      try {
-        if (role === 'adviser') {
-          const snapshot = collectionRef('advisers')
-            .where('email', '==', currentUser?.email)
-            .get();
-          const {section, yearLevel} = (await snapshot).docs[0]?.data() as {
-            section: StudentWithClassSection['section'];
-            yearLevel: StudentWithClassSection['yearLevel'];
-          };
-          const placeholder: StudentWithClassSection = {
-            studentNo: 'string',
-            college: 'string',
-            schoolYear: 'string',
-            name: 'string',
-            course: 'string',
-            gender: 'string',
-            major: 'string',
-            curriculum: 'string',
-            age: 'string',
-            yearLevel: 'string',
-            scholarship: 'string',
-            email: 'string',
-          };
-          setState({...placeholder, section, yearLevel});
-          return;
-        }
-        const array = await AsyncStorage.getItem('usersCache');
-        if (array !== null) {
-          const parsedArray = JSON.parse(array) as StudentWithClassSection[];
-          const filteredArray = parsedArray.filter(
-            ({email}) => currentUser?.email === email,
-          );
-          if (filteredArray.length > 0) {
-            const result = filteredArray[0] as StudentWithClassSection;
-            setState({...result});
-          }
-        }
-      } catch (err) {
-        ToastAndroid.show(
-          'Error in setting up students in User Info',
-          ToastAndroid.SHORT,
-        );
-      }
-    }
-    return void setup();
-  }, [currentUser, role]);
-
   return (
     <View className="my-auto bg-paper">
-      <Hero name={state?.name} studentNo={state?.studentNo ?? ''} />
+      <Hero />
       <Text className="mx-4 my-2 text-xl font-semibold capitalize text-black">
         {`${role} details`}
       </Text>
@@ -180,7 +147,6 @@ const UserInfo = () => {
         ? renderFacultyUI()
         : renderStudentUI()}
       <View className="mt-2 self-center">
-        {role !== 'faculty' && renderSelectDropDown()}
         {renderLogoutModal()}
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
@@ -192,24 +158,9 @@ const UserInfo = () => {
   );
 };
 
-interface HeroProps {
-  studentNo: string;
-  name?: string;
-}
-
-const Hero = ({studentNo, name}: HeroProps) => {
-  const {role} = useContent();
+const Hero = () => {
   const {currentUser} = useAuth();
-  const handleNameProps = (type: ResultType['type']) => {
-    if (role === 'adviser' || role === 'faculty') {
-      return {name: currentUser?.displayName ?? '', type};
-    }
-    return {name: name ?? '', type};
-  };
-  const firstName = validateEmailWithCOR(
-    handleNameProps('first') as ResultType,
-  );
-  const lastName = validateEmailWithCOR(handleNameProps('last') as ResultType);
+  const {role, currentStudent} = useUser();
 
   const renderFacultyUI = () => (
     <View className="ml-2 justify-center">
@@ -218,11 +169,12 @@ const Hero = ({studentNo, name}: HeroProps) => {
       </Text>
     </View>
   );
+
   const renderStudentUI = () => (
     <View className="ml-2">
-      <Text className="text-xl capitalize text-paper">{`${lastName}, ${firstName}`}</Text>
-      <Text className="text-xs text-paper">{`${studentNo}`}</Text>
-      <Text className="text-xs text-paper">{`${currentUser?.email}`}</Text>
+      <Text className="text-xl capitalize text-paper">{`${currentStudent.name}`}</Text>
+      <Text className="text-xs text-paper">{`${currentStudent.studentNo}`}</Text>
+      <Text className="text-xs text-paper">{`${currentStudent.email}`}</Text>
     </View>
   );
 

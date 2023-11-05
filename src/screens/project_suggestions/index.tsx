@@ -184,7 +184,7 @@ const Poll = ({
           className={`${
             CONDITION ? 'scale-110 bg-green-200/50' : 'bg-white'
           } mb-2 w-fit flex-row justify-between rounded-lg p-2 shadow-sm duration-300 ease-in-out`}
-          onPress={() => void handleOptionPress(name)}>
+          onPress={() => handleOptionPress(name)}>
           <PollStyledText value={name} condition={CONDITION} />
           <PollStyledText
             value={JSON.stringify(result?.length ?? 0)}
@@ -214,15 +214,17 @@ const Poll = ({
             </ScrollView>
           </View> */}
           <View className="mb-3 flex-row">
-            <Text className="w-2/3 p-2 font-semibold">{question}</Text>
+            <Text className="w-2/3 self-center p-2 font-semibold">
+              {question}
+            </Text>
             <TickingClock
               title="time remaining"
               expiration={dateOfExpiration}
             />
           </View>
           <TextInput
-            className="rounded-lg border "
-            placeholder="Type here..."
+            className="mb-2 rounded-lg border p-3"
+            placeholder="Submit entry here regarding the question..."
             value={pollState.idea ?? ''}
             onChangeText={handleChangeText}
           />

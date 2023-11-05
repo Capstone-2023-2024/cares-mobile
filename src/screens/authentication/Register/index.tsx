@@ -7,7 +7,6 @@ import {Text} from '~/components';
 import {Button, Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {Textfield} from '~/components/Textfield';
-import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
 import type {Error} from '~/types/error';
 import type {StudentCORProps} from '~/types/student';
@@ -17,7 +16,6 @@ import type {CORPatternsProps, FileType} from './types';
 const Register = () => {
   const milToKB = 1000;
   const {handleNavigation} = useNav();
-  const {handleUsersCache} = useContent();
   const [studentInfo, setStudentInfo] = useState<StudentCORProps | null>(null);
   const [email, setEmail] = useState('');
   const emailValidation = email.trim() === '';
@@ -33,10 +31,10 @@ const Register = () => {
     {name: 'name', regex: /^[A-Z]*, [^0-9]*\.$/},
     {
       name: 'course',
-      regex: /Bachelor of Science in [\"Information Technology\"]+$/,
+      regex: /Bachelor of Science in ["Information Technology"]+$/,
     },
-    {name: 'gender', regex: /^[\"M\"-\"F\"]$/},
-    {name: 'major', regex: /^[\"N/A\"-\"Web and Mobile\"]*$/},
+    {name: 'gender', regex: /^["M"-"F"]$/},
+    {name: 'major', regex: /^["N/A"-"Web and Mobile"]*$/},
     {name: 'curriculum', regex: /[A-Z]* \([^A-Za-z]*\)$/},
     {name: 'age', regex: /^[0-9]{2}$/},
     {name: 'yearLevel', regex: /^[0-9a-z]* Year$/},
@@ -80,23 +78,11 @@ const Register = () => {
       const result =
         Object.keys(idHolder).length >= CORPatterns.length &&
         (idHolder as Required<StudentCORProps>);
-      if (!result) {
+      if (result === false) {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }
-      const cache: Omit<StudentCORProps, 'email'> = result;
-      // const emailFromCOR = validateEmailWithCOR({name: result.name});
-      // if (email !== emailFromCOR) {
-      //   setFile(null);
-      //   return Alert.alert('Please check if your email address is valid');
-      // }
-      if (cache !== null) {
-        const modifiedCache = {...cache, email};
-        const students = await handleUsersCache(modifiedCache);
-        const filtered =
-          students.filter(student => email === student.email)[0] ??
-          modifiedCache;
-        setStudentInfo(filtered);
-      }
+      const corWithEmail = {...result, email};
+      setStudentInfo(corWithEmail);
     }
   }
   async function handleRegisterPress() {
@@ -104,25 +90,29 @@ const Register = () => {
       setStudentInfo(null);
       handleNavigation('Login');
     }
+    console.log({studentInfo});
     if (studentInfo !== null) {
       const result = await collectionRef('student')
         .where('studentNo', '==', studentInfo.studentNo)
         .count()
         .get();
       const count = result.data().count;
-      const stringYear = String(new Date().getFullYear());
+      const stringYear = new Date().getFullYear().toString();
       const currentSchoolyear = studentInfo.schoolYear.match(stringYear);
       if (!currentSchoolyear) {
-        return Alert.alert('Please use your current COR');
+        return Alert.alert('Outdated COR', `Please use your ${stringYear} COR`);
       }
       if (count === 0) {
         await collectionRef('student')
           .doc(studentInfo.studentNo)
           .set({...studentInfo, email, recipient: 'class_section'});
-        Alert.alert('You may now use your Google BulSU Email to login');
+        Alert.alert(
+          'Registration succesful!',
+          'You may now use your Google BulSU Email to login',
+        );
         return reset();
       }
-      Alert.alert("You're already registered!\nPlease login");
+      Alert.alert('Registered!', "You're already registered");
       reset();
     }
   }
@@ -188,7 +178,7 @@ const Register = () => {
       </TouchableOpacity>
       <View className="mb-2 w-1/3 self-center">
         <Button
-          onPress={handleRegisterPress}
+          onPress={() => handleRegisterPress()}
           disabled={Object.keys(studentInfo ?? {}).length === 0}>
           Register
         </Button>

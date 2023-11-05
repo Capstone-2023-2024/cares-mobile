@@ -3,15 +3,13 @@ import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
 
 export interface InitialStateProps {
   currentUser: FirebaseAuthTypes.User | null;
+  isLoading: boolean;
 }
-
 export type InitialState = InitialStateProps['currentUser'];
-
 export interface AuthContextType extends InitialStateProps {
   signout: () => Promise<void>;
-  onGoogleButtonPress: () => Promise<void>;
+  onGoogleButtonPress: () => Promise<LoginMessagePrompt | null>;
 }
-
 export interface AuthProviderProps {
   children: ReactNode;
 }
@@ -31,10 +29,8 @@ export interface FirebaseAuthProfileProps {
   picture: string;
   sub: string;
 }
-
-export type MessagePrompt =
+export type LoginMessagePrompt =
+  | 'COR_UNREGISTERED'
+  | 'FACULTY_PERMISSION_NULL'
   | 'SUCCESS'
-  | 'NOT_EXIST'
-  | 'ERROR'
-  | 'INVALID_USER'
-  | null;
+  | 'ERROR';

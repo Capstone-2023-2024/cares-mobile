@@ -13,7 +13,7 @@ import DocumentPicker, {
 } from 'react-native-document-picker';
 import {useAuth} from '~/contexts/AuthContext';
 import {useChat} from '~/contexts/ChatContext';
-import {useContent} from '~/contexts/ContentContext';
+import {useUser} from '~/contexts/UserContext';
 import type {ConcernProps, DocumentProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
 
@@ -21,9 +21,6 @@ export interface InitiatStateProps {
   message: string;
   files: DocumentPickerResponse[];
 }
-export type InitiatStateValue =
-  | InitiatStateProps['message']
-  | InitiatStateProps['files'];
 
 const InputContainer = () => {
   const initProps: InitiatStateProps = {
@@ -31,37 +28,48 @@ const InputContainer = () => {
     files: [],
   };
   const {currentUser} = useAuth();
-  const {role, handleUsersCache} = useContent();
+  const {role, currentStudent} = useUser();
   const {selectedChat} = useChat();
   const [state, setState] = useState(initProps);
 
-  function handleState(key: keyof InitiatStateProps, value: InitiatStateValue) {
-    setState(prevState => ({...prevState, [key]: value}));
-  }
   async function selectMultipleFile() {
     try {
       const results = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
       });
-      handleState('files', results);
+      setState(prevState => ({...prevState, files: results}));
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        Alert.alert('Canceled from multiple doc picker');
+        ToastAndroid.show(
+          'Canceled from multiple doc picker',
+          ToastAndroid.SHORT,
+        );
       } else {
-        Alert.alert('Image picker error');
         // console.log(err);
+        Alert.alert('Image picker error');
       }
+    }
+  }
+  async function handleUploadImage(names: string[]) {
+    try {
+      state.files.forEach(async ({uri}, index) => {
+        console.log({uri, names});
+        const reference = storage().ref(
+          `concerns/${currentUser?.email}/${names[index]}`,
+        );
+        await reference.putFile(uri);
+      });
+      setState(prevState => ({...prevState, files: []}));
+    } catch (err) {
+      ToastAndroid.show('Error', ToastAndroid.SHORT);
+      // console.log(err);
     }
   }
   async function handleSendMessage() {
     try {
-      const usersCache = await handleUsersCache();
-      const filteredUser = usersCache.filter(
-        ({email}) => currentUser?.email === email,
-      );
-      if (state.message.trim() !== '' && filteredUser.length > 0) {
+      if (state.message.trim() !== '' && currentStudent.studentNo !== 'null') {
         const isImage = state.files.length > 0;
-        const id = filteredUser[0]?.studentNo ?? '';
+        const id = currentStudent.studentNo;
         let concern: Omit<ConcernProps, 'id'> = {
           message: state.message,
           withDocument: isImage,
@@ -88,31 +96,17 @@ const InputContainer = () => {
           .doc(selectedChat === 'board_member' ? id : selectedChat ?? id)
           .collection('concerns')
           .add(concern);
-        handleState('message', initProps.message);
+        setState(prevState => ({...prevState, message: initProps.message}));
       }
     } catch (err) {
       ToastAndroid.show('Error in sending message', ToastAndroid.SHORT);
-    }
-  }
-  async function handleUploadImage(names: string[]) {
-    try {
-      void state.files.forEach(async ({uri}, index) => {
-        const reference = storage().ref(
-          `concerns/${currentUser?.email}/${names[index]}`,
-        );
-        await reference.putFile(uri);
-      });
-      handleState('files', []);
-    } catch (err) {
-      ToastAndroid.show('Error', ToastAndroid.SHORT);
-      // console.log(err);
     }
   }
 
   return (
     <View className="border-top-1 absolute bottom-2 h-16 w-full flex-row items-center rounded-lg border-primary bg-paper p-2">
       <TouchableOpacity
-        disabled={role === null}
+        disabled={currentStudent.email === 'null'}
         onPress={selectMultipleFile}
         className="mr-2">
         <Image
@@ -124,7 +118,7 @@ const InputContainer = () => {
         value={state.message}
         onChangeText={text =>
           role !== null
-            ? handleState('message', text)
+            ? setState(prevState => ({...prevState, message: text}))
             : Alert.alert('Cannot enter message')
         }
         placeholder="Type your message here..."

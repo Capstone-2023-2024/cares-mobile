@@ -1,6 +1,7 @@
 import React, {type ReactNode} from 'react';
 import AuthProvider from './AuthContext';
-import ContentProvider from './ContentContext';
+import UserContext from './UserContext';
+import AnnouncementProvider from './AnnouncementContext';
 
 interface CtxProviderProps {
   children: ReactNode;
@@ -9,7 +10,9 @@ interface CtxProviderProps {
 const CtxProviders = ({children}: CtxProviderProps) => {
   return (
     <AuthProvider>
-      <ContentProvider>{children}</ContentProvider>
+      <UserContext>
+        <AnnouncementProvider>{children}</AnnouncementProvider>
+      </UserContext>
     </AuthProvider>
   );
 };

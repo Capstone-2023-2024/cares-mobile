@@ -27,13 +27,17 @@ const TickingClock = ({expiration, title}: TickingClockProps) => {
   const seconds = time.getSeconds();
 
   return (
-    <View className="w-1/3 border bg-paper p-2">
-      <Text className="font-bold capitalize text-black">{title}</Text>
+    <View className="w-1/3 rounded-lg bg-secondary p-2">
+      <Text className="font-bold capitalize text-paper">{title}</Text>
       <View className="flex-row">
-        <Text>{date < 10 ? `0${date}` : date}:</Text>
-        <Text>{hours < 10 ? `0${hours}` : hours}:</Text>
-        <Text>{minutes < 10 ? `0${minutes}` : minutes}:</Text>
-        <Text>{seconds < 10 ? `0${seconds}` : seconds}</Text>
+        <Text className="text-paper">{date < 10 ? `0${date}` : date}:</Text>
+        <Text className="text-paper">{hours < 10 ? `0${hours}` : hours}:</Text>
+        <Text className="text-paper">
+          {minutes < 10 ? `0${minutes}` : minutes}:
+        </Text>
+        <Text className="text-paper">
+          {seconds < 10 ? `0${seconds}` : seconds}
+        </Text>
       </View>
     </View>
   );

@@ -4,12 +4,12 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useChat} from '~/contexts/ChatContext';
-import {useContent} from '~/contexts/ContentContext';
+import {useUser} from '~/contexts/UserContext';
 import type {ChatTextProps, ConcernProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
 
 const ChatBox = () => {
-  const {role} = useContent();
+  const {role} = useUser();
   const {currentUser} = useAuth();
   const {selectedChat, otherConcerns} = useChat();
   const [state, setState] = useState<ConcernProps[]>([]);
@@ -32,9 +32,9 @@ const ChatBox = () => {
             const placeholder: ConcernProps[] = [];
             const reversedArray = snapshot.docs.reverse();
             reversedArray.forEach(async doc => {
-              const id = doc.id;
+              const docId = doc.id;
               const data = doc.data() as Omit<ConcernProps, 'id'>;
-              placeholder.push({...data, id});
+              placeholder.push({...data, id: docId});
             });
             setState(placeholder);
           });
@@ -56,9 +56,16 @@ const ChatBox = () => {
     setImageToggle(holder);
   }
   const renderPhotos = (array?: string[]) => {
-    const STORAGE_BUCKET = 'cares-dummy.appspot.com';
+    const HOST = 'https://firebasestorage.googleapis.com';
+    const divider_1 = '/v0/b/';
+    const STORAGE_BUCKET = 'cics-a78de.appspot.com';
+    const divider_2 = '/o/';
+    const space = '%2F';
+    const concern = `concerns${space}`;
+    const email = (currentUser?.email ?? '').replace('@', '%40');
+    const prefixUrl = `${HOST}${divider_1}${STORAGE_BUCKET}${divider_2}${concern}${email}${space}`;
     return array?.map((value, index) => {
-      const URL = `https://firebasestorage.googleapis.com/v0/b/${STORAGE_BUCKET}/o/concerns%2Fandrei.calderon.t%40bulsu.edu.ph%2F${value}?alt=media`;
+      const URL = `${prefixUrl}${value}?alt=media`;
       return (
         <TouchableOpacity
           key={value}

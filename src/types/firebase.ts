@@ -1,3 +1,5 @@
+import {Role} from '~/screens/authentication/Landing/types';
+
 export interface FirestoreDatabaseProps {
   id: string;
 }
@@ -9,12 +11,9 @@ export interface DateFileProps {
 
 export type CollectionPath =
   | 'about'
-  | 'advisers'
   | 'announcement'
   | 'chat'
   | 'concerns'
-  | 'faculty'
-  | 'mayor'
   | 'permission'
   | 'project_suggestion'
-  | 'student';
+  | Role;

@@ -1,12 +1,12 @@
 import React from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
-import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
+import {useUser} from '~/contexts/UserContext';
 
 const FooterNav = () => {
   const {handleNavigation} = useNav();
-  const {role} = useContent();
+  const {currentStudent} = useUser();
 
   function handlePressProject() {
     handleNavigation('ProjectSuggestions');
@@ -17,7 +17,7 @@ const FooterNav = () => {
       <View className="flex-row items-center justify-center border-t border-gray-400 bg-white px-12 pt-2">
         <TouchableOpacity
           className="mb-2"
-          disabled={role === null}
+          disabled={currentStudent.email === 'null'}
           onPress={handlePressProject}>
           <View className="items-center">
             <Image

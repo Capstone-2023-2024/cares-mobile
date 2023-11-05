@@ -1,21 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View, ToastAndroid} from 'react-native';
+import {ToastAndroid, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
-import {useContent} from '~/contexts/ContentContext';
 // import type {UniversityScheduleType} from 'mobile/../../~/types';
 import type {MarkedDates} from 'react-native-calendars/src/types';
-import Announcements from './Announcements';
 import {Text} from '~/components';
+import {useAnnouncement} from '~/contexts/AnnouncementContext';
+import {useNav} from '~/contexts/NavigationContext';
 
 const CalendarOfActivities = () => {
-  const {announcement} = useContent();
+  const {data} = useAnnouncement();
+  const {handleNavigation} = useNav();
   const [markedDates, setMarkedDates] = useState<MarkedDates>({});
 
   useEffect(() => {
-    const unsub = announcement.forEach(({markedDates}) => {
-      const length = markedDates.length;
+    const unsub = data.forEach(props => {
+      const length = props.markedDates.length;
       const endingDay = length - 1;
-      markedDates.forEach((value, i) =>
+      props.markedDates.forEach((value, i) =>
         setMarkedDates(prevState => ({
           ...prevState,
           [value]: {
@@ -28,30 +29,26 @@ const CalendarOfActivities = () => {
       );
     });
     return () => unsub;
-  }, [announcement]);
+  }, [data]);
 
   return (
     <View>
-      <Text>Calendar of Events</Text>
+      <Text className="text-center text-lg font-bold">
+        Calendar of Activities
+      </Text>
       {markedDates && (
         <Calendar
-          onDayPress={e =>
-            ToastAndroid.show(
-              `${
-                announcement.filter(
-                  ({markedDates}) => markedDates.indexOf(e.dateString) > -1,
-                )[0]?.message
-              } `,
-              ToastAndroid.SHORT,
-            )
-          }
+          onDayPress={e => {
+            const filtered = data.filter(
+              props => props.markedDates.indexOf(e.dateString) > -1,
+            )[0];
+            handleNavigation('Announcements', filtered?.id);
+            ToastAndroid.show(`${filtered?.message}`, ToastAndroid.SHORT);
+          }}
           markingType="period"
           markedDates={{...markedDates}}
         />
       )}
-      <ScrollView>
-        <Announcements />
-      </ScrollView>
     </View>
   );
 };

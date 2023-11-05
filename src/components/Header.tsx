@@ -3,18 +3,18 @@ import React from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
-import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
+import {useUser} from '~/contexts/UserContext';
 import {projectName} from '~/utils/config';
 
 function Header({}: {withBack?: boolean}) {
-  const {handleNavigation} = useNav();
-  const {role} = useContent();
+  const {handleNavigation, initialRouteName} = useNav();
+  const {currentStudent, role} = useUser();
   const {currentUser} = useAuth();
   const route = useRoute();
 
   function handlePressRoute() {
-    handleNavigation('Home');
+    handleNavigation(initialRouteName);
   }
   function handlePressChats() {
     handleNavigation('Chats');
@@ -25,7 +25,7 @@ function Header({}: {withBack?: boolean}) {
     currentUser !== null && (
       <>
         <TouchableOpacity
-          disabled={role === null}
+          disabled={currentStudent.email === 'null'}
           className="mr-2 h-8 w-8 items-center"
           onPress={handlePressChats}>
           <Image
@@ -37,7 +37,7 @@ function Header({}: {withBack?: boolean}) {
     );
 
   return (
-    <View className="h-16 flex-row items-center justify-between bg-paper px-2 shadow-lg">
+    <View className="h-16 flex-row items-center justify-between bg-paper px-2 shadow-md">
       <TouchableOpacity
         className="flex-row items-center"
         onPress={handlePressRoute}>

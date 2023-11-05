@@ -3,13 +3,13 @@ import {Modal, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
 import BackHeader from '~/components/BackHeader';
 import {useChat} from '~/contexts/ChatContext';
-import {useContent} from '~/contexts/ContentContext';
+import {useUser} from '~/contexts/UserContext';
 import {ConcernProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
 import ChatPrivilege from '../ChatPrivilege';
 
 const ChatNav = () => {
-  const {role} = useContent();
+  const {role} = useUser();
   const {
     handleChatModalVisible,
     handleSelectedChat,
@@ -17,8 +17,12 @@ const ChatNav = () => {
     handleOtherConcerns,
   } = useChat();
   // const navigation = useNavigation();
+  const {currentStudent} = useUser();
   const [modal, setModal] = useState(false);
-  const condition = selectedChat === null || selectedChat === 'board_member';
+  const condition =
+    selectedChat === null ||
+    selectedChat === 'board_member' ||
+    currentStudent.email === 'null';
 
   // function handleGoBack() {
   //   navigation.goBack();
@@ -62,18 +66,27 @@ const ChatNav = () => {
         <View className="m-auto h-1/4 w-5/6 rounded-lg bg-primary p-6 shadow-sm">
           <Text className="text-center text-lg font-bold text-paper">Info</Text>
           <Text className="my-auto h-max text-paper">
-            Communicate with your class mayor and adviser direcly here regarding
-            concerns, if it is not resolved, it will be escalated to higher
-            position in CICS
+            Communicate with your class mayor and adviser directly here
+            regarding your complaints/concerns, if it is not resolved, it will
+            be escalated to higher position in CICS
           </Text>
         </View>
       </Modal>
       <View className="h-16 flex-row items-center px-2">
         <BackHeader />
         <View className="flex-1 flex-row items-center justify-center">
-          <Text className="text-xl text-white">Complaints/Concerns</Text>
+          <View>
+            <Text className="text-xl text-white">Complaints/Concerns</Text>
+            <Text className="text-xs text-white">
+              {currentStudent.recipient === 'class_section'
+                ? 'Chat your Class Mayor & Adviser Here'
+                : currentStudent.recipient === 'bm'
+                ? 'You are now talking to BM'
+                : 'You are now talking to the Program Chair'}
+            </Text>
+          </View>
           <TouchableOpacity onPress={() => setModal(true)}>
-            <Text className="ml-2 rounded-full border border-paper px-3 py-1 text-sm text-paper">
+            <Text className="ml-12 rounded-full border border-paper px-3 py-1 text-sm text-paper">
               i
             </Text>
           </TouchableOpacity>
@@ -98,7 +111,7 @@ const ChatNav = () => {
             </TouchableOpacity>
             <TouchableOpacity
               disabled={condition}
-              onPress={() => void handleActionEvent('turnover')}
+              onPress={() => handleActionEvent('turnover')}
               className={`${
                 condition ? 'bg-slate-200' : 'bg-yellow-400'
               } w-24 rounded-lg p-2`}>
@@ -111,7 +124,7 @@ const ChatNav = () => {
             </TouchableOpacity>
             <TouchableOpacity
               disabled={condition}
-              onPress={() => void handleActionEvent('reject')}
+              onPress={() => handleActionEvent('reject')}
               className={`${
                 condition ? 'bg-slate-200' : 'bg-red-400'
               } w-24 rounded-lg p-2`}>

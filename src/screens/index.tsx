@@ -10,7 +10,6 @@ import ProjectSuggestions from '~/screens/project_suggestions';
 import Landing from '~/screens/authentication/Landing';
 
 import HeaderDefault from '~/components/Header';
-import Loading from '~/screens/shared/Loading';
 
 const Screens = [
   Login,
@@ -22,7 +21,6 @@ const Screens = [
   UserInfo,
   ProjectSuggestions,
   Landing,
-  Loading,
 ];
 
 const Header = () => {
@@ -33,7 +31,6 @@ export const optionsList = [
   {name: UserInfo.name, options: {headerShown: false}},
   {name: ProjectSuggestions.name, options: {header: Header}},
   {name: Landing.name, options: {headerShown: false}},
-  {name: Loading.name, options: {headerShown: false}},
 ];
 
 export default Screens;

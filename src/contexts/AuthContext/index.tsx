@@ -2,23 +2,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {Alert, ToastAndroid} from 'react-native';
+import Loading from '~/components/SplashScreen';
+// import {STUDENT_KEY} from '~/utils/config';
+import {Role} from '~/screens/authentication/Landing/types';
+import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
-import {useNav} from '../NavigationContext';
 import type {
   AuthContextType,
   AuthProviderProps,
   InitialState,
   InitialStateProps,
+  LoginMessagePrompt,
 } from './types';
 
 const initialState: InitialStateProps = {
   currentUser: null,
+  isLoading: true,
 };
 const AuthContext = createContext<AuthContextType>({
   ...initialState,
   signout: async () => {},
-  onGoogleButtonPress: async () => {},
+  onGoogleButtonPress: async () => null,
 });
 
 const config = {
@@ -30,7 +34,6 @@ const config = {
 const AuthProvider = ({children}: AuthProviderProps) => {
   GoogleSignin.configure({...config});
   const [state, setState] = useState(initialState);
-  const {handleNavigation} = useNav();
 
   function handleState(key: keyof InitialStateProps, value: InitialState) {
     setState(prevState => ({...prevState, [key]: value}));
@@ -39,12 +42,19 @@ const AuthProvider = ({children}: AuthProviderProps) => {
     try {
       await auth().signOut();
       await GoogleSignin.revokeAccess();
-      handleNavigation('Login');
+      await AsyncStorage.removeItem(CURRENT_STUDENT_KEY);
+      const cachedRole = (await AsyncStorage.getItem('role')) as Role;
+      if (cachedRole === 'adviser') {
+        AsyncStorage.setItem('role', 'faculty');
+      } else if (cachedRole === 'mayor') {
+        AsyncStorage.setItem('role', 'student');
+      }
     } catch (err) {
-      ToastAndroid.show('Error in logging out', ToastAndroid.SHORT);
+      // console.log(err)
+      return;
     }
   }
-  async function onGoogleButtonPress() {
+  async function onGoogleButtonPress(): Promise<LoginMessagePrompt> {
     try {
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
       const {idToken} = await GoogleSignin.signIn();
@@ -52,34 +62,37 @@ const AuthProvider = ({children}: AuthProviderProps) => {
       const {additionalUserInfo} = await auth().signInWithCredential(
         googleCredential,
       );
+
       const role = await AsyncStorage.getItem('role');
       const profile = additionalUserInfo?.profile;
       const student = role === 'mayor' || role === 'student';
-      const result = await collectionRef(student ? 'student' : 'permission')
-        .where('email', '==', profile?.email)
-        .count()
-        .get();
-      if (result.data().count < 1) {
+      const collectionReference = student
+        ? collectionRef('student').where('email', '==', profile?.email)
+        : collectionRef('permission')
+            .where('email', '==', profile?.email)
+            .where('roleInString', '==', 'faculty');
+      const snapshotCount = await collectionReference.count().get();
+      const count = snapshotCount.data().count;
+      if (count === 0) {
         await signout();
-        await AsyncStorage.removeItem('usersCache');
-        return Alert.alert(
-          student
-            ? 'Please register your Email along with your COR'
-            : 'You do not have the permission to login as faculty member of cics',
-        );
+        // await AsyncStorage.removeItem(STUDENT_KEY);
+        return student ? 'COR_UNREGISTERED' : 'FACULTY_PERMISSION_NULL';
       }
+      return 'SUCCESS';
     } catch (err) {
       // console.log(err);
-      ToastAndroid.show('Sign in action cancelled', ToastAndroid.SHORT);
+      return 'ERROR';
     }
   }
 
-  useEffect(() => {
-    const unsub = auth().onAuthStateChanged(user => {
-      handleState('currentUser', user);
-    });
-    return unsub;
-  }, []);
+  useEffect(
+    () =>
+      auth().onAuthStateChanged(user => {
+        handleState('currentUser', user);
+        setState(prevState => ({...prevState, isLoading: false}));
+      }),
+    [],
+  );
 
   return (
     <AuthContext.Provider
@@ -88,7 +101,7 @@ const AuthProvider = ({children}: AuthProviderProps) => {
         signout,
         onGoogleButtonPress,
       }}>
-      {children}
+      {state.isLoading ? <Loading /> : children}
     </AuthContext.Provider>
   );
 };
