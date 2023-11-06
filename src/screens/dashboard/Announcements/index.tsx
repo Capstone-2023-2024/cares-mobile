@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
-import {Image, ScrollView, View} from 'react-native';
+import React, {useState} from 'react';
+import {Image, SectionList, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import SelectDropdown from 'react-native-select-dropdown';
 import {Text} from '~/components';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
@@ -9,111 +10,127 @@ import {AnnouncementProps} from '~/types/announcement';
 import {retrieveImageFBStorage} from '~/utils/image';
 
 const Announcements = () => {
-  const {data, type, orderBy, handleOrderBy, handleTypeChange} =
-    useAnnouncement();
+  const {data, type, handleTypeChange} = useAnnouncement();
   const {getState} = useNavigation();
   const routes = getState().routes;
   const {currentStudent} = useUser();
   const params: string | undefined = routes[routes.length - 1]?.params;
   const paramsExist = typeof params === 'string';
+  const announcementData = [
+    ...(paramsExist ? data.filter(({id}) => id === params) : data),
+  ];
 
   return (
     <View className="flex-1">
-      <ScrollView>
-        {!paramsExist && (
-          <View>
-            <Text className="p-4 text-center text-4xl text-black">
-              Announcements
-            </Text>
-            <View className="justify center flex-row items-center">
-              <SelectDropdown
-                disabled={currentStudent.email === 'null'}
-                defaultValue={type}
-                defaultButtonText="Choose type"
-                buttonTextStyle={{
-                  textTransform: 'capitalize',
-                  borderRadius: 50,
-                  padding: 3,
-                  color: '#f5f5f5',
-                  backgroundColor: '#767373',
-                }}
-                data={['event', 'university_memorandum', 'recognition']}
-                onSelect={handleTypeChange}
-              />
-              <SelectDropdown
-                disabled={currentStudent.email === 'null'}
-                defaultValue={orderBy}
-                defaultButtonText="Order by"
-                buttonTextStyle={{
-                  textTransform: 'capitalize',
-                  borderRadius: 50,
-                  padding: 3,
-                  color: '#f5f5f5',
-                  backgroundColor: '#767373',
-                }}
-                data={['asc', 'desc']}
-                onSelect={handleOrderBy}
-              />
-            </View>
+      {!paramsExist && (
+        <View>
+          <Text className="p-4 text-center text-4xl text-black">
+            Announcements
+          </Text>
+          <View className="w-screen items-center justify-center">
+            <SelectDropdown
+              disabled={currentStudent.email === 'null'}
+              defaultValue={type}
+              defaultButtonText="Choose type"
+              buttonTextStyle={{
+                width: 'auto',
+                textTransform: 'capitalize',
+                borderRadius: 10,
+                padding: 5,
+                color: '#f5f5f5',
+                backgroundColor: '#767373',
+              }}
+              data={['Event', 'University Memo', 'Recognition']}
+              onSelect={handleTypeChange}
+            />
           </View>
-        )}
-        {[...(paramsExist ? data.filter(({id}) => id === params) : data)].map(
-          props => {
-            return <Container key={props.id} {...props} />;
-          },
-        )}
-      </ScrollView>
+        </View>
+      )}
+      <SectionList
+        keyExtractor={({id}) => id}
+        sections={announcementData.map(({photoUrl, ...rest}) => ({
+          title: {photoUrl, department: rest.department, type: rest.type},
+          data: [{...rest}],
+        }))}
+        renderSectionHeader={({section}) => {
+          const {
+            title: {department, photoUrl, type},
+          } = section;
+          return (
+            <View>
+              <View className="my-4 scale-125 flex-row items-center justify-center">
+                <Image
+                  source={require('~/assets/cics_icon.png')}
+                  className="mr-2 h-8 w-8"
+                  resizeMode="center"
+                />
+                <Text className="mb-2 text-xl font-black text-primary">{`${department.toUpperCase()} Department`}</Text>
+                <Text className="scale-75 self-center rounded-lg bg-primary p-2 text-xs uppercase text-paper">
+                  {type === 'university_memorandum' ? 'memo' : type}
+                </Text>
+              </View>
+              {photoUrl === undefined ? (
+                <View className="" />
+              ) : (
+                <Image
+                  className="m-8 h-64 rounded-3xl"
+                  source={require('~/assets/error.svg')}
+                  src={
+                    photoUrl !== undefined
+                      ? retrieveImageFBStorage(photoUrl ?? '')
+                      : ''
+                  }
+                />
+              )}
+            </View>
+          );
+        }}
+        renderItem={({item, index}) => {
+          return <Container key={index} {...item} />;
+        }}
+      />
     </View>
   );
 };
 
 const Container = (props: AnnouncementProps) => {
-  const {
-    department,
-    message,
-    photoUrl,
-    postedBy,
-    endDate,
-    type,
-    tags,
-    dateCreated,
-  } = props;
+  const {message, postedBy, endDate, type, tags, dateCreated} = props;
   const endingDay = new Date();
   const postedDate = new Date();
   endingDay.setTime(endDate);
   postedDate.setTime(dateCreated);
+  const messageLimit = 150;
+  const [state, setState] = useState(false);
+
+  function handlePress() {
+    setState(prevState => !prevState);
+  }
 
   return (
-    <View className="h-[80vh] p-4 shadow-sm">
+    <View className="m-2 p-2 shadow-sm">
       <View className="mx-auto w-11/12 p-2 shadow-sm">
-        <View className="my-4 scale-125 flex-row items-center justify-center">
-          <Image
-            source={require('~/assets/cics_icon.png')}
-            className="mr-2 h-8 w-8"
-            resizeMode="center"
-          />
-          <Text className="mb-2 text-xl font-black text-primary">{`${department.toUpperCase()} Department`}</Text>
-          <Text className="scale-75 self-center rounded-lg bg-primary p-2 text-xs uppercase text-paper">
-            {type === 'university_memorandum' ? 'memo' : type}
-          </Text>
-        </View>
-        {photoUrl === undefined ? (
-          <View className="" />
-        ) : (
-          <Image
-            className="h-2/5"
-            resizeMethod="scale"
-            source={require('~/assets/error.svg')}
-            src={
-              photoUrl !== undefined
-                ? retrieveImageFBStorage(photoUrl ?? '')
-                : ''
-            }
-          />
-        )}
         <View className="rounded-lg bg-primary/80 p-4">
           <Text className="text-center font-bold text-paper">{'Message'}</Text>
-          <Text className="text-paper">{`${message}adssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssasdddddddddddddddddddss`}</Text>
+          {message.length > messageLimit ? (
+            <TouchableOpacity onPress={handlePress}>
+              <View>
+                <Text className="text-paper">
+                  {`${message.substring(
+                    0,
+                    state ? message.length : messageLimit,
+                  )}`}
+                </Text>
+
+                <Text className="rounded-lg border border-paper p-2 text-center text-paper">
+                  {message.length > messageLimit && !state
+                    ? 'Read More'
+                    : 'Hide'}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <Text className="text-paper">{message}</Text>
+          )}
         </View>
         <View className="flex-row items-center justify-center">
           <Text>Tags:</Text>

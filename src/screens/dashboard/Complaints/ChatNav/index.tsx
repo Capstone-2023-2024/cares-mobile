@@ -58,19 +58,28 @@ const ChatNav = () => {
 
   return (
     <View className="bg-primary">
+      {/* <TouchableOpacity onPress={() => setModal(false)}}> */}
+
       <Modal
-        animationType="slide"
         visible={modal}
+        animationType="slide"
         transparent
         onRequestClose={() => setModal(false)}>
-        <View className="m-auto h-1/4 w-5/6 rounded-lg bg-primary p-6 shadow-sm">
-          <Text className="text-center text-lg font-bold text-paper">Info</Text>
-          <Text className="my-auto h-max text-paper">
-            Communicate with your class mayor and adviser directly here
-            regarding your complaints/concerns, if it is not resolved, it will
-            be escalated to higher position in CICS
-          </Text>
-        </View>
+        <TouchableOpacity
+          activeOpacity={1}
+          className="transparent h-full w-full"
+          onPressOut={() => setModal(false)}>
+          <View className="m-auto h-1/4 w-5/6 rounded-lg bg-primary p-6 shadow-sm">
+            <Text className="text-center text-lg font-bold text-paper">
+              Info
+            </Text>
+            <Text className="my-auto h-max text-paper">
+              Communicate with your class mayor and adviser directly here
+              regarding your complaints/concerns, if it is not resolved, it will
+              be escalated to higher position in CICS
+            </Text>
+          </View>
+        </TouchableOpacity>
       </Modal>
       <View className="h-16 flex-row items-center px-2">
         <BackHeader />

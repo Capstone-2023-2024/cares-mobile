@@ -11,23 +11,26 @@ const initState: AnnouncementStateProps = {
   tag: '',
   data: [],
   type: 'event',
-  orderBy: 'asc',
 };
 const AnnouncementContext = createContext<AnnouncementContextProps>({
   ...initState,
   handleTypeChange: () => null,
-  handleOrderBy: () => null,
   handleTag: () => null,
 });
 
 const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
   const [state, setState] = useState(initState);
 
-  function handleTypeChange(type: AnnouncementStateProps['type']) {
-    setState(prevState => ({...prevState, type}));
-  }
-  function handleOrderBy(orderBy: AnnouncementStateProps['orderBy']) {
-    setState(prevState => ({...prevState, orderBy}));
+  function handleTypeChange(type: string) {
+    if (type === 'Event') {
+      return setState(prevState => ({...prevState, type: 'event'}));
+    } else if (type === 'University Memo') {
+      return setState(prevState => ({
+        ...prevState,
+        type: 'university_memorandum',
+      }));
+    }
+    return setState(prevState => ({...prevState, type: 'recognition'}));
   }
   function handleTag(tag: AnnouncementStateProps['tag']) {
     setState(prevState => ({...prevState, tag}));
@@ -38,25 +41,25 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
     const eventRecognitionQuery = collectionRef('announcement')
       .where('type', '==', state.type)
       .where('endDate', '>', new Date().getTime())
-      .orderBy('endDate', state.orderBy)
+      .orderBy('endDate', 'asc')
       .limit(limitNumber);
 
     const eventRecognitionWithTagsQuery = collectionRef('announcement')
       .where('type', '==', state.type)
       .where('tags', 'array-contains', state.tag.toLowerCase())
       .where('endDate', '>', new Date().getTime())
-      .orderBy('endDate', state.orderBy)
+      .orderBy('endDate', 'asc')
       .limit(limitNumber);
 
     const memoQuery = collectionRef('announcement')
       .where('type', '==', state.type)
-      .orderBy('dateCreated', state.orderBy)
+      .orderBy('dateCreated', 'asc')
       .limit(limitNumber);
 
     const memoWithTagsQuery = collectionRef('announcement')
       .where('type', '==', state.type)
       .where('tags', 'array-contains', state.tag.toLowerCase())
-      .orderBy('dateCreated', state.orderBy)
+      .orderBy('dateCreated', 'asc')
       .limit(limitNumber);
 
     function query() {
@@ -84,11 +87,10 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
       });
       setState(prevState => ({...prevState, data: announcementHolder}));
     });
-  }, [state.orderBy, state.type, state.tag]);
-
+  }, [state.type, state.tag]);
   return (
     <AnnouncementContext.Provider
-      value={{...state, handleTypeChange, handleOrderBy, handleTag}}>
+      value={{...state, handleTypeChange, handleTag}}>
       {children}
     </AnnouncementContext.Provider>
   );

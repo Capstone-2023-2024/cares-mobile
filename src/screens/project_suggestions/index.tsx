@@ -83,6 +83,7 @@ const Poll = ({
   votes,
   state,
   dateOfExpiration,
+  postedBy,
 }: EventWithIdProps) => {
   const initState: PollStateProps = {
     idea: null,
@@ -182,7 +183,7 @@ const Poll = ({
         <TouchableOpacity
           key={index}
           className={`${
-            CONDITION ? 'scale-110 bg-green-200/50' : 'bg-white'
+            CONDITION ? 'scale-105 bg-green-100/70' : 'bg-white'
           } mb-2 w-fit flex-row justify-between rounded-lg p-2 shadow-sm duration-300 ease-in-out`}
           onPress={() => handleOptionPress(name)}>
           <PollStyledText value={name} condition={CONDITION} />
@@ -196,7 +197,7 @@ const Poll = ({
   }
 
   return (
-    <View className="flex-col items-center justify-center rounded-lg border p-4">
+    <View className="flex-col items-center justify-center rounded-lg p-6 shadow-lg">
       {state === 'unpublished' ? (
         <View>
           {/* <View className="w-32 flex-row">
@@ -229,19 +230,25 @@ const Poll = ({
             onChangeText={handleChangeText}
           />
           <TouchableOpacity
-            className={`${condition ? 'bg-primary' : 'bg-slate-200'} p-2`}
+            disabled={!condition}
+            className={`${
+              condition ? 'bg-primary' : 'bg-slate-200'
+            } rounded-lg p-2 shadow-sm`}
             onPress={handleSubmitIdea}>
             <Text
               className={`${
                 condition ? 'text-paper' : 'text-slate-300'
-              } rounded-lg text-center shadow-sm`}>
+              } rounded-lg text-center capitalize`}>
               submit
             </Text>
           </TouchableOpacity>
         </View>
       ) : (
-        <View>
-          <Text className="mb-3 text-xl font-semibold">{question}</Text>
+        <View className="w-80">
+          <View className="mb-3 flex-row items-center justify-between">
+            <Text className="text-xl font-semibold">{question}</Text>
+            <Text className="text-xs font-semibold">{`Posted by: ${postedBy}`}</Text>
+          </View>
           <View>{renderOptions()}</View>
         </View>
       )}

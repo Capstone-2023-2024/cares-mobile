@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {ToastAndroid, View} from 'react-native';
+import {FlatList, TouchableOpacity, View, Image} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 // import type {UniversityScheduleType} from 'mobile/../../~/types';
 import type {MarkedDates} from 'react-native-calendars/src/types';
 import {Text} from '~/components';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useNav} from '~/contexts/NavigationContext';
+import {retrieveImageFBStorage} from '~/utils/image';
 
 const CalendarOfActivities = () => {
   const {data} = useAnnouncement();
@@ -32,8 +33,8 @@ const CalendarOfActivities = () => {
   }, [data]);
 
   return (
-    <View>
-      <Text className="text-center text-lg font-bold">
+    <View className="flex-1">
+      <Text className="mb-6 p-4 text-center text-4xl text-black">
         Calendar of Activities
       </Text>
       {markedDates && (
@@ -42,13 +43,45 @@ const CalendarOfActivities = () => {
             const filtered = data.filter(
               props => props.markedDates.indexOf(e.dateString) > -1,
             )[0];
-            handleNavigation('Announcements', filtered?.id);
-            ToastAndroid.show(`${filtered?.message}`, ToastAndroid.SHORT);
+            {
+              filtered?.id !== undefined &&
+                handleNavigation('Announcements', filtered?.id);
+            }
           }}
-          markingType="period"
+          markingType={
+            markedDates !== undefined &&
+            markedDates.length !== undefined &&
+            Object.keys(markedDates).length <= 1
+              ? 'dot'
+              : 'period'
+          }
           markedDates={{...markedDates}}
         />
       )}
+      <FlatList
+        data={data}
+        keyExtractor={({id}) => id}
+        renderItem={({item}) => {
+          const {photoUrl, id, markedDates} = item;
+          const dates = markedDates.map(date => date.split('-')[2]);
+          return (
+            <TouchableOpacity
+              className="h-12 w-full"
+              onPress={() => handleNavigation('Announcements', id)}>
+              <View className="relative w-full flex-1">
+                <Image
+                  source={require('~/assets/error.svg')}
+                  src={retrieveImageFBStorage(photoUrl ?? [])}
+                  className="h-16 w-full"
+                />
+                <Text className="absolute inset-0 items-center justify-center text-4xl font-black text-paper">
+                  {dates.toString()}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
     </View>
   );
 };

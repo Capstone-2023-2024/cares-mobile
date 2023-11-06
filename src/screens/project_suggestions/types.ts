@@ -5,6 +5,7 @@ interface OptionProps {
 
 export interface EventProps {
   type: 'poll';
+  postedBy: string;
   state: 'unpublished' | 'published';
   question: string;
   options: OptionProps[];
