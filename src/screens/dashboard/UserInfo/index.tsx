@@ -66,22 +66,15 @@ const UserInfo = () => {
       splitNameResult?.[0]
         ?.substring(0, splitNameResultFirstLength - 1)
         .trim() ?? 'firstname';
-    const middleInitial = () => {
-      let middleStart = '';
-      if (splitNameResult?.length === 1) {
-        return middleStart;
-      }
-      for (let x = 0; x < (splitNameResult?.length ?? 1) - 1; x++) {
-        const target = splitNameResult?.[x] ?? '';
-        middleStart +=
-          x === 0 ? target.substring(target.length - 1, target.length) : target;
-      }
-      return middleStart;
-    };
+    const middleInitial =
+      splitNameResult?.[0]?.substring(
+        splitNameResultFirstLength - 1,
+        splitNameResultFirstLength,
+      ) ?? 'middleInitial';
     return (
       <>
         <TextRow title="first_name" value={firstName} />
-        <TextRow title="middle_initial" value={middleInitial()} />
+        <TextRow title="middle_initial" value={middleInitial} />
         <TextRow title="last_name" value={lastName} />
         <TextRow title="college" value={college} />
         <TextRow title="year_level" value={yearLevel} />

@@ -1,6 +1,6 @@
 import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Image, Modal, TouchableOpacity, View} from 'react-native';
+import {Image, Modal, TouchableOpacity, View, Alert} from 'react-native';
 import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
@@ -18,6 +18,9 @@ function Header({}: {withBack?: boolean}) {
     handleNavigation(initialRouteName);
   }
   function handlePressChats() {
+    if (currentStudent.section === undefined) {
+      return Alert.alert('No section', 'Please set up your section first');
+    }
     handleNavigation('Chats');
   }
   const renderChatIcon = () =>
