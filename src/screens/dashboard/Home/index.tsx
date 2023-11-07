@@ -25,7 +25,9 @@ const Home = () => {
         <Text className="mr-2 text-xs text-yellow-600">
           Looks like you didn't have your class section set-up.
         </Text>
-        <TouchableOpacity onPress={setUpSection}>
+        <TouchableOpacity
+          disabled={currentStudent.email === 'null'}
+          onPress={setUpSection}>
           <Text className="text-xs text-yellow-600 underline">Tap here</Text>
         </TouchableOpacity>
       </View>

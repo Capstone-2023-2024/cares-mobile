@@ -61,6 +61,7 @@ const Usertab = ({name}: UsertabProps) => {
           {renderNameAndGreeting()}
         </View>
         <TouchableOpacity
+          disabled={currentStudent.email === 'null'}
           onPress={handlePressUserInfo}
           className="h-10 w-10 overflow-hidden rounded-full">
           {renderDotsIcon()}
@@ -72,7 +73,8 @@ const Usertab = ({name}: UsertabProps) => {
 
 export const HeadingTemplate = (props: HeadingTemplateProps) => {
   const navigate = useNavigation();
-  const {navigation, title, disabled} = props;
+  const {currentStudent} = useUser();
+  const {navigation, title} = props;
 
   function handleNavigation(path: PathListType) {
     navigate.dispatch(CommonActions.navigate({name: path}));
@@ -86,10 +88,12 @@ export const HeadingTemplate = (props: HeadingTemplateProps) => {
     <View className="flex-row justify-between px-8 py-6">
       <Text className="text-xl font-bold capitalize text-black">{title}</Text>
       <TouchableOpacity
-        className={disabled ? 'opacity-25' : 'opacity-100'}
-        disabled={disabled}
+        className={
+          currentStudent.email == 'null' ? 'opacity-25' : 'opacity-100'
+        }
+        disabled={currentStudent.email == 'null'}
         onPress={handlePressNavigation}>
-        <SvgContainer disabled={disabled} uri={arrowUri} size="sm" />
+        <SvgContainer uri={arrowUri} size="sm" />
       </TouchableOpacity>
     </View>
   );

@@ -29,6 +29,8 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
         ...prevState,
         type: 'university_memorandum',
       }));
+    } else if (type === 'Others') {
+      return setState(prevState => ({...prevState, type: 'others'}));
     }
     return setState(prevState => ({...prevState, type: 'recognition'}));
   }
@@ -37,45 +39,45 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
   }
 
   useEffect(() => {
-    const limitNumber = 10;
-    const eventRecognitionQuery = collectionRef('announcement')
-      .where('type', '==', state.type)
-      .where('endDate', '>', new Date().getTime())
-      .orderBy('endDate', 'asc')
+    const limitNumber = 30;
+    const queryAnnouncement = collectionRef('announcement')
+      // .where('type', '==', state.type)
+      // .where('endDate', '>', new Date().getTime())
+      .orderBy('dateCreated', 'desc')
       .limit(limitNumber);
 
-    const eventRecognitionWithTagsQuery = collectionRef('announcement')
-      .where('type', '==', state.type)
-      .where('tags', 'array-contains', state.tag.toLowerCase())
-      .where('endDate', '>', new Date().getTime())
-      .orderBy('endDate', 'asc')
-      .limit(limitNumber);
+    // const eventRecognitionWithTagsQuery = collectionRef('announcement')
+    //   .where('type', '==', state.type)
+    //   .where('tags', 'array-contains', state.tag.toLowerCase())
+    //   // .where('endDate', '>', new Date().getTime())
+    //   .orderBy('dateCreated', 'desc')
+    //   .limit(limitNumber);
 
-    const memoQuery = collectionRef('announcement')
-      .where('type', '==', state.type)
-      .orderBy('dateCreated', 'asc')
-      .limit(limitNumber);
+    // const memoQuery = collectionRef('announcement')
+    //   .where('type', '==', state.type)
+    //   .orderBy('dateCreated', 'desc')
+    //   .limit(limitNumber);
 
-    const memoWithTagsQuery = collectionRef('announcement')
-      .where('type', '==', state.type)
-      .where('tags', 'array-contains', state.tag.toLowerCase())
-      .orderBy('dateCreated', 'asc')
-      .limit(limitNumber);
+    // const memoWithTagsQuery = collectionRef('announcement')
+    //   .where('type', '==', state.type)
+    //   .where('tags', 'array-contains', state.tag.toLowerCase())
+    //   .orderBy('dateCreated', 'desc')
+    //   .limit(limitNumber);
 
-    function query() {
-      if (state.type === 'university_memorandum' && state.tag.trim() !== '') {
-        return memoWithTagsQuery;
-      } else if (
-        state.type === 'university_memorandum' &&
-        state.tag.trim() === ''
-      ) {
-        return memoQuery;
-      } else if (state.tag.trim() !== '') {
-        return eventRecognitionWithTagsQuery;
-      }
-      return eventRecognitionQuery;
-    }
-    return query().onSnapshot(snapshot => {
+    // function query() {
+    //   if (state.type === 'university_memorandum' && state.tag.trim() !== '') {
+    //     return memoWithTagsQuery;
+    //   } else if (
+    //     state.type === 'university_memorandum' &&
+    //     state.tag.trim() === ''
+    //   ) {
+    //     return memoQuery;
+    //   } else if (state.tag.trim() !== '') {
+    //     return eventRecognitionWithTagsQuery;
+    //   }
+    //   return eventRecognitionQuery;
+    // }
+    return queryAnnouncement.onSnapshot(snapshot => {
       const announcementHolder: AnnouncementProps[] = [];
       snapshot.docs.forEach(doc => {
         const data = doc.data();
@@ -87,7 +89,7 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
       });
       setState(prevState => ({...prevState, data: announcementHolder}));
     });
-  }, [state.type, state.tag]);
+  }, []);
   return (
     <AnnouncementContext.Provider
       value={{...state, handleTypeChange, handleTag}}>

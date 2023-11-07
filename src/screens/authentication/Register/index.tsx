@@ -45,8 +45,6 @@ const Register = () => {
     try {
       const {uri, size, name, type} = await DocumentPicker.pickSingle();
       // TODO: convert octet-stream to pdf in Android API 24
-      // const file = await RNFS.readFile(uri);
-      // Alert.alert(file);
       if (type === 'application/pdf') {
         return setFile({uri, size, name});
       }
@@ -90,7 +88,6 @@ const Register = () => {
       setStudentInfo(null);
       handleNavigation('Login');
     }
-    console.log({studentInfo});
     if (studentInfo !== null) {
       const result = await collectionRef('student')
         .where('studentNo', '==', studentInfo.studentNo)

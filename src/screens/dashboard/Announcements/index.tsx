@@ -1,9 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Image, SectionList, View} from 'react-native';
+import {Image, Modal, SectionList, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SelectDropdown from 'react-native-select-dropdown';
 import {Text} from '~/components';
+// import {Textfield} from '~/components/Textfield';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useUser} from '~/contexts/UserContext';
 import {AnnouncementProps} from '~/types/announcement';
@@ -11,23 +12,82 @@ import {retrieveImageFBStorage} from '~/utils/image';
 
 const Announcements = () => {
   const {data, type, handleTypeChange} = useAnnouncement();
+  const [modalImage, setModalImage] = useState(false);
+  const [photoSelected, setPhotoSelected] = useState('');
   const {getState} = useNavigation();
   const routes = getState().routes;
   const {currentStudent} = useUser();
   const params: string | undefined = routes[routes.length - 1]?.params;
   const paramsExist = typeof params === 'string';
-  const announcementData = [
-    ...(paramsExist ? data.filter(({id}) => id === params) : data),
-  ];
+  const [announcementData, setAnnouncementData] = useState([
+    ...(paramsExist
+      ? data.filter(({id}) => id === params)
+      : data.filter(data => {
+          const today = new Date();
+          const endDate = new Date();
+          endDate.setTime(data.endDate);
+          return data.type === 'event' && endDate.getTime() > today.getTime();
+        })),
+  ]);
+
+  function handlePressImage(value: boolean, src?: string) {
+    setModalImage(value);
+    if (src !== undefined) {
+      setPhotoSelected(src);
+    }
+  }
+
+  function handleType(text: string) {
+    handleTypeChange(text);
+    if (text === 'Event') {
+      return setAnnouncementData([
+        ...data.filter(data => {
+          const today = new Date();
+          const endDate = new Date();
+          endDate.setTime(data.endDate);
+          return data.type === 'event' && endDate.getTime() > today.getTime();
+        }),
+      ]);
+    } else if (text === 'University Memo') {
+      return setAnnouncementData([
+        ...data.filter(data => data.type === 'university_memorandum'),
+      ]);
+    } else if (text === 'Others') {
+      return setAnnouncementData([
+        ...data.filter(data => data.type === 'others'),
+      ]);
+    }
+    setAnnouncementData([...data.filter(data => data.type === 'recognition')]);
+  }
+
+  // function handleTag(text: string) {
+  //   setAnnouncementData([
+  //     ...data.filter(data => {
+  //       return (
+  //         data.type === type &&
+  //         data.tags.filter(value => /.*${text}.*/.test(value))
+  //       );
+  //     }),
+  //   ]);
+  // }
 
   return (
     <View className="flex-1">
+      <Modal
+        animationType="fade"
+        visible={modalImage}
+        onRequestClose={() => handlePressImage(false)}>
+        <View className="h-screen items-center justify-center">
+          <RenderImageInModal src={photoSelected} />
+        </View>
+      </Modal>
       {!paramsExist && (
         <View>
           <Text className="p-4 text-center text-4xl text-black">
             Announcements
           </Text>
           <View className="w-screen items-center justify-center">
+            {/* <Textfield placeholder="Search by tags" onChangeText={handleTag} /> */}
             <SelectDropdown
               disabled={currentStudent.email === 'null'}
               defaultValue={type}
@@ -40,8 +100,8 @@ const Announcements = () => {
                 color: '#f5f5f5',
                 backgroundColor: '#767373',
               }}
-              data={['Event', 'University Memo', 'Recognition']}
-              onSelect={handleTypeChange}
+              data={['Event', 'University Memo', 'Recognition', 'Others']}
+              onSelect={handleType}
             />
           </View>
         </View>
@@ -56,9 +116,15 @@ const Announcements = () => {
           const {
             title: {department, photoUrl, type},
           } = section;
+
+          const photoArrayOneSRC =
+            photoUrl !== undefined
+              ? retrieveImageFBStorage(photoUrl ?? '')
+              : '';
+
           return (
-            <View>
-              <View className="my-4 scale-125 flex-row items-center justify-center">
+            <View className="border border-primary p-2">
+              <View className="scale-125 flex-row items-center justify-center">
                 <Image
                   source={require('~/assets/cics_icon.png')}
                   className="mr-2 h-8 w-8"
@@ -72,15 +138,15 @@ const Announcements = () => {
               {photoUrl === undefined ? (
                 <View className="" />
               ) : (
-                <Image
-                  className="m-8 h-64 rounded-3xl"
-                  source={require('~/assets/error.svg')}
-                  src={
-                    photoUrl !== undefined
-                      ? retrieveImageFBStorage(photoUrl ?? '')
-                      : ''
-                  }
-                />
+                <TouchableOpacity
+                  onPress={() => handlePressImage(true, photoArrayOneSRC)}>
+                  <Image
+                    className="mx-auto mt-2 h-64 w-5/6 rounded-2xl bg-primary"
+                    resizeMethod="auto"
+                    source={require('~/assets/error.svg')}
+                    src={photoArrayOneSRC}
+                  />
+                </TouchableOpacity>
               )}
             </View>
           );
@@ -110,9 +176,9 @@ const Container = (props: AnnouncementProps) => {
     <View className="m-2 p-2 shadow-sm">
       <View className="mx-auto w-11/12 p-2 shadow-sm">
         <View className="rounded-lg bg-primary/80 p-4">
-          <Text className="text-center font-bold text-paper">{'Message'}</Text>
+          <Text className="text-center font-bold text-paper">Caption</Text>
           {message.length > messageLimit ? (
-            <TouchableOpacity onPress={handlePress}>
+            <View>
               <View>
                 <Text className="text-paper">
                   {`${message.substring(
@@ -121,13 +187,17 @@ const Container = (props: AnnouncementProps) => {
                   )}`}
                 </Text>
 
-                <Text className="rounded-lg border border-paper p-2 text-center text-paper">
-                  {message.length > messageLimit && !state
-                    ? 'Read More'
-                    : 'Hide'}
-                </Text>
+                <TouchableOpacity
+                  onPress={handlePress}
+                  className="rounded-lg border border-paper p-2">
+                  <Text className="text-center text-paper">
+                    {message.length > messageLimit && !state
+                      ? 'Read More'
+                      : 'Hide'}
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </View>
           ) : (
             <Text className="text-paper">{message}</Text>
           )}
@@ -147,13 +217,27 @@ const Container = (props: AnnouncementProps) => {
           })}
         </View>
         <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text>
-        {type === 'university_memorandum' ? (
-          <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toDateString()}`}</Text>
+        {type !== 'event' ? (
+          <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
         ) : (
-          <Text className="text-center font-semibold text-black">{`Until: ${endingDay.toDateString()}`}</Text>
+          <View>
+            <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
+            <Text className="text-center font-semibold text-black">{`Until: ${endingDay.toLocaleString()}`}</Text>
+          </View>
         )}
       </View>
     </View>
+  );
+};
+
+const RenderImageInModal = ({src}: {src: string}) => {
+  return (
+    <Image
+      className="h-96 w-full"
+      resizeMethod="auto"
+      source={require('~/assets/error.svg')}
+      src={src}
+    />
   );
 };
 

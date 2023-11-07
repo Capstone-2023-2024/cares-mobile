@@ -62,9 +62,14 @@ const CalendarOfActivities = () => {
         data={data}
         keyExtractor={({id}) => id}
         renderItem={({item}) => {
-          const {photoUrl, id, markedDates} = item;
+          const {photoUrl, id, markedDates, endDate, type} = item;
           const dates = markedDates.map(date => date.split('-')[2]);
-          return (
+          const expiration = new Date();
+          expiration.setTime(endDate);
+          const date = expiration.toLocaleString().split(',')[0];
+          const dateMonth = date?.substring(0, date?.lastIndexOf('/'));
+          return type === 'event' &&
+            expiration.getTime() > new Date().getTime() ? (
             <TouchableOpacity
               className="h-12 w-full"
               onPress={() => handleNavigation('Announcements', id)}>
@@ -72,11 +77,33 @@ const CalendarOfActivities = () => {
                 <Image
                   source={require('~/assets/error.svg')}
                   src={retrieveImageFBStorage(photoUrl ?? [])}
-                  className="h-16 w-full"
+                  className="h-16 w-full bg-secondary"
                 />
-                <Text className="absolute inset-0 items-center justify-center text-4xl font-black text-paper">
-                  {dates.toString()}
-                </Text>
+                <View className="absolute z-10 flex-row items-center justify-between gap-2">
+                  <Text className="text-4xl font-black text-black">
+                    {dates.toString()}
+                  </Text>
+                  <Text className="mr-12 text-4xl font-black text-black">
+                    {`Ex: ${dateMonth}`}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              className="h-12 w-full"
+              onPress={() => handleNavigation('Announcements', id)}>
+              <View className="relative w-full flex-1">
+                <Image
+                  source={require('~/assets/error.svg')}
+                  src={retrieveImageFBStorage(photoUrl ?? [])}
+                  className="h-16 w-full bg-secondary"
+                />
+                <View className="absolute z-10 flex-row items-center justify-between gap-2">
+                  <Text className="text-4xl font-black text-black">
+                    {dates.toString()}
+                  </Text>
+                </View>
               </View>
             </TouchableOpacity>
           );

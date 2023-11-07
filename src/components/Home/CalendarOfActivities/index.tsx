@@ -37,6 +37,7 @@ const CalendarOfActivities = () => {
 
 const Container = (props: AnnouncementProps) => {
   const navigate = useNavigation();
+  const {currentStudent} = useUser();
 
   function handleNavigation(path: PathListType) {
     navigate.dispatch(CommonActions.navigate({name: path}));
@@ -48,15 +49,20 @@ const Container = (props: AnnouncementProps) => {
 
   return (
     <TouchableOpacity
+      disabled={currentStudent.email === 'null'}
       className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full bg-primary shadow-md"
       onPress={handleUniSched}>
       <View className="flex-row items-center">
         {/* <SvgContainer uri={pin} size="sm" /> */}
-        <Image
-          className="h-16 w-full rounded-full"
-          source={require('~/assets/error.svg')}
-          src={retrieveImageFBStorage(props.photoUrl ?? [])}
-        />
+        {currentStudent.email === 'null' ? (
+          <View className="h-16 w-28 bg-primary" />
+        ) : (
+          <Image
+            className="h-16 w-full rounded-full"
+            source={require('~/assets/error.svg')}
+            src={retrieveImageFBStorage(props.photoUrl ?? [])}
+          />
+        )}
         {/* <Text className="ml-2 w-1/2 text-xs text-white">
           {props.message.substring(0, 15)}
         </Text> */}
