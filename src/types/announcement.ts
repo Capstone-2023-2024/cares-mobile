@@ -4,9 +4,13 @@ import type {PhotoMediaProps} from './media';
 export interface AnnouncementProps
   extends DateFileProps,
     FirestoreDatabaseProps,
-    PhotoMediaProps {
+    Partial<PhotoMediaProps> {
+  type: 'event' | 'university_memorandum' | 'recognition' | 'others';
+  postedBy: string;
+  tags: string[];
   message: string;
-  department: 'cite';
+  department: 'cics';
   state: 'unpinned' | 'pinned';
   markedDates: string[];
+  endDate: number;
 }

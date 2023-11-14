@@ -1,4 +1,8 @@
-export interface ConcernProps {
+export interface DocumentProps {
+  files: string[];
+}
+
+export interface ConcernProps extends Partial<DocumentProps> {
   id: string;
   message: string;
   withDocument: boolean;

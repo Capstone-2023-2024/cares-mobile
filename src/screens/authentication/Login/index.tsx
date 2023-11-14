@@ -1,15 +1,14 @@
+import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import React from 'react';
-import {Text, ToastAndroid, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Alert, Text, ToastAndroid, View} from 'react-native';
 import {Link} from '~/components/Button';
 import {Heading} from '~/components/Heading';
 import {useAuth} from '~/contexts/AuthContext';
-import {useContent} from '~/contexts/ContentContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {GoogleSvg} from '~/utils/image';
+import {useUser} from '~/contexts/UserContext';
 
 const Login = () => {
-  const {role} = useContent();
+  const {role} = useUser();
   const {onGoogleButtonPress} = useAuth();
   const {handleNavigation} = useNav();
 
@@ -18,25 +17,38 @@ const Login = () => {
   }
   async function handleLogin() {
     try {
-      await onGoogleButtonPress();
-      // handleNavigation('Loading');
+      const message = await onGoogleButtonPress();
+      switch (message) {
+        case 'COR_UNREGISTERED':
+          return Alert.alert(
+            message,
+            'Please register your email together with your COR',
+          );
+        case 'FACULTY_PERMISSION_NULL':
+          return Alert.alert(
+            message,
+            "You don't have the necessary permission",
+          );
+        case 'SUCCESS':
+          return ToastAndroid.show(message, ToastAndroid.SHORT);
+        case null:
+          return;
+        default:
+          return ToastAndroid.show(
+            'Google sign-in cancelled',
+            ToastAndroid.SHORT,
+          );
+      }
     } catch (err) {
-      ToastAndroid.show('Error in handling Google Signin', ToastAndroid.SHORT);
+      Alert.alert('ERROR_CATCHED', 'Error in handling Google Signin');
     }
   }
 
   return (
     <View className="h-2/3 justify-center">
       <Heading>Login</Heading>
-      <View className="mb-2 w-1/3 self-center">
-        <TouchableOpacity
-          className="flex-row items-center justify-center rounded-full border p-2 px-4 shadow-sm"
-          onPress={handleLogin}>
-          <View className="h-6 w-6">
-            <GoogleSvg />
-          </View>
-          <Text>Google</Text>
-        </TouchableOpacity>
+      <View className="self-center">
+        <GoogleSigninButton onPress={() => handleLogin()} />
       </View>
       {role === 'student' && (
         <View className="flex-row gap-2 self-center">

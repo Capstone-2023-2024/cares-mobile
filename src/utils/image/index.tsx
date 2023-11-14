@@ -47,14 +47,14 @@ export const PdfSvg = () => <Svg id="pdf.svg" />;
 export const PhotoSvg = () => <Svg id="photo.svg" />;
 export const PinSvg = () => <Svg id="pin.svg" />;
 export const SendSvg = () => <Svg id="send.svg" />;
-export const UserSvg = () => <Svg id="user.svg" />;
 
-export function retrieveImageFBStorage(photoUrl: string) {
+export function retrieveImageFBStorage(photoUrl: string[]) {
   const BASE = 'https://firebasestorage.googleapis.com';
   const BASE_DIVIDER = '/v0/b/';
   const STORAGE_BUCKET = 'cics-a78de.appspot.com';
   const PATH_DIVIDER = '/o/';
   const PARAMS = '?alt=media';
-  const PATH = photoUrl.replace(/\//g, '%2F');
-  return `${BASE}${BASE_DIVIDER}${STORAGE_BUCKET}${PATH_DIVIDER}images%2F${PATH}${PARAMS}`;
+  const PATH = photoUrl[0]?.replace(/\//g, '%2F');
+  const FULL_PATH = `${BASE}${BASE_DIVIDER}${STORAGE_BUCKET}${PATH_DIVIDER}images%2F${PATH}${PARAMS}`;
+  return FULL_PATH;
 }

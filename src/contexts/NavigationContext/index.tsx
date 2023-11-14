@@ -1,5 +1,11 @@
 import {CommonActions, useNavigation} from '@react-navigation/native';
-import React, {createContext, useContext, useState} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import type {PathListType} from '~/utils/navPaths/types';
 import type {
   InitialStateProps,
@@ -7,6 +13,7 @@ import type {
   NavigationContextProps,
   NavigationProviderProps,
 } from './types';
+import {useAuth} from '../AuthContext';
 
 const initialState: InitialStateProps = {
   initialRouteName: 'Landing',
@@ -21,6 +28,7 @@ const NavigationContext = createContext<NavigationContextProps>({
 const NavigationProvider = ({children}: NavigationProviderProps) => {
   const [state, setState] = useState(initialState);
   const navigation = useNavigation();
+  const {currentUser} = useAuth();
 
   function handleState(
     key: keyof InitialStateProps,
@@ -28,12 +36,19 @@ const NavigationProvider = ({children}: NavigationProviderProps) => {
   ) {
     setState(prevState => ({...prevState, [key]: value}));
   }
-  function handleInitialRoute(path: InitialStateProps['initialRouteName']) {
-    handleState('initialRouteName', path);
-  }
   function handleNavigation(name: PathListType, params?: any) {
     navigation.dispatch(CommonActions.navigate({name, params}));
   }
+  const handleInitialRoute = useCallback(
+    (path: InitialStateProps['initialRouteName']) => {
+      handleState('initialRouteName', path);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    return handleInitialRoute(currentUser === null ? 'Landing' : 'Home');
+  }, [currentUser, handleInitialRoute]);
 
   return (
     <NavigationContext.Provider

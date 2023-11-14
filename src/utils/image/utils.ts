@@ -5,6 +5,6 @@ export const imageDimension = (dimension: number) => {
 };
 
 export const assetBasePath =
-  'https://firebasestorage.googleapis.com/v0/b/cics-a78de.appspot.com/o/icons%2F';
+  'https://firebasestorage.googleapis.com/v0/b/cares-dummy.appspot.com/o/icons%2F';
 
 export const uri = (id: string) => `${assetBasePath}${id}?alt=media`;

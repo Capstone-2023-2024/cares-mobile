@@ -1,14 +1,17 @@
 interface OptionProps {
-  value: string;
+  name: string;
+  value: number;
 }
 
 export interface EventProps {
   type: 'poll';
+  postedBy: string;
+  state: 'unpublished' | 'published';
   question: string;
   options: OptionProps[];
-  dateCreated: number;
   votes?: {[x: string]: string};
-  id: string;
+  dateCreated: number;
+  dateOfExpiration: number;
 }
 
 export interface EventWithIdProps extends EventProps {
@@ -19,3 +22,8 @@ export interface PollStyledTextProps {
   condition: boolean;
   value: string;
 }
+
+export interface PollStateProps {
+  idea: string | null;
+}
+export type PollStateValue = PollStateProps['idea'];

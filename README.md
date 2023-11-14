@@ -1,18 +1,19 @@
-# Student Caches
+# Changelog:
 
-- 1x2 Prompt of intial value
-- 14x2 Prompt of fetched values in Async Storage/Firestore
+2023/11/05
 
-# Register screen
+- Content Context is split into Announcement Context and User Context
+- User Provider will now handle the student info instead of individual screens and components processing the student info separately eg. Home, User Info, Hero
 
-- convert octet-stream to pdf in Android API 24
+2023/10/30
 
-# Fixed
-
+- Renders two options for mayors which are the Student Concerns & Personal Concern of the mayor. Complaints/concerns sent by mayors will be redirected to BM
 - Choosing another google account is now available
 
-# Known bugs
+# Developer Note:
 
-- Logging in with different email other than bulsu.edu.ph domain causes a temporary login, this is due to the email of the user is only retrieve when logging in, the current workaround is sharing a protected and non-protected component, however it is not working as expected
-- features from choosing section needs to be reload for the validation to work
-- uploading COR in registration before a email causes the app the need to be reloaded for it to upload the same file, can also choose different COR then rechoose again the target COR.
+- Caches the student info inside its local storage via CURRENT_STUDENT_KEY and removed when signing out.
+
+- Register screen -> convert octet-stream to pdf in Android API 24
+- Announcement needs to have a clear section between Calendar of Activities
+- Adviser need to setup section in user context

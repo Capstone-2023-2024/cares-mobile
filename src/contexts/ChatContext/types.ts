@@ -1,4 +1,5 @@
 import type {ReactNode} from 'react';
+import {ConcernProps} from '~/types/complaints';
 
 export interface ChatConfigProps {
   id: string;
@@ -24,16 +25,17 @@ export interface ChatProviderProps {
 }
 
 export interface InitialProps {
-  chat: ClientMessageProps[];
-  chattables: ChattableProps[];
+  otherConcerns: ConcernProps[];
+  chatModalVisible: boolean;
+  selectedChat: string | null;
 }
 export type InitialPropsType =
-  | InitialProps['chat']
-  | InitialProps['chattables'];
+  | InitialProps['otherConcerns']
+  | InitialProps['chatModalVisible']
+  | InitialProps['selectedChat'];
 
-export interface ChatContextProps extends InitialProps {}
-
-export interface ChattableProps {
-  id: string;
-  email: string;
+export interface ChatContextProps extends InitialProps {
+  handleOtherConcerns: (value: InitialProps['otherConcerns']) => void;
+  handleChatModalVisible: (value: boolean) => void;
+  handleSelectedChat: (value: InitialProps['selectedChat']) => void;
 }
