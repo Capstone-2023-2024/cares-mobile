@@ -104,14 +104,14 @@ const InputContainer = () => {
   }
 
   return (
-    <View className="border-top-1 absolute bottom-2 h-16 w-full flex-row items-center rounded-lg border-primary bg-paper p-2">
+    <View className=" absolute bottom-0 h-16 w-full flex-row items-center border-t-2 bg-paper p-2">
       <TouchableOpacity
         disabled={currentStudent.email === 'null'}
         onPress={selectMultipleFile}
         className="mr-2">
         <Image
           source={require('~/assets/add_document.png')}
-          className="h-8 w-8"
+          className="h-10 w-10"
         />
       </TouchableOpacity>
       <TextInput
@@ -122,11 +122,11 @@ const InputContainer = () => {
             : Alert.alert('Cannot enter message')
         }
         placeholder="Type your message here..."
-        className="mr-2 flex-1 rounded-lg border border-primary bg-paper"
+        className="mr-2 flex-1 rounded-lg border border-black bg-paper"
         multiline
       />
       <TouchableOpacity disabled={role === null} onPress={handleSendMessage}>
-        <Image source={require('~/assets/send.png')} className="h-8 w-8" />
+        <Image source={require('~/assets/send.png')} className="h-9 w-9" />
       </TouchableOpacity>
     </View>
   );

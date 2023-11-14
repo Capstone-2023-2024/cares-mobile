@@ -3,13 +3,14 @@ import React, {useState} from 'react';
 import {Alert, Modal, TouchableOpacity, View} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {Text} from '~/components';
-import ProfilePicture from '~/components/ProfilePicture';
+import ProfilePicture from '~/components/ProfilePictureCopy';
 import {useAuth} from '~/contexts/AuthContext';
 import {useUser} from '~/contexts/UserContext';
 import type {StudentWithClassSection} from '~/types/student';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import type {TextRowType} from './types';
+import BackHeaderLogOut from '~/components/BackHeaderLogOut';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
@@ -117,14 +118,14 @@ const UserInfo = () => {
       <View className="h-screen items-center justify-center bg-white text-center">
         <Text>Are you sure you want to logout?</Text>
         <TouchableOpacity
-          className="w-32 rounded-lg bg-primary  p-2 text-center shadow-sm"
+          className="mt-2 w-32 rounded-lg  bg-red-500  p-2 text-center shadow-sm"
           onPress={handleSignout}>
-          <Text className="text-white">Yes</Text>
+          <Text className="text-center text-white ">Yes</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className="w-32 rounded-lg bg-red-500  p-2 text-center shadow-sm"
+          className="mt-2 w-32 rounded-lg bg-primary   p-2 text-center shadow-sm"
           onPress={() => setModalVisible(!modalVisible)}>
-          <Text className="text-white">No</Text>
+          <Text className="text-center text-white">No</Text>
         </TouchableOpacity>
       </View>
     </Modal>
@@ -132,8 +133,9 @@ const UserInfo = () => {
 
   return (
     <View className="my-auto bg-paper">
+      <BackHeaderLogOut />
       <Hero />
-      <Text className="mx-4 my-2 text-xl font-semibold capitalize text-black">
+      <Text className="mx-4 mt-7 text-xl font-semibold capitalize text-black">
         {`${role} details`}
       </Text>
       {role === 'faculty' || role === 'adviser'
@@ -164,15 +166,15 @@ const Hero = () => {
   );
 
   const renderStudentUI = () => (
-    <View className="ml-2">
+    <View className="ml-3 mt-2">
       <Text className="text-xl capitalize text-paper">{`${currentStudent.name}`}</Text>
-      <Text className="text-xs text-paper">{`${currentStudent.studentNo}`}</Text>
-      <Text className="text-xs text-paper">{`${currentStudent.email}`}</Text>
+      <Text className="text-sm text-paper">{`${currentStudent.studentNo}`}</Text>
+      <Text className="text-sm text-paper">{`${currentStudent.email}`}</Text>
     </View>
   );
 
   return (
-    <View className="mx-auto w-11/12 flex-row rounded-xl bg-accent p-6">
+    <View className="mx-auto mt-9 w-11/12 flex-row rounded-xl bg-accent p-6">
       <ProfilePicture />
       {role === 'faculty' || role === 'adviser'
         ? renderFacultyUI()

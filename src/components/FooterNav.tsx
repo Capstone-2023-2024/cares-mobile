@@ -14,17 +14,19 @@ const FooterNav = () => {
 
   return (
     <View className=" bottom-0 left-0 right-0">
-      <View className="flex-row items-center justify-center border-t border-gray-400 bg-white px-12 pt-2">
+      <View className="flex-row items-center justify-center border-t-2 bg-white px-12 pt-2">
         <TouchableOpacity
           className="mb-2"
           disabled={currentStudent.email === 'null'}
           onPress={handlePressProject}>
           <View className="items-center">
             <Image
-              className="h-8 w-8"
+              className="h-10 w-10"
               source={require('~/assets/project_suggestion_icon.png')}
             />
-            <Text className="text-sm text-black">Project Suggestions</Text>
+            <Text className="text-sm font-bold text-black">
+              Project Suggestions
+            </Text>
           </View>
         </TouchableOpacity>
       </View>

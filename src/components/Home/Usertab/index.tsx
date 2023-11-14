@@ -23,13 +23,13 @@ const Usertab = ({name}: UsertabProps) => {
   }
   const renderNameAndGreeting = () => (
     <View className="ml-2">
-      <Text className="text-sm font-bold">
+      <Text className="ml-2 text-sm font-bold">
         {currentStudent.email === 'null' ? '......' : 'Welcome back'}
       </Text>
       {currentStudent.email === 'null' ? (
         <View className="h-6 w-24 bg-primary" />
       ) : (
-        <Text className="text-lg font-bold capitalize text-black">
+        <Text className="ml-2 text-lg font-bold capitalize text-black">
           {name === 'null' && role !== 'mayor' && role !== 'student'
             ? currentUser?.displayName
             : name}

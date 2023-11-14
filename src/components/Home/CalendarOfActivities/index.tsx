@@ -50,15 +50,15 @@ const Container = (props: AnnouncementProps) => {
   return (
     <TouchableOpacity
       disabled={currentStudent.email === 'null'}
-      className="ml-2 mr-5 mt-5 min-h-max w-64 items-start justify-center rounded-full bg-primary shadow-md"
+      className="ml-2 mr-5 mt-1 h-40 w-64 items-start justify-center rounded-3xl bg-primary shadow-md"
       onPress={handleUniSched}>
       <View className="flex-row items-center">
         {/* <SvgContainer uri={pin} size="sm" /> */}
         {currentStudent.email === 'null' ? (
-          <View className="h-16 w-28 bg-primary" />
+          <View className="h-40 w-28 bg-primary" />
         ) : (
           <Image
-            className="h-16 w-full rounded-full"
+            className="h-40 w-full rounded-3xl"
             source={require('~/assets/error.svg')}
             src={retrieveImageFBStorage(props.photoUrl ?? [])}
           />
