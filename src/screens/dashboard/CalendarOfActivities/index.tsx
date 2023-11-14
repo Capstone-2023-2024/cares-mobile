@@ -59,6 +59,8 @@ const CalendarOfActivities = () => {
         />
       )}
       <FlatList
+        className="p-2"
+        horizontal
         data={data}
         keyExtractor={({id}) => id}
         renderItem={({item}) => {
@@ -71,7 +73,7 @@ const CalendarOfActivities = () => {
           return type === 'event' &&
             expiration.getTime() > new Date().getTime() ? (
             <TouchableOpacity
-              className="h-12 w-full"
+              className="h-auto w-96"
               onPress={() => handleNavigation('Announcements', id)}>
               <View className="relative w-full flex-1">
                 <Image
@@ -79,19 +81,19 @@ const CalendarOfActivities = () => {
                   src={retrieveImageFBStorage(photoUrl ?? [])}
                   className="h-16 w-full bg-secondary"
                 />
-                <View className="absolute z-10 flex-row items-center justify-between gap-2">
-                  <Text className="text-4xl font-black text-black">
+                <View>
+                  <Text className="font-black text-black">
                     {dates.toString()}
                   </Text>
-                  <Text className="mr-12 text-4xl font-black text-black">
-                    {`Ex: ${dateMonth}`}
+                  <Text className="font-black text-black">
+                    {`End date: ${dateMonth}`}
                   </Text>
                 </View>
               </View>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              className="h-12 w-full"
+              className="h-auto w-96"
               onPress={() => handleNavigation('Announcements', id)}>
               <View className="relative w-full flex-1">
                 <Image
@@ -99,8 +101,8 @@ const CalendarOfActivities = () => {
                   src={retrieveImageFBStorage(photoUrl ?? [])}
                   className="h-16 w-full bg-secondary"
                 />
-                <View className="absolute z-10 flex-row items-center justify-between gap-2">
-                  <Text className="text-4xl font-black text-black">
+                <View>
+                  <Text className="font-black text-black">
                     {dates.toString()}
                   </Text>
                 </View>

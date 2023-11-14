@@ -123,7 +123,7 @@ const Announcements = () => {
               : '';
 
           return (
-            <View className="border border-primary p-2">
+            <View className="border-t border-primary p-4">
               <View className="scale-125 flex-row items-center justify-center">
                 <Image
                   source={require('~/assets/cics_icon.png')}
@@ -173,7 +173,7 @@ const Container = (props: AnnouncementProps) => {
   }
 
   return (
-    <View className="m-2 p-2 shadow-sm">
+    <View className="m-2 p-2 shadow-sm ">
       <View className="mx-auto w-11/12 p-2 shadow-sm">
         <View className="rounded-lg bg-primary/80 p-4">
           <Text className="text-center font-bold text-paper">Caption</Text>
@@ -233,7 +233,7 @@ const Container = (props: AnnouncementProps) => {
 const RenderImageInModal = ({src}: {src: string}) => {
   return (
     <Image
-      className="h-96 w-full"
+      className="h-full w-full"
       resizeMethod="auto"
       source={require('~/assets/error.svg')}
       src={src}

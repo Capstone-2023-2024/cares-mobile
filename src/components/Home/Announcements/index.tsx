@@ -83,7 +83,7 @@ const Container = (props: AnnouncementProps) => {
           <TouchableOpacity
             className="self-center"
             onPress={() => handlePressReadMore(id)}>
-            <Text className="justify-center rounded-full border-2 border-black p-1 text-xs">
+            <Text className="justify-center rounded-full border border-black p-1 text-xs">
               {currentStudent.email === 'null' ? '.....' : 'Read More'}
             </Text>
           </TouchableOpacity>
