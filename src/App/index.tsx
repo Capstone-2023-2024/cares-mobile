@@ -8,8 +8,16 @@ import NavigationProvider, {useNav} from '~/contexts/NavigationContext';
 import Screens, {optionsList} from '~/screens';
 import {pathWithoutUserList, pathWithUserList} from '~/utils/navPaths';
 import type {IteratePathsType, StackType} from './types';
+import {LogLevel, OneSignal} from 'react-native-onesignal';
 
 const App = () => {
+  const ONE_SIGNAL_APP_ID = 'dfe68e63-8a9c-46ac-a342-cea86b433e03';
+  OneSignal.initialize(ONE_SIGNAL_APP_ID);
+  OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+  OneSignal.Notifications.requestPermission(true);
+  OneSignal.Notifications.addEventListener('click', event => {
+    console.log('OneSignal: notification clicked:', event);
+  });
   return (
     <CtxProviders>
       <NavigationRouter />

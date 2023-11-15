@@ -148,7 +148,7 @@ const ChatBox = () => {
   return (
     <View
       className={`${
-        role === 'mayor' || role === 'adviser' ? 'h-3/5' : 'h-4/5'
+        role === 'mayor' || role === 'adviser' ? 'h-3/5 w-4/5' : 'h-4/5'
       } mt-4`}>
       <ScrollView>
         {renderChatBox(

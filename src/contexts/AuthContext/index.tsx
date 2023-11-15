@@ -14,6 +14,7 @@ import type {
   InitialStateProps,
   LoginMessagePrompt,
 } from './types';
+import {OneSignal} from 'react-native-onesignal';
 
 const initialState: InitialStateProps = {
   currentUser: null,
@@ -89,6 +90,9 @@ const AuthProvider = ({children}: AuthProviderProps) => {
     () =>
       auth().onAuthStateChanged(user => {
         handleState('currentUser', user);
+        if (user !== null && user.email !== null) {
+          OneSignal.login(user.email);
+        }
         setState(prevState => ({...prevState, isLoading: false}));
       }),
     [],

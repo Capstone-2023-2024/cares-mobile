@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Modal, ToastAndroid, TouchableOpacity, View} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import {FlatList, Image, TouchableOpacity} from 'react-native';
 import {Text} from '~/components';
-import SvgContainer from '~/components/SVGContainer';
 import {useAuth} from '~/contexts/AuthContext';
 import {useChat} from '~/contexts/ChatContext';
 import {useUser} from '~/contexts/UserContext';
 import {ConcernProps} from '~/types/complaints';
 import {StudentWithClassSection} from '~/types/student';
 import {collectionRef} from '~/utils/firebase';
-import {arrowUri} from '~/utils/svgIcons';
 
 interface ChatPrivilegeProps {
   studentNoSelected: string | null;
@@ -23,18 +20,9 @@ const ChatPrivilege = () => {
   };
   const [state, setState] = useState(initState);
   const {currentUser} = useAuth();
-  const {
-    chatModalVisible,
-    handleSelectedChat,
-    handleChatModalVisible,
-    handleOtherConcerns,
-  } = useChat();
+  const {handleSelectedChat, handleOtherConcerns} = useChat();
   const {role, currentStudent} = useUser();
 
-  function handleExitModal() {
-    ToastAndroid.show('Chat modal closed', ToastAndroid.SHORT);
-    handleChatModalVisible(false);
-  }
   function handleStudentPress(studentNo: string) {
     setState(prevState => ({...prevState, studentNoSelected: studentNo}));
     const collectionReference = collectionRef('student')
@@ -54,21 +42,8 @@ const ChatPrivilege = () => {
       });
       handleSelectedChat(studentNo);
       handleOtherConcerns(concernsArray);
-      handleExitModal();
     });
   }
-
-  const renderStudent = () =>
-    state.students.map(({studentNo, name}) => {
-      return (
-        <TouchableOpacity
-          className="m-1 self-center rounded-lg bg-primary p-2 shadow-sm"
-          onPress={() => handleStudentPress(studentNo)}
-          key={studentNo}>
-          <Text className="text-paper">{name}</Text>
-        </TouchableOpacity>
-      );
-    });
 
   useEffect(() => {
     const section = currentStudent.section;
@@ -90,17 +65,22 @@ const ChatPrivilege = () => {
   }, [currentUser, role, currentStudent]);
 
   return (
-    <Modal visible={chatModalVisible} onRequestClose={handleExitModal}>
-      <View className="h-12 flex-row items-center justify-around bg-primary">
-        <TouchableOpacity className="w-12 rotate-180" onPress={handleExitModal}>
-          <SvgContainer uri={arrowUri} size="sm" />
+    <FlatList
+      className="h-full w-1/5 bg-secondary"
+      keyExtractor={({studentNo}) => studentNo}
+      data={state.students}
+      renderItem={({item}) => (
+        <TouchableOpacity
+          className="m-1 self-center rounded-lg bg-primary p-2 shadow-sm"
+          onPress={() => handleStudentPress(item.studentNo)}>
+          {item.src ? (
+            <Image source={require('~/assets/error.svg')} src={item.src} />
+          ) : (
+            <Text className="text-paper">{item.name.split(',')[0]}</Text>
+          )}
         </TouchableOpacity>
-        <Text className="text-paper">List of student with concerns</Text>
-      </View>
-      <View className="flex-1">
-        <ScrollView>{renderStudent()}</ScrollView>
-      </View>
-    </Modal>
+      )}
+    />
   );
 };
 

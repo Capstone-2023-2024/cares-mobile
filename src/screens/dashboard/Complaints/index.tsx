@@ -1,10 +1,11 @@
 import React from 'react';
 import {View} from 'react-native';
 import ChatProvider, {useChat} from '~/contexts/ChatContext';
+import {useUser} from '~/contexts/UserContext';
 import ChatBox from './ChatBox';
 import ChatNav from './ChatNav';
+import ChatPrivilege from './ChatPrivilege';
 import InputContainer from './InputContainer';
-import {useUser} from '~/contexts/UserContext';
 
 const Chats = () => {
   return (
@@ -22,13 +23,18 @@ const ChatChildren = () => {
   return (
     <View className="relative flex-1">
       <ChatNav />
-      {(!(role === 'mayor' || role === 'adviser') ||
-        !(selectedChat === null)) && (
-        <>
-          <ChatBox />
-          <InputContainer />
-        </>
-      )}
+      <View className={`${selectedChat !== null ? '' : 'flex-row'} flex-1`}>
+        {(selectedChat !== 'adviser' || selectedChat !== null) && (
+          <ChatPrivilege />
+        )}
+        {(!(role === 'mayor' || role === 'adviser') ||
+          !(selectedChat === null || selectedChat === 'concerns')) && (
+          <>
+            <ChatBox />
+            <InputContainer />
+          </>
+        )}
+      </View>
     </View>
   );
 };

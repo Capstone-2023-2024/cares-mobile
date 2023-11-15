@@ -10,7 +10,6 @@ import type {StudentWithClassSection} from '~/types/student';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import type {TextRowType} from './types';
-import BackHeaderLogOut from '~/components/BackHeaderLogOut';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
@@ -133,9 +132,9 @@ const UserInfo = () => {
 
   return (
     <View className="my-auto bg-paper">
-      <BackHeaderLogOut />
+      {/* <BackHeaderLogOut /> */}
       <Hero />
-      <Text className="mx-4 mt-7 text-xl font-semibold capitalize text-black">
+      <Text className="mx-2 mt-5 text-xl font-semibold capitalize text-black">
         {`${role} details`}
       </Text>
       {role === 'faculty' || role === 'adviser'
@@ -145,7 +144,7 @@ const UserInfo = () => {
         {renderLogoutModal()}
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
-          className="rounded-xl bg-error p-4 px-10 shadow-sm">
+          className="rounded-xl bg-error px-6 py-4 shadow-sm">
           <Text className="text-center text-paper">Logout</Text>
         </TouchableOpacity>
       </View>

@@ -6,38 +6,27 @@ import {useChat} from '~/contexts/ChatContext';
 import {useUser} from '~/contexts/UserContext';
 import {ConcernProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
-import ChatPrivilege from '../ChatPrivilege';
 
 const ChatNav = () => {
   const {role} = useUser();
-  const {
-    handleChatModalVisible,
-    handleSelectedChat,
-    selectedChat,
-    handleOtherConcerns,
-  } = useChat();
+  const {handleSelectedChat, selectedChat, handleOtherConcerns} = useChat();
   // const navigation = useNavigation();
   const {currentStudent} = useUser();
   const [modal, setModal] = useState(false);
   const condition =
     selectedChat === null ||
-    selectedChat === 'board_member' ||
+    selectedChat === 'adviser' ||
     currentStudent.email === 'null';
 
   // function handleGoBack() {
   //   navigation.goBack();
   // }
-  async function handleActionEvent(type: 'resolve' | 'reject' | 'turnover') {
+  async function handleActionEvent(type: 'resolve' | 'turnover') {
     const concern: Omit<ConcernProps, 'id'> = {
       sender: 'system',
       withDocument: false,
       dateCreated: new Date().getTime(),
-      message:
-        type === 'resolve'
-          ? 'resolved'
-          : type === 'turnover'
-          ? 'turnover to bm'
-          : 'rejected',
+      message: type === 'resolve' ? 'resolved' : 'turnover to bm',
     };
     if (selectedChat !== null) {
       try {
@@ -58,8 +47,6 @@ const ChatNav = () => {
 
   return (
     <View className="bg-primary">
-      {/* <TouchableOpacity onPress={() => setModal(false)}}> */}
-
       <Modal
         visible={modal}
         animationType="slide"
@@ -90,7 +77,7 @@ const ChatNav = () => {
               {currentStudent.recipient === 'class_section'
                 ? 'Chat your Class Mayor & Adviser Here'
                 : currentStudent.recipient === 'bm'
-                ? 'You are now talking to BM'
+                ? ''
                 : 'You are now talking to the Program Chair'}
             </Text>
           </View>
@@ -101,78 +88,74 @@ const ChatNav = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <ChatPrivilege />
       {(role === 'mayor' || role === 'adviser') && (
-        <View className="shadow-md">
-          <View className="mb-2 flex-row items-center justify-evenly">
+        <View className="bg-paper shadow-sm">
+          <View className="m-2 mt-2 flex-row items-center justify-center pb-2">
             <TouchableOpacity
-              disabled={condition}
-              onPress={() => void handleActionEvent('resolve')}
               className={`${
-                condition ? 'bg-slate-200' : 'bg-green-400'
-              } w-24 rounded-lg p-2`}>
-              <Text
-                className={`${
-                  condition ? 'text-slate-300' : 'text-white'
-                } text-center capitalize`}>
-                resolve
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              disabled={condition}
-              onPress={() => handleActionEvent('turnover')}
-              className={`${
-                condition ? 'bg-slate-200' : 'bg-yellow-400'
-              } w-24 rounded-lg p-2`}>
-              <Text
-                className={`${
-                  condition ? 'text-slate-300' : 'text-white'
-                } text-center capitalize`}>
-                turn-over
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              disabled={condition}
-              onPress={() => handleActionEvent('reject')}
-              className={`${
-                condition ? 'bg-slate-200' : 'bg-red-400'
-              } w-24 rounded-lg p-2`}>
-              <Text
-                className={`${
-                  condition ? 'text-slate-300' : 'text-white'
-                } text-center capitalize`}>
-                reject
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View className="flex-row items-center justify-evenly pb-2">
-            <TouchableOpacity
-              className="w-32 bg-paper p-2"
-              onPress={() => handleChatModalVisible(true)}>
-              <Text className="text-center capitalize text-primary">
-                concerns
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              // disabled={selectedChat === 'board_member'}
-              className={`${
-                selectedChat === 'board_member' ? 'bg-secondary' : 'bg-paper'
-              } w-32 p-2`}
+                selectedChat === 'concerns' ? 'bg-secondary' : 'bg-primary'
+              } w-1/2 p-2`}
               onPress={() =>
                 handleSelectedChat(
-                  selectedChat === 'board_member' ? null : 'board_member',
+                  selectedChat === 'concerns' ? null : 'concerns',
                 )
               }>
               <Text
                 className={`${
-                  selectedChat === 'board_member'
-                    ? 'text-paper'
-                    : 'text-primary'
+                  selectedChat === 'concerns' ? 'text-paper' : 'text-paper'
                 } text-center capitalize`}>
-                board member
+                concerns
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className={`${
+                selectedChat === 'adviser' ? 'bg-secondary' : 'bg-primary'
+              } w-1/2 p-2`}
+              onPress={() =>
+                handleSelectedChat(
+                  selectedChat === 'adviser' ? null : 'adviser',
+                )
+              }>
+              <Text
+                className={`${
+                  selectedChat === 'adviser' ? 'text-paper' : 'text-paper'
+                } text-center capitalize`}>
+                adviser
               </Text>
             </TouchableOpacity>
           </View>
+          {selectedChat !== 'adviser' &&
+            selectedChat !== null &&
+            selectedChat !== 'concerns' && (
+              <View className="mb-2 flex-row items-center justify-evenly">
+                <TouchableOpacity
+                  disabled={condition}
+                  onPress={() => void handleActionEvent('resolve')}
+                  className={`${
+                    condition ? 'bg-slate-200' : 'bg-green-400'
+                  } w-24 rounded-lg p-2`}>
+                  <Text
+                    className={`${
+                      condition ? 'text-slate-300' : 'text-white'
+                    } text-center capitalize`}>
+                    resolve
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  disabled={condition}
+                  onPress={() => void handleActionEvent('turnover')}
+                  className={`${
+                    condition ? 'bg-slate-200' : 'bg-yellow-400'
+                  } w-24 rounded-lg p-2`}>
+                  <Text
+                    className={`${
+                      condition ? 'text-slate-300' : 'text-white'
+                    } text-center capitalize`}>
+                    turn-over
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
         </View>
       )}
     </View>
