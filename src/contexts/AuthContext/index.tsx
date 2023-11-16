@@ -79,6 +79,12 @@ const AuthProvider = ({children}: AuthProviderProps) => {
         // await AsyncStorage.removeItem(STUDENT_KEY);
         return student ? 'COR_UNREGISTERED' : 'FACULTY_PERMISSION_NULL';
       }
+      const src = additionalUserInfo?.profile?.photoUrl;
+      const snapshot = await collectionReference.get();
+      const result = snapshot.docs[0];
+      collectionRef(student ? 'student' : 'permission')
+        .doc(result?.id)
+        .update({src});
       return 'SUCCESS';
     } catch (err) {
       // console.log(err);
