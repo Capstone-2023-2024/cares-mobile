@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, TouchableOpacity, View, Image} from 'react-native';
+import {FlatList, TouchableOpacity, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 // import type {UniversityScheduleType} from 'mobile/../../~/types';
 import type {MarkedDates} from 'react-native-calendars/src/types';
 import {Text} from '~/components';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {retrieveImageFBStorage} from '~/utils/image';
 
 const CalendarOfActivities = () => {
   const {data} = useAnnouncement();
@@ -34,83 +33,81 @@ const CalendarOfActivities = () => {
 
   return (
     <View className="flex-1">
-      <Text className="mb-6 p-4 text-center text-4xl text-black">
+      <Text className="my-6 p-4 text-center text-4xl text-black">
         Calendar of Activities
       </Text>
       {markedDates && (
-        <Calendar
-          onDayPress={e => {
-            const filtered = data.filter(
-              props => props.markedDates.indexOf(e.dateString) > -1,
-            )[0];
-            {
-              filtered?.id !== undefined &&
-                handleNavigation('Announcements', filtered?.id);
+        <View className="mb-3 ml-6 mr-5 h-auto w-96 rounded-2xl bg-slate-300 ">
+          <Calendar
+            className="w-25 mx-5 my-5 rounded-xl border-2"
+            onDayPress={e => {
+              const filtered = data.filter(
+                props => props.markedDates.indexOf(e.dateString) > -1,
+              )[0];
+              {
+                filtered?.id !== undefined &&
+                  handleNavigation('Announcements', filtered?.id);
+              }
+            }}
+            markingType={
+              markedDates !== undefined &&
+              markedDates.length !== undefined &&
+              Object.keys(markedDates).length <= 1
+                ? 'dot'
+                : 'period'
             }
-          }}
-          markingType={
-            markedDates !== undefined &&
-            markedDates.length !== undefined &&
-            Object.keys(markedDates).length <= 1
-              ? 'dot'
-              : 'period'
-          }
-          markedDates={{...markedDates}}
-        />
+            markedDates={{...markedDates}}
+          />
+        </View>
       )}
-      <FlatList
-        className="p-2"
-        horizontal
-        data={data}
-        keyExtractor={({id}) => id}
-        renderItem={({item}) => {
-          const {photoUrl, id, markedDates, endDate, type} = item;
-          const dates = markedDates.map(date => date.split('-')[2]);
-          const expiration = new Date();
-          expiration.setTime(endDate);
-          const date = expiration.toLocaleString().split(',')[0];
-          const dateMonth = date?.substring(0, date?.lastIndexOf('/'));
-          return type === 'event' &&
-            expiration.getTime() > new Date().getTime() ? (
-            <TouchableOpacity
-              className="h-auto w-96"
-              onPress={() => handleNavigation('Announcements', id)}>
-              <View className="relative w-full flex-1">
-                <Image
-                  source={require('~/assets/error.svg')}
-                  src={retrieveImageFBStorage(photoUrl ?? [])}
-                  className="h-16 w-full bg-secondary"
-                />
-                <View>
-                  <Text className="font-black text-black">
-                    {dates.toString()}
-                  </Text>
-                  <Text className="font-black text-black">
-                    {`End date: ${dateMonth}`}
+      <View className="ml-6 mr-5 h-52 w-96 bg-ActivitiesBG ">
+        <FlatList
+          className="p-2"
+          data={data}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={({id}) => id}
+          renderItem={({item}) => {
+            const {id, markedDates, endDate, type} = item;
+            const dates = markedDates.map(date => date.split('-')[2]);
+            const expiration = new Date();
+            expiration.setTime(endDate);
+            const date = expiration.toLocaleString().split(',')[0];
+            const dateMonth = date?.substring(0, date?.lastIndexOf('/'));
+            return type === 'event' &&
+              expiration.getTime() > new Date().getTime() ? (
+              <TouchableOpacity
+                className="h-auto w-20"
+                onPress={() => handleNavigation('Announcements', id)}>
+                <View className="relative mb-3 w-full flex-row ">
+                  <View className="h-20 w-20 content-center items-center justify-center border-2">
+                    <Text className="px-4 py-4 text-2xl font-black text-black">
+                      {dates.toString()}
+                    </Text>
+                  </View>
+                  <Text className="flex-column ml-8 justify-center font-black text-black">
+                    [{`End date: ${dateMonth}`}]
                   </Text>
                 </View>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              className="h-auto w-96"
-              onPress={() => handleNavigation('Announcements', id)}>
-              <View className="relative w-full flex-1">
-                <Image
-                  source={require('~/assets/error.svg')}
-                  src={retrieveImageFBStorage(photoUrl ?? [])}
-                  className="h-16 w-full bg-secondary"
-                />
-                <View>
-                  <Text className="font-black text-black">
-                    {dates.toString()}
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                className="h-auto w-20"
+                onPress={() => handleNavigation('Announcements', id)}>
+                <View className="relative mb-3 w-full flex-row">
+                  <View className="h-20 w-20 content-center items-center justify-center border-2">
+                    <Text className="px-4 py-4 text-xl font-black text-black">
+                      {dates.toString()}
+                    </Text>
+                  </View>
+                  <Text className="flex-column ml-8 justify-center font-black text-black">
+                    [{dates.toString()}]
                   </Text>
                 </View>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
     </View>
   );
 };

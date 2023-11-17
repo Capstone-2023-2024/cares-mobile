@@ -12,7 +12,7 @@ function BackHeader() {
   };
 
   return (
-    <View className="-mt-9 h-16 flex-row items-center bg-blue-500">
+    <View className="-mt-5 h-16 flex-row items-center bg-blue-500">
       <TouchableOpacity className="ml-5 mt-1 rotate-180" onPress={handleGoBack}>
         <SvgContainer uri={arrowUri} size="sm" />
       </TouchableOpacity>

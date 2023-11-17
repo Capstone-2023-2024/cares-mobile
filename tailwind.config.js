@@ -10,6 +10,7 @@ module.exports = {
         accent: '#402FFF',
         error: '#F44646',
         tertiary: '#763435',
+        ActivitiesBG: '#E7DAC8',
       },
     },
   },

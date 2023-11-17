@@ -10,6 +10,7 @@ import type {StudentWithClassSection} from '~/types/student';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import type {TextRowType} from './types';
+import BackHeaderLogout from '~/components/BackHeaderLogOut';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
@@ -132,7 +133,7 @@ const UserInfo = () => {
 
   return (
     <View className="my-auto bg-paper">
-      {/* <BackHeaderLogOut /> */}
+      <BackHeaderLogout />
       <Hero />
       <Text className="mx-2 mt-5 text-xl font-semibold capitalize text-black">
         {`${role} details`}
