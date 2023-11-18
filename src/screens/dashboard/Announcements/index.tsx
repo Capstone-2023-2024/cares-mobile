@@ -82,12 +82,12 @@ const Announcements = () => {
         </View>
       </Modal>
       {!paramsExist && (
-        <View>
-          <Text className="p-4 text-center text-4xl text-black">
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Text className="mx-6 mt-5 h-12 w-10/12 rounded-3xl bg-primary pt-1 text-center text-4xl text-paper">
             Announcements
           </Text>
-          <View className="w-screen items-center justify-center">
-            {/* <Textfield placeholder="Search by tags" onChangeText={handleTag} /> */}
+          <View style={{width: '100%', alignItems: 'center', marginTop: 10}}>
+            {/* Adjust the styles or properties for the SelectDropdown component as needed */}
             <SelectDropdown
               disabled={currentStudent.email === 'null'}
               defaultValue={type}
@@ -114,7 +114,7 @@ const Announcements = () => {
         }))}
         renderSectionHeader={({section}) => {
           const {
-            title: {department, photoUrl, type},
+            title: {department, photoUrl},
           } = section;
 
           const photoArrayOneSRC =
@@ -123,16 +123,17 @@ const Announcements = () => {
               : '';
 
           return (
-            <View className="border-t border-primary p-4">
-              <View className="scale-125 flex-row items-center justify-center">
+            <View className="relative mx-5 mb-3 mt-3 rounded-t-2xl bg-gray-300">
+              <View className="ml-5 flex-row">
                 <Image
                   source={require('~/assets/cics_icon.png')}
-                  className="mr-2 h-8 w-8"
+                  className="my-4 mr-2 h-14 w-14"
                   resizeMode="center"
                 />
-                <Text className="mb-2 text-xl font-black text-primary">{`${department.toUpperCase()} Department`}</Text>
-                <Text className="scale-75 self-center rounded-lg bg-primary p-2 text-xs uppercase text-paper">
-                  {type === 'university_memorandum' ? 'memo' : type}
+                <Text className="mt-5 text-xl font-black text-black">
+                  {`${department.toUpperCase()} Department`}
+                  {'\n'}
+                  <Text className="text-base font-light">Sino Nagpost</Text>
                 </Text>
               </View>
               {photoUrl === undefined ? (
@@ -141,8 +142,8 @@ const Announcements = () => {
                 <TouchableOpacity
                   onPress={() => handlePressImage(true, photoArrayOneSRC)}>
                   <Image
-                    className="mx-auto mt-2 h-64 w-5/6 rounded-2xl bg-primary"
-                    resizeMethod="auto"
+                    className="mx-4 mb-5 mt-1 h-64 w-11/12 rounded-2xl bg-gray-300"
+                    resizeMode="cover"
                     source={require('~/assets/error.svg')}
                     src={photoArrayOneSRC}
                   />
@@ -173,24 +174,22 @@ const Container = (props: AnnouncementProps) => {
   }
 
   return (
-    <View className="m-2 p-2 shadow-sm ">
-      <View className="mx-auto w-11/12 p-2 shadow-sm">
-        <View className="rounded-lg bg-primary/80 p-4">
-          <Text className="text-center font-bold text-paper">Caption</Text>
+    <View className=" shadow-sm ">
+      <View className=" shadow-sm">
+        <View className="w-98 mx-5 -mt-8 mb-3 rounded-b-2xl bg-gray-300 p-4">
           {message.length > messageLimit ? (
             <View>
               <View>
-                <Text className="text-paper">
+                <Text className="mb-3">
                   {`${message.substring(
                     0,
                     state ? message.length : messageLimit,
                   )}`}
                 </Text>
-
                 <TouchableOpacity
                   onPress={handlePress}
-                  className="rounded-lg border border-paper p-2">
-                  <Text className="text-center text-paper">
+                  className="mx-28 mt-2 rounded-lg border border-black">
+                  <Text className="text-center">
                     {message.length > messageLimit && !state
                       ? 'Read More'
                       : 'Hide'}
@@ -199,32 +198,32 @@ const Container = (props: AnnouncementProps) => {
               </View>
             </View>
           ) : (
-            <Text className="text-paper">{message}</Text>
+            <Text className=" -mt-1">{message}</Text> // Whole Message
+          )}
+          <View className="mt-5 flex-row items-center justify-center">
+            <Text>Tags:</Text>
+            {tags?.map(value => {
+              const date = new Date();
+              date.setTime(endDate);
+              return (
+                <Text
+                  key={value}
+                  className="m-1 w-max rounded-lg bg-gray-500 px-2 py-1 text-sm text-paper">
+                  {value}
+                </Text>
+              );
+            })}
+          </View>
+          <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text>
+          {type !== 'event' ? (
+            <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
+          ) : (
+            <View>
+              <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
+              <Text className="text-center font-semibold text-black">{`Until: ${endingDay.toLocaleString()}`}</Text>
+            </View>
           )}
         </View>
-        <View className="flex-row items-center justify-center">
-          <Text>Tags:</Text>
-          {tags?.map(value => {
-            const date = new Date();
-            date.setTime(endDate);
-            return (
-              <Text
-                key={value}
-                className="m-1 w-max rounded-lg bg-secondary px-2 py-1 text-sm text-paper">
-                {value}
-              </Text>
-            );
-          })}
-        </View>
-        <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text>
-        {type !== 'event' ? (
-          <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
-        ) : (
-          <View>
-            <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
-            <Text className="text-center font-semibold text-black">{`Until: ${endingDay.toLocaleString()}`}</Text>
-          </View>
-        )}
       </View>
     </View>
   );
@@ -234,7 +233,7 @@ const RenderImageInModal = ({src}: {src: string}) => {
   return (
     <Image
       className="h-full w-full"
-      resizeMethod="auto"
+      resizeMode="contain"
       source={require('~/assets/error.svg')}
       src={src}
     />

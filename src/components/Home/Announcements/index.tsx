@@ -53,7 +53,7 @@ const Container = (props: AnnouncementProps) => {
             ) : (
               <Image
                 source={require('~/assets/cics_icon.png')}
-                className="h-8 w-8 "
+                className="h-12 w-12 "
                 resizeMode="center"
               />
             )}
@@ -65,9 +65,9 @@ const Container = (props: AnnouncementProps) => {
                 {currentStudent.email === 'null' ? '......' : 'DEPARTMENT'}
               </Text>
             </View>
-            <View className="rounded-lg bg-primary px-2 py-1 ">
+            <View className="ml-6 rounded-lg bg-primary px-2 py-1 ">
               {currentStudent.email === 'null' ? (
-                <View className="h-12 w-12 bg-secondary" />
+                <View className="h-12 w-12  bg-secondary" />
               ) : (
                 <Text className="text-xs capitalize text-paper">
                   {type === 'university_memorandum' ? 'memo' : type}
@@ -75,7 +75,7 @@ const Container = (props: AnnouncementProps) => {
               )}
             </View>
           </View>
-          <Text className="w-48 text-xs">
+          <Text className=" mx-16 my-3 text-xs text-black ">
             {currentStudent.email === 'null'
               ? '........'
               : message.substring(0, 23)}
@@ -89,12 +89,12 @@ const Container = (props: AnnouncementProps) => {
           </TouchableOpacity>
         </View>
         {photoUrl !== undefined ? (
-          <View className="h-28 w-24 overflow-hidden rounded-full bg-primary/40">
+          <View className="ml-5 h-28 w-24 overflow-hidden bg-primary/40">
             {currentStudent.email === 'null' ? (
               <View className="h-12 w-12 bg-primary" />
             ) : (
               <Image
-                className="h-full w-full "
+                className="h-28 w-24 "
                 source={require('~/assets/error.svg')}
                 src={retrieveImageFBStorage(photoUrl)}
                 resizeMode="cover"
@@ -105,7 +105,7 @@ const Container = (props: AnnouncementProps) => {
           <View />
         )}
       </View>
-      <Text className="text-xs">
+      <Text className="mt-5 text-xs">
         {currentStudent.email === 'null' ? '...' : `Posted by: ${postedBy}`}
       </Text>
     </View>

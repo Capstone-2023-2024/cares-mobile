@@ -32,12 +32,12 @@ const CalendarOfActivities = () => {
   }, [data]);
 
   return (
-    <View className="flex-1">
-      <Text className="my-6 p-4 text-center text-4xl text-black">
+    <View>
+      <Text className="mx-6 my-8 rounded-3xl bg-primary py-4 text-center text-4xl text-paper">
         Calendar of Activities
       </Text>
       {markedDates && (
-        <View className="mb-3 ml-6 mr-5 h-auto w-96 rounded-2xl bg-slate-300 ">
+        <View className="mx-4 mb-3 rounded-2xl bg-slate-300 ">
           <Calendar
             className="w-25 mx-5 my-5 rounded-xl border-2"
             onDayPress={e => {
@@ -60,7 +60,7 @@ const CalendarOfActivities = () => {
           />
         </View>
       )}
-      <View className="ml-6 mr-5 h-52 w-96 bg-ActivitiesBG ">
+      <View className="mx-4 ml-6 h-52 bg-ActivitiesBG ">
         <View className="border-b border-primary">
           <Text className="mb-4 ml-4 mt-4 font-bold"> Month</Text>
         </View>
