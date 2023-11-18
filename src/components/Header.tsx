@@ -51,12 +51,12 @@ function Header({}: {withBack?: boolean}) {
           className="flex-1"
           activeOpacity={1}
           onPressOut={() => setModal(false)}>
-          <View className="h-screen bg-primary p-6 shadow-sm">
-            <Text className="mt-10 text-center text-lg font-bold text-paper">
+          <View className="h-screen bg-primary p-5 shadow-sm">
+            <Text className="mt-5 text-center text-lg font-bold text-paper">
               CARES (Cultivating Assistance, Resolution, and Empowerment for
               Students)
             </Text>
-            <Text className="mt-12 text-justify text-paper">
+            <Text className="mt-2 text-justify text-paper">
               {'\t'}
               {'\t'}Welcome to CARES, the app designed to make your journey
               through the CICS smoother, more informed, and more engaging!!!

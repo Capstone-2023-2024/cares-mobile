@@ -62,11 +62,9 @@ const ProjectSuggestions = () => {
           </View>
           <View className="border-black-500 mb-5 w-full self-center bg-primary">
             <View className="m-5 flex-row items-center self-center">
-              {/* <Image className="h-12 w-12" source={suggest} /> */}
               <Text className="flex-1 text-center text-lg font-bold text-white">
                 Project / Event Suggestions for CICS
               </Text>
-              {/* <Image className="h-12 w-12" source={suggest} /> */}
             </View>
           </View>
           {renderPolls()}
@@ -200,22 +198,8 @@ const Poll = ({
     <View className="flex-col items-center justify-center rounded-lg p-6 shadow-lg">
       {state === 'unpublished' ? (
         <View>
-          {/* <View className="w-32 flex-row">
-            <ScrollView>
-              {options?.map((v, i) => {
-                return (
-                  i < 4 && (
-                    <View>
-                      <Text>{v.name}</Text>
-                      <Text>{v.value}</Text>
-                    </View>
-                  )
-                );
-              })}
-            </ScrollView>
-          </View> */}
-          <View className="mb-3 flex-row">
-            <Text className="w-2/3 self-center p-2 font-semibold">
+          <View className="mb-3">
+            <Text className="self-center p-2 text-xl font-semibold">
               {question}
             </Text>
             <TickingClock
@@ -245,9 +229,9 @@ const Poll = ({
         </View>
       ) : (
         <View className="w-80">
-          <View className="mb-3 flex-row items-center justify-between">
+          <View className="mb-3">
             <Text className="text-xl font-semibold">{question}</Text>
-            <Text className="text-xs font-semibold">{`Posted by: ${postedBy}`}</Text>
+            <Text className="self-center text-xs font-semibold">{`Posted by: ${postedBy}`}</Text>
           </View>
           <View>{renderOptions()}</View>
         </View>
