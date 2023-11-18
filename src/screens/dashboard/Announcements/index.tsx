@@ -86,7 +86,7 @@ const Announcements = () => {
           <Text className="mx-6 mt-5 h-12 w-10/12 rounded-3xl bg-primary pt-1 text-center text-4xl text-paper">
             Announcements
           </Text>
-          <View style={{width: '100%', alignItems: 'center', marginTop: 10}}>
+          <View className="w-screen items-center justify-center">
             {/* Adjust the styles or properties for the SelectDropdown component as needed */}
             <SelectDropdown
               disabled={currentStudent.email === 'null'}
@@ -114,7 +114,7 @@ const Announcements = () => {
         }))}
         renderSectionHeader={({section}) => {
           const {
-            title: {department, photoUrl},
+            title: {department, photoUrl}, // type
           } = section;
 
           const photoArrayOneSRC =
@@ -124,7 +124,7 @@ const Announcements = () => {
 
           return (
             <View className="relative mx-5 mb-3 mt-3 rounded-t-2xl bg-gray-300">
-              <View className="ml-5 flex-row">
+              <View className="scale-125 flex-row items-center justify-center">
                 <Image
                   source={require('~/assets/cics_icon.png')}
                   className="my-4 mr-2 h-14 w-14"
