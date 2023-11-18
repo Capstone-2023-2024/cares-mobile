@@ -61,8 +61,11 @@ const CalendarOfActivities = () => {
         </View>
       )}
       <View className="ml-6 mr-5 h-52 w-96 bg-ActivitiesBG ">
+        <View className="border-b border-primary">
+          <Text className="mb-4 ml-4 mt-4 font-bold"> Month</Text>
+        </View>
         <FlatList
-          className="p-2"
+          className="mt-4 p-2"
           data={data}
           showsVerticalScrollIndicator={false}
           keyExtractor={({id}) => id}
@@ -76,30 +79,28 @@ const CalendarOfActivities = () => {
             return type === 'event' &&
               expiration.getTime() > new Date().getTime() ? (
               <TouchableOpacity
-                className="h-auto w-20"
+                className="h-auto"
                 onPress={() => handleNavigation('Announcements', id)}>
-                <View className="relative mb-3 w-full flex-row ">
-                  <View className="h-20 w-20 content-center items-center justify-center border-2">
+                <View className="relative mb-3 w-full flex-row">
+                  <View className="h-20 w-24 content-center items-center justify-center border-2">
                     <Text className="px-4 py-4 text-2xl font-black text-black">
                       {dates.toString()}
                     </Text>
                   </View>
-                  <Text className="flex-column ml-8 justify-center font-black text-black">
-                    [{`End date: ${dateMonth}`}]
-                  </Text>
+                  <Text className="ml-3 py-5 text-lg font-black text-black">{`[End date: ${dateMonth}]`}</Text>
                 </View>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                className="h-auto w-20"
+                className="h-auto"
                 onPress={() => handleNavigation('Announcements', id)}>
-                <View className="relative mb-3 w-full flex-row">
-                  <View className="h-20 w-20 content-center items-center justify-center border-2">
+                <View className=" mb-3 w-full flex-row">
+                  <View className="mb-3 h-20 w-24 content-center items-center justify-center border-2">
                     <Text className="px-4 py-4 text-xl font-black text-black">
                       {dates.toString()}
                     </Text>
                   </View>
-                  <Text className="flex-column ml-8 justify-center font-black text-black">
+                  <Text className="ml-3 py-5 text-lg font-black text-black">
                     [{dates.toString()}]
                   </Text>
                 </View>
