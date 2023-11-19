@@ -83,9 +83,11 @@ const Announcements = () => {
       </Modal>
       {!paramsExist && (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Text className="mx-6 mt-5 h-12 w-10/12 rounded-3xl bg-primary pt-1 text-center text-4xl text-paper">
-            Announcements
-          </Text>
+          <Image
+            source={require('~/assets/announcement.png')}
+            className="mb-4 mt-8 h-8 w-72"
+            resizeMode="stretch"
+          />
           <View className="w-screen items-center justify-center">
             {/* Adjust the styles or properties for the SelectDropdown component as needed */}
             <SelectDropdown
@@ -96,7 +98,8 @@ const Announcements = () => {
                 width: 'auto',
                 textTransform: 'capitalize',
                 borderRadius: 10,
-                padding: 5,
+                paddingTop: 3,
+                paddingBottom: 3,
                 color: '#f5f5f5',
                 backgroundColor: '#767373',
               }}
@@ -124,7 +127,7 @@ const Announcements = () => {
 
           return (
             <View className="relative mx-5 mb-3 mt-3 rounded-t-2xl bg-gray-300">
-              <View className="scale-125 flex-row items-center justify-center">
+              <View className="ml-5 flex-row">
                 <Image
                   source={require('~/assets/cics_icon.png')}
                   className="my-4 mr-2 h-14 w-14"

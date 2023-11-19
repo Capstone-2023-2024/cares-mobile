@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {
+  Image,
   ScrollView,
   TextInput,
   ToastAndroid,
@@ -8,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import {Text} from '~/components';
-import BackHeader from '~/components/BackHeader';
 import Background from '~/components/Background';
 import TickingClock from '~/components/TickingClock';
 import {useAuth} from '~/contexts/AuthContext';
@@ -26,9 +26,7 @@ const ProjectSuggestions = () => {
 
   function renderPolls() {
     return state.map(props => (
-      <View
-        key={props.id}
-        className="w-full items-center rounded-lg bg-white/50 p-2">
+      <View key={props.id} className="w-full items-center ">
         <Poll {...props} />
       </View>
     ));
@@ -54,13 +52,10 @@ const ProjectSuggestions = () => {
   }, []);
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 ">
       <Background>
         <ScrollView>
-          <View className="absolute left-0 top-0 z-10">
-            <BackHeader />
-          </View>
-          <View className="border-black-500 mb-5 w-full self-center bg-primary">
+          <View className=" mb-5 w-full self-center bg-primary">
             <View className="m-5 flex-row items-center self-center">
               <Text className="flex-1 text-center text-lg font-bold text-white">
                 Project / Event Suggestions for CICS
@@ -181,8 +176,8 @@ const Poll = ({
         <TouchableOpacity
           key={index}
           className={`${
-            CONDITION ? 'scale-105 bg-green-100/70' : 'bg-white'
-          } mb-2 w-fit flex-row justify-between rounded-lg p-2 shadow-sm duration-300 ease-in-out`}
+            CONDITION ? ' bg-green-100/70' : 'border bg-white '
+          } mx-2 mb-3 w-fit flex-row justify-between rounded-full p-2 shadow-sm duration-300 ease-in-out`}
           onPress={() => handleOptionPress(name)}>
           <PollStyledText value={name} condition={CONDITION} />
           <PollStyledText
@@ -195,7 +190,7 @@ const Poll = ({
   }
 
   return (
-    <View className="flex-col items-center justify-center rounded-lg p-6 shadow-lg">
+    <View className="w-full flex-col items-center justify-center ">
       {state === 'unpublished' ? (
         <View>
           <View className="mb-3">
@@ -228,12 +223,36 @@ const Poll = ({
           </TouchableOpacity>
         </View>
       ) : (
-        <View className="w-80">
-          <View className="mb-3">
-            <Text className="text-xl font-semibold">{question}</Text>
-            <Text className="self-center text-xs font-semibold">{`Posted by: ${postedBy}`}</Text>
+        <View className="w-11/12 rounded-2xl border bg-gray-200">
+          <View className="mx-3 mb-3">
+            <View className="ml-4 flex-row">
+              <Image
+                source={require('~/assets/cics_icon.png')}
+                className="my-4 mr-2 h-14 w-14"
+                resizeMode="center"
+              />
+              <Text className="mt-5 text-xl font-black text-black">
+                CICS Department
+                {'\n'}
+                <Text className="text-base font-light">{`Posted by: ${postedBy}`}</Text>
+              </Text>
+            </View>
+            <Text className="mx-2 mb-2 text-center text-base font-normal">
+              {question}
+            </Text>
           </View>
-          <View>{renderOptions()}</View>
+          <View className="mx-4 mb-2  ">{renderOptions()}</View>
+          <View className="mx-4 mb-3 rounded-2xl bg-gray-600">
+            <Text className="my-4 ml-4 text-xl text-white">Comments</Text>
+            <View className="mx-4 mb-4 rounded-3xl bg-slate-400">
+              <Text className="ml-4 p-2 text-base text-black">
+                SinoNagComment: Hatdog
+              </Text>
+            </View>
+          </View>
+          <View className="mx-32  mb-3 rounded-full border">
+            <Text className="text-center">See More</Text>
+          </View>
         </View>
       )}
     </View>

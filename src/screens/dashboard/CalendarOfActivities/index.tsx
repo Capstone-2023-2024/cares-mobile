@@ -33,7 +33,7 @@ const CalendarOfActivities = () => {
 
   return (
     <View>
-      <Text className="mx-6 my-8 rounded-3xl bg-primary py-4 text-center text-4xl text-paper">
+      <Text className="mx-6 my-8 py-4 text-center text-4xl ">
         Calendar of Activities
       </Text>
       {markedDates && (
