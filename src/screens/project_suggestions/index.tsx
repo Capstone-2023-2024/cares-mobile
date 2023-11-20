@@ -52,15 +52,15 @@ const ProjectSuggestions = () => {
   }, []);
 
   return (
-    <View className="flex-1 ">
+    <View className="flex-1">
       <Background>
         <ScrollView>
-          <View className=" mb-5 w-full self-center bg-primary">
-            <View className="m-5 flex-row items-center self-center">
-              <Text className="flex-1 text-center text-lg font-bold text-white">
-                Project / Event Suggestions for CICS
-              </Text>
-            </View>
+          <View className="mx-8 my-8 flex items-center justify-center rounded-3xl bg-primary py-2">
+            <Image
+              source={require('~/assets/project-suggestion.png')}
+              className="h-12 w-80 "
+              resizeMode="contain"
+            />
           </View>
           {renderPolls()}
         </ScrollView>

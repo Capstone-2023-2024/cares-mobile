@@ -9,6 +9,7 @@ import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useUser} from '~/contexts/UserContext';
 import {AnnouncementProps} from '~/types/announcement';
 import {retrieveImageFBStorage} from '~/utils/image';
+import Background from '~/components/Background';
 
 const Announcements = () => {
   const {data, type, handleTypeChange} = useAnnouncement();
@@ -73,92 +74,94 @@ const Announcements = () => {
 
   return (
     <View className="flex-1">
-      <Modal
-        animationType="fade"
-        visible={modalImage}
-        onRequestClose={() => handlePressImage(false)}>
-        <View className="h-screen items-center justify-center">
-          <RenderImageInModal src={photoSelected} />
-        </View>
-      </Modal>
-      {!paramsExist && (
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Image
-            source={require('~/assets/announcement.png')}
-            className="mb-4 mt-8 h-8 w-72"
-            resizeMode="stretch"
-          />
-          <View className="w-screen items-center justify-center">
-            {/* Adjust the styles or properties for the SelectDropdown component as needed */}
-            <SelectDropdown
-              disabled={currentStudent.email === 'null'}
-              defaultValue={type}
-              defaultButtonText="Choose type"
-              buttonTextStyle={{
-                width: 'auto',
-                textTransform: 'capitalize',
-                borderRadius: 10,
-                paddingTop: 3,
-                paddingBottom: 3,
-                color: '#f5f5f5',
-                backgroundColor: '#767373',
-              }}
-              data={['Event', 'University Memo', 'Recognition', 'Others']}
-              onSelect={handleType}
-            />
+      <Background>
+        <Modal
+          animationType="fade"
+          visible={modalImage}
+          onRequestClose={() => handlePressImage(false)}>
+          <View className="h-screen items-center justify-center">
+            <RenderImageInModal src={photoSelected} />
           </View>
-        </View>
-      )}
-      <SectionList
-        keyExtractor={({id}) => id}
-        sections={announcementData.map(({photoUrl, ...rest}) => ({
-          title: {photoUrl, department: rest.department, type: rest.type},
-          data: [{...rest}],
-        }))}
-        renderSectionHeader={({section}) => {
-          const {
-            title: {department, photoUrl}, // type
-          } = section;
-
-          const photoArrayOneSRC =
-            photoUrl !== undefined
-              ? retrieveImageFBStorage(photoUrl ?? '')
-              : '';
-
-          return (
-            <View className="relative mx-5 mb-3 mt-3 rounded-t-2xl bg-gray-300">
-              <View className="ml-5 flex-row">
-                <Image
-                  source={require('~/assets/cics_icon.png')}
-                  className="my-4 mr-2 h-14 w-14"
-                  resizeMode="center"
-                />
-                <Text className="mt-5 text-xl font-black text-black">
-                  {`${department.toUpperCase()} Department`}
-                  {'\n'}
-                  <Text className="text-base font-light">Sino Nagpost</Text>
-                </Text>
-              </View>
-              {photoUrl === undefined ? (
-                <View className="" />
-              ) : (
-                <TouchableOpacity
-                  onPress={() => handlePressImage(true, photoArrayOneSRC)}>
-                  <Image
-                    className="mx-4 mb-5 mt-1 h-64 w-11/12 rounded-2xl bg-gray-300"
-                    resizeMode="cover"
-                    source={require('~/assets/error.svg')}
-                    src={photoArrayOneSRC}
-                  />
-                </TouchableOpacity>
-              )}
+        </Modal>
+        {!paramsExist && (
+          <>
+            <View className="mx-10 mb-4 mt-6 flex items-center justify-center rounded-3xl bg-primary">
+              <Image
+                source={require('~/assets/announcements.png')}
+                className="my-4  h-8 w-80"
+                resizeMode="stretch"
+              />
             </View>
-          );
-        }}
-        renderItem={({item, index}) => {
-          return <Container key={index} {...item} />;
-        }}
-      />
+            <View className="w-screen items-center justify-center">
+              {/* Adjust the styles or properties for the SelectDropdown component as needed */}
+              <SelectDropdown
+                disabled={currentStudent.email === 'null'}
+                defaultValue={type}
+                defaultButtonText="Choose type"
+                buttonTextStyle={{
+                  textTransform: 'capitalize',
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                  color: '#f5f5f5',
+                  backgroundColor: '#767373',
+                }}
+                data={['Event', 'University Memo', 'Recognition', 'Others']}
+                onSelect={handleType}
+              />
+            </View>
+          </>
+        )}
+        <SectionList
+          keyExtractor={({id}) => id}
+          sections={announcementData.map(({photoUrl, ...rest}) => ({
+            title: {photoUrl, department: rest.department, type: rest.type},
+            data: [{...rest}],
+          }))}
+          renderSectionHeader={({section}) => {
+            const {
+              title: {department, photoUrl}, // type
+            } = section;
+
+            const photoArrayOneSRC =
+              photoUrl !== undefined
+                ? retrieveImageFBStorage(photoUrl ?? '')
+                : '';
+
+            return (
+              <View className="relative mx-5 mb-3 mt-3 rounded-t-2xl bg-gray-300">
+                <View className="ml-5 flex-row">
+                  <Image
+                    source={require('~/assets/cares_icon_4th_variant.png')}
+                    className="my-4 mr-2 h-16 w-16"
+                    resizeMode="center"
+                  />
+                  <Text className="mt-5 text-xl font-black text-black">
+                    {`${department.toUpperCase()} Department`}
+                    {'\n'}
+                    <Text className="text-base font-light">Sino Nagpost</Text>
+                  </Text>
+                </View>
+                {photoUrl === undefined ? (
+                  <View className="" />
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => handlePressImage(true, photoArrayOneSRC)}>
+                    <Image
+                      className="mx-4 mb-5 mt-1 h-64 w-11/12 rounded-2xl bg-gray-300"
+                      resizeMode="cover"
+                      source={require('~/assets/error.svg')}
+                      src={photoArrayOneSRC}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            );
+          }}
+          renderItem={({item, index}) => {
+            return <Container key={index} {...item} />;
+          }}
+        />
+      </Background>
     </View>
   );
 };
@@ -179,7 +182,7 @@ const Container = (props: AnnouncementProps) => {
   return (
     <View className=" shadow-sm ">
       <View className=" shadow-sm">
-        <View className="w-98 mx-5 -mt-8 mb-3 rounded-b-2xl bg-gray-300 p-4">
+        <View className="w-98 mx-5 -mt-7 mb-3 rounded-b-2xl bg-gray-300 p-4">
           {message.length > messageLimit ? (
             <View>
               <View>

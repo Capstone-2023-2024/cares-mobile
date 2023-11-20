@@ -44,7 +44,7 @@ const Container = (props: AnnouncementProps) => {
     handleNavigation('Announcements', announcementId);
   }
   return (
-    <View className="ml-2 mr-2 items-center justify-center overflow-hidden rounded-3xl bg-paper p-4 px-6 shadow-md">
+    <View className="ml-2 mr-2 items-center justify-center overflow-hidden rounded-3xl border-2 bg-paper p-4 shadow-md">
       <View className="flex-row">
         <View className="items-start">
           <View className="flex-row items-center justify-center">
@@ -52,8 +52,8 @@ const Container = (props: AnnouncementProps) => {
               <View className="h-8 w-8 bg-primary" />
             ) : (
               <Image
-                source={require('~/assets/cics_icon.png')}
-                className="h-12 w-12 "
+                source={require('~/assets/cares_icon_5th_variant.png')}
+                className="h-14 w-14 "
                 resizeMode="center"
               />
             )}
@@ -83,7 +83,7 @@ const Container = (props: AnnouncementProps) => {
           <TouchableOpacity
             className="self-center"
             onPress={() => handlePressReadMore(id)}>
-            <Text className="justify-center rounded-full border border-black p-1 text-xs">
+            <Text className="justify-center rounded-full border border-black p-1 px-2 text-xs">
               {currentStudent.email === 'null' ? '.....' : 'Read More'}
             </Text>
           </TouchableOpacity>
@@ -105,7 +105,7 @@ const Container = (props: AnnouncementProps) => {
           <View />
         )}
       </View>
-      <Text className="mt-5 text-xs">
+      <Text className="-mb-2 mt-5 text-xs">
         {currentStudent.email === 'null' ? '...' : `Posted by: ${postedBy}`}
       </Text>
     </View>

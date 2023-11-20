@@ -1,14 +1,10 @@
 # Changelog:
 
-2023/11/05
+2023/11/20
 
-- Content Context is split into Announcement Context and User Context
-- User Provider will now handle the student info instead of individual screens and components processing the student info separately eg. Home, User Info, Hero
-
-2023/10/30
-
-- Renders two options for mayors which are the Student Concerns & Personal Concern of the mayor. Complaints/concerns sent by mayors will be redirected to BM
-- Choosing another google account is now available
+- CICS Seal replaced by alternate CICS Icon in Announcements
+- Replace ImageBackground with a latest picture of Bulacan State University - Bustos Campus (Opacity changed to 0.3)
+- Replace page title with Image
 
 # Developer Note:
 

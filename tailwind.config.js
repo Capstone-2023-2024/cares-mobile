@@ -13,6 +13,9 @@ module.exports = {
         ActivitiesBG: '#E7DAC8',
       },
     },
+    fontFamily: {
+      sparky: ['Sparky Stones', 'sans-serif'], // 'Sparky Stones' should match the font name
+    },
   },
   plugins: [],
 };
