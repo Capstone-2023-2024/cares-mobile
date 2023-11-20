@@ -92,18 +92,21 @@ const Announcements = () => {
                 resizeMode="stretch"
               />
             </View>
-            <View className="w-screen items-center justify-center">
-              {/* Adjust the styles or properties for the SelectDropdown component as needed */}
+            <View className="mb-4 items-center justify-center">
               <SelectDropdown
                 disabled={currentStudent.email === 'null'}
                 defaultValue={type}
                 defaultButtonText="Choose type"
+                buttonStyle={{
+                  backgroundColor: '#767373',
+                  borderRadius: 50,
+                  marginHorizontal: 50,
+                }}
                 buttonTextStyle={{
                   textTransform: 'capitalize',
                   paddingTop: 3,
                   paddingBottom: 3,
                   color: '#f5f5f5',
-                  backgroundColor: '#767373',
                 }}
                 data={['Event', 'University Memo', 'Recognition', 'Others']}
                 onSelect={handleType}
@@ -128,7 +131,7 @@ const Announcements = () => {
                 : '';
 
             return (
-              <View className="relative mx-5 mb-3 mt-3 rounded-t-2xl bg-gray-300">
+              <View className="relative mx-5 mb-3 mt-1 rounded-t-2xl bg-gray-300">
                 <View className="ml-5 flex-row">
                   <Image
                     source={require('~/assets/cares_icon_4th_variant.png')}

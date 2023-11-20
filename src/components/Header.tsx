@@ -52,9 +52,9 @@ function Header({}: {withBack?: boolean}) {
           activeOpacity={1}
           onPressOut={() => setModal(false)}>
           <View className="h-screen bg-primary p-5 shadow-sm">
-            <Text className="mt-5 text-center text-lg font-bold text-paper">
+            <Text className="mt-10 text-center text-lg font-bold text-paper">
               CARES (Cultivating Assistance, Resolution, and Empowerment for
-              Students)
+              Students){'\n'}
             </Text>
             <Text className="mt-2 text-justify text-paper">
               {'\t'}
