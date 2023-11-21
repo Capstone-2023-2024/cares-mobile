@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import {Text} from '~/components';
-import Background from '~/components/Background';
 import TickingClock from '~/components/TickingClock';
 import {useAuth} from '~/contexts/AuthContext';
 import {arrayUnion, collectionRef} from '~/utils/firebase';
@@ -20,6 +19,7 @@ import type {
   PollStateValue,
   PollStyledTextProps,
 } from './types';
+import BackHeader from '~/components/BackHeader';
 
 const ProjectSuggestions = () => {
   const [state, setState] = useState<EventWithIdProps[]>([]);
@@ -52,19 +52,11 @@ const ProjectSuggestions = () => {
   }, []);
 
   return (
-    <View className="flex-1">
-      <Background>
-        <ScrollView>
-          <View className="mx-8 my-8 flex items-center justify-center rounded-3xl bg-primary py-2">
-            <Image
-              source={require('~/assets/project-suggestion.png')}
-              className="h-12 w-80 "
-              resizeMode="contain"
-            />
-          </View>
-          {renderPolls()}
-        </ScrollView>
-      </Background>
+    <View className="flex-1 bg-stone-300">
+      <ScrollView>
+        <BackHeader />
+        {renderPolls()}
+      </ScrollView>
     </View>
   );
 };
@@ -227,7 +219,7 @@ const Poll = ({
           <View className="mx-3 mb-3">
             <View className="ml-4 flex-row">
               <Image
-                source={require('~/assets/cics_icon.png')}
+                source={require('~/assets/cares_icon.png')}
                 className="my-4 mr-2 h-14 w-14"
                 resizeMode="center"
               />

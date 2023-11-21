@@ -5,7 +5,6 @@ import {Text} from '~/components';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {useUser} from '~/contexts/UserContext';
-import {projectName} from '~/utils/config';
 
 function Header({}: {withBack?: boolean}) {
   const {handleNavigation, initialRouteName} = useNav();
@@ -88,16 +87,13 @@ function Header({}: {withBack?: boolean}) {
         onLongPress={() => setModal(true)}
         className="flex-row items-center"
         onPress={handlePressRoute}>
-        <View className="h-8 w-8 bg-paper">
+        <View className="justify-between">
           <Image
-            source={require('~/assets/cares_icon.png')}
-            className="h-full w-full"
-            resizeMode="center"
+            source={require('~/assets/cares_icon1.png')}
+            className="-ml-2 h-12 w-64"
+            resizeMode="stretch"
           />
         </View>
-        <Text className="ml-2 text-xl font-bold uppercase text-primary">
-          {projectName}
-        </Text>
       </TouchableOpacity>
       {renderChatIcon()}
     </View>

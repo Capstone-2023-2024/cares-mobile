@@ -10,11 +10,8 @@ module.exports = {
         accent: '#402FFF',
         error: '#F44646',
         tertiary: '#763435',
-        ActivitiesBG: '#E7DAC8',
+        customADC2D2: '#ADC2D2',
       },
-    },
-    fontFamily: {
-      sparky: ['Sparky Stones', 'sans-serif'], // 'Sparky Stones' should match the font name
     },
   },
   plugins: [],

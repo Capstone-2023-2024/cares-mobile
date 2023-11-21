@@ -9,7 +9,6 @@ import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useUser} from '~/contexts/UserContext';
 import {AnnouncementProps} from '~/types/announcement';
 import {retrieveImageFBStorage} from '~/utils/image';
-import Background from '~/components/Background';
 
 const Announcements = () => {
   const {data, type, handleTypeChange} = useAnnouncement();
@@ -73,98 +72,97 @@ const Announcements = () => {
   // }
 
   return (
-    <View className="flex-1">
-      <Background>
-        <Modal
-          animationType="fade"
-          visible={modalImage}
-          onRequestClose={() => handlePressImage(false)}>
-          <View className="h-screen items-center justify-center">
-            <RenderImageInModal src={photoSelected} />
+    <View className="flex-1 bg-stone-400 ">
+      <Modal
+        animationType="fade"
+        visible={modalImage}
+        onRequestClose={() => handlePressImage(false)}>
+        <View className="h-screen items-center justify-center">
+          <RenderImageInModal src={photoSelected} />
+        </View>
+      </Modal>
+      {!paramsExist && (
+        <>
+          <View className="mx-10 mb-4 mt-6 flex items-center justify-center rounded-3xl ">
+            <Image
+              source={require('~/assets/announcements.png')}
+              className="my-4  h-8 w-80"
+              resizeMode="stretch"
+            />
           </View>
-        </Modal>
-        {!paramsExist && (
-          <>
-            <View className="mx-10 mb-4 mt-6 flex items-center justify-center rounded-3xl bg-primary">
-              <Image
-                source={require('~/assets/announcements.png')}
-                className="my-4  h-8 w-80"
-                resizeMode="stretch"
-              />
-            </View>
-            <View className="mb-4 items-center justify-center">
-              <SelectDropdown
-                disabled={currentStudent.email === 'null'}
-                defaultValue={type}
-                defaultButtonText="Choose type"
-                buttonStyle={{
-                  backgroundColor: '#767373',
-                  borderRadius: 50,
-                  marginHorizontal: 50,
-                }}
-                buttonTextStyle={{
-                  textTransform: 'capitalize',
-                  paddingTop: 3,
-                  paddingBottom: 3,
-                  color: '#f5f5f5',
-                }}
-                data={['Event', 'University Memo', 'Recognition', 'Others']}
-                onSelect={handleType}
-              />
-            </View>
-          </>
-        )}
-        <SectionList
-          keyExtractor={({id}) => id}
-          sections={announcementData.map(({photoUrl, ...rest}) => ({
-            title: {photoUrl, department: rest.department, type: rest.type},
-            data: [{...rest}],
-          }))}
-          renderSectionHeader={({section}) => {
-            const {
-              title: {department, photoUrl}, // type
-            } = section;
+          <View className="mb-4 flex-row items-center justify-center">
+            <SelectDropdown
+              disabled={currentStudent.email === 'null'}
+              defaultValue={type}
+              defaultButtonText="Choose type"
+              buttonStyle={{
+                backgroundColor: '#D9D9D9',
+                borderRadius: 50,
+                marginHorizontal: 50,
+              }}
+              buttonTextStyle={{
+                textTransform: 'capitalize',
+                paddingTop: 3,
+                paddingBottom: 3,
+                fontWeight: 'bold',
+                color: '#5E5E5E',
+              }}
+              data={['Event', 'University Memo', 'Recognition', 'Others']}
+              onSelect={handleType}
+            />
+          </View>
+        </>
+      )}
+      <SectionList
+        keyExtractor={({id}) => id}
+        sections={announcementData.map(({photoUrl, ...rest}) => ({
+          title: {photoUrl, department: rest.department, type: rest.type},
+          data: [{...rest}],
+        }))}
+        renderSectionHeader={({section}) => {
+          const {
+            title: {department, photoUrl}, // type
+          } = section;
 
-            const photoArrayOneSRC =
-              photoUrl !== undefined
-                ? retrieveImageFBStorage(photoUrl ?? '')
-                : '';
+          const photoArrayOneSRC =
+            photoUrl !== undefined
+              ? retrieveImageFBStorage(photoUrl ?? '')
+              : '';
 
-            return (
-              <View className="relative mx-5 mb-3 mt-1 rounded-t-2xl bg-gray-300">
-                <View className="ml-5 flex-row">
-                  <Image
-                    source={require('~/assets/cares_icon_4th_variant.png')}
-                    className="my-4 mr-2 h-16 w-16"
-                    resizeMode="center"
-                  />
-                  <Text className="mt-5 text-xl font-black text-black">
-                    {`${department.toUpperCase()} Department`}
-                    {'\n'}
-                    <Text className="text-base font-light">Sino Nagpost</Text>
-                  </Text>
-                </View>
-                {photoUrl === undefined ? (
-                  <View className="" />
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => handlePressImage(true, photoArrayOneSRC)}>
-                    <Image
-                      className="mx-4 mb-5 mt-1 h-64 w-11/12 rounded-2xl bg-gray-300"
-                      resizeMode="cover"
-                      source={require('~/assets/error.svg')}
-                      src={photoArrayOneSRC}
-                    />
-                  </TouchableOpacity>
-                )}
+          return (
+            <View className="relative mx-2 mb-3 mt-1 rounded-t-2xl bg-stone-300">
+              <View className="ml-5 flex-row">
+                <Image
+                  source={require('~/assets/cares_icon.png')}
+                  className="my-4 mr-2 h-16 w-16"
+                  resizeMode="center"
+                />
+                <Text className="mt-5 text-xl font-black text-black">
+                  {`${department.toUpperCase()} Department`}
+                  {'\n'}
+                  <Text className="text-base font-light">Sino Nagpost</Text>
+                </Text>
               </View>
-            );
-          }}
-          renderItem={({item, index}) => {
-            return <Container key={index} {...item} />;
-          }}
-        />
-      </Background>
+              {photoUrl === undefined ? (
+                <View className="" />
+              ) : (
+                <TouchableOpacity
+                  onPress={() => handlePressImage(true, photoArrayOneSRC)}>
+                  <Image
+                    className="mx-4 mb-5 mt-1 h-64 w-11/12 rounded-2xl bg-stone-300"
+                    resizeMode="cover"
+                    source={require('~/assets/error.svg')}
+                    src={photoArrayOneSRC}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          );
+        }}
+        renderItem={({item, index}) => {
+          return <Container key={index} {...item} />;
+        }}
+      />
     </View>
   );
 };
@@ -185,7 +183,7 @@ const Container = (props: AnnouncementProps) => {
   return (
     <View className=" shadow-sm ">
       <View className=" shadow-sm">
-        <View className="w-98 mx-5 -mt-7 mb-3 rounded-b-2xl bg-gray-300 p-4">
+        <View className="w-98 mx-2 -mt-7 mb-3 rounded-b-2xl bg-stone-300 p-4">
           {message.length > messageLimit ? (
             <View>
               <View>
