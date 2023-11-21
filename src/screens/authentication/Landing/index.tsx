@@ -27,7 +27,7 @@ const Landing = () => {
           alt="https://pngtree.com/freepng/cool-dynamic-smart-technology-line-ray-background_3589532.html_image_from_pngtree.com"
         />
       </View>
-      <Text className="font-serif hover:font-sans mb-2 text-center text-xl font-thin">
+      <Text className="mb-2 text-center font-serif text-xl font-thin hover:font-sans">
         I'm a
       </Text>
       <View className="gap-2">
