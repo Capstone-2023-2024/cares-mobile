@@ -5,10 +5,10 @@ import {useAuth} from '~/contexts/AuthContext';
 const ProfilePicture = () => {
   const DIMENSION = 80;
   const {currentUser} = useAuth();
-  const initialUserLink = '~/assets/error.svg';
+  const initialUserLink = '../../assets/error.svg';
 
   return (
-    <View className="-ml-5 h-20 w-20 overflow-hidden rounded-full border-2 border-black">
+    <View className="mx-2 h-20 w-20 overflow-hidden rounded-full border-2 border-black">
       {currentUser === null ? (
         <View />
       ) : (

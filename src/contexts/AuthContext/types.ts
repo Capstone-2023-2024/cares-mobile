@@ -5,7 +5,6 @@ export interface InitialStateProps {
   currentUser: FirebaseAuthTypes.User | null;
   isLoading: boolean;
 }
-export type InitialState = InitialStateProps['currentUser'];
 export interface AuthContextType extends InitialStateProps {
   signout: () => Promise<void>;
   onGoogleButtonPress: () => Promise<LoginMessagePrompt | null>;

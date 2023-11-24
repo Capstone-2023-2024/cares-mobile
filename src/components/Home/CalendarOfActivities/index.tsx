@@ -15,6 +15,14 @@ const CalendarOfActivities = () => {
   const {currentStudent} = useUser();
   const carouselRef = React.useRef(null);
   const [activeSlide, setActiveSlide] = React.useState(0);
+  const containerStyle = {paddingVertical: 8};
+  const dotStyle = {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'black',
+  };
+  const carouselStyle = {alignItems: 'center'};
 
   // Filter out posts without images
   const filteredData = data.filter(
@@ -24,14 +32,9 @@ const CalendarOfActivities = () => {
   const renderPagination = () => (
     <Pagination
       dotsLength={filteredData.length}
+      containerStyle={containerStyle}
       activeDotIndex={activeSlide}
-      containerStyle={{paddingVertical: 8}}
-      dotStyle={{
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        backgroundColor: 'black',
-      }}
+      dotStyle={dotStyle}
       inactiveDotOpacity={0.4}
       inactiveDotScale={0.6}
     />
@@ -50,7 +53,7 @@ const CalendarOfActivities = () => {
         <View className="-ml-2">
           <Carousel
             ref={carouselRef}
-            style={{alignItems: 'center'}}
+            style={carouselStyle}
             layout={'stack'}
             data={filteredData}
             renderItem={({item}) => (

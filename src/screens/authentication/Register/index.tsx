@@ -28,7 +28,7 @@ const Register = () => {
         /College of ["Information and Communications Technology"-"Industrial Technology"-"Education"-"Engineering"]+/,
     },
     {name: 'schoolYear', regex: /^[A-Za-z0-9]+[^\d]+[\d]+-[\d]+$/},
-    {name: 'name', regex: /^[A-Z]*(\ [A-Z]+)*, [^0-9]*[A-Z]/},
+    {name: 'name', regex: /^[A-Z]*([A-Z]+)*, [^0-9]*[A-Z]/},
     {
       name: 'course',
       regex: /Bachelor of Science in ["Information Technology"]+$/,

@@ -1,25 +1,26 @@
 {
   "compilerOptions": {
-    // "target": "es2017",
-    // "lib": ["dom", "dom.iterable", "esnext"],
-    // "allowJs": true,
-    // "checkJs": true,
+    "target": "ES2022",
+    "allowJs": true,
+    "checkJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    // "jsx": "react-native",
+    "jsx": "react-native",
     "incremental": true,
     "noUncheckedIndexedAccess": true,
     "baseUrl": "./",
     "paths": {
-      "~/*": ["src/*"]
+      "~/*": ["src/*"],
+      "@cares/*": ["../libs/common/lib/src/*"]
     }
   },
+  "references": [{"path": "../libs/common"}],
   "extends": "@tsconfig/react-native/tsconfig.json"
 }

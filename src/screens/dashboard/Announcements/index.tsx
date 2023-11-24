@@ -22,11 +22,11 @@ const Announcements = () => {
   const [announcementData, setAnnouncementData] = useState([
     ...(paramsExist
       ? data.filter(({id}) => id === params)
-      : data.filter(data => {
+      : data.filter(props => {
           const today = new Date();
           const endDate = new Date();
-          endDate.setTime(data.endDate);
-          return data.type === 'event' && endDate.getTime() > today.getTime();
+          endDate.setTime(props.endDate);
+          return props.type === 'event' && endDate.getTime() > today.getTime();
         })),
   ]);
 
@@ -41,23 +41,25 @@ const Announcements = () => {
     handleTypeChange(text);
     if (text === 'Event') {
       return setAnnouncementData([
-        ...data.filter(data => {
+        ...data.filter(props => {
           const today = new Date();
           const endDate = new Date();
-          endDate.setTime(data.endDate);
-          return data.type === 'event' && endDate.getTime() > today.getTime();
+          endDate.setTime(props.endDate);
+          return props.type === 'event' && endDate.getTime() > today.getTime();
         }),
       ]);
     } else if (text === 'University Memo') {
       return setAnnouncementData([
-        ...data.filter(data => data.type === 'university_memorandum'),
+        ...data.filter(props => props.type === 'university_memorandum'),
       ]);
     } else if (text === 'Others') {
       return setAnnouncementData([
-        ...data.filter(data => data.type === 'others'),
+        ...data.filter(props => props.type === 'others'),
       ]);
     }
-    setAnnouncementData([...data.filter(data => data.type === 'recognition')]);
+    setAnnouncementData([
+      ...data.filter(props => props.type === 'recognition'),
+    ]);
   }
 
   // function handleTag(text: string) {
