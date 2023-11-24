@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {Alert, Modal, TouchableOpacity, View} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {Text} from '~/components';
-import ProfilePicture from '~/components/ProfilePictureCopy';
+import ProfilePicture from '~/components/ProfilePicture';
 import {useAuth} from '~/contexts/AuthContext';
 import {useUser} from '~/contexts/UserContext';
 import type {StudentWithClassSection} from '~/types/student';

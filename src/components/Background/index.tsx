@@ -3,7 +3,7 @@ import {ImageBackground} from 'react-native';
 import type {BackgroundProps} from './types';
 
 const Background = ({children}: BackgroundProps) => {
-  const backgroudImageLink = '~/assets/BustosImage.jpg';
+  const backgroudImageLink = '../../assets/BustosImage.jpg';
   const imageStyle = {opacity: 0.3};
   return (
     <ImageBackground

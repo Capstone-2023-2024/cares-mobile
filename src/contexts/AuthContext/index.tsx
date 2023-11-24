@@ -1,20 +1,19 @@
+import {ONE_SIGNAL_APP_ID, WEB_CLIENT_ID} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import React, {createContext, useContext, useEffect, useState} from 'react';
+import {LogLevel, OneSignal} from 'react-native-onesignal';
 import Loading from '~/components/SplashScreen';
-// import {STUDENT_KEY} from '~/utils/config';
 import {Role} from '~/screens/authentication/Landing/types';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import type {
   AuthContextType,
   AuthProviderProps,
-  InitialState,
   InitialStateProps,
   LoginMessagePrompt,
 } from './types';
-import {OneSignal} from 'react-native-onesignal';
 
 const initialState: InitialStateProps = {
   currentUser: null,
@@ -27,18 +26,13 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 const config = {
-  webClientId:
-    '786929223549-qpbb1jebv0gqk6641tcj57k154bjhauu.apps.googleusercontent.com',
-  // '622310668633-i7mpvf5v83051snfvqj96vkhd6iverlr.apps.googleusercontent.com',
+  webClientId: WEB_CLIENT_ID,
 };
 
 const AuthProvider = ({children}: AuthProviderProps) => {
   GoogleSignin.configure({...config});
   const [state, setState] = useState(initialState);
 
-  function handleState(key: keyof InitialStateProps, value: InitialState) {
-    setState(prevState => ({...prevState, [key]: value}));
-  }
   async function signout() {
     try {
       await auth().signOut();
@@ -76,7 +70,6 @@ const AuthProvider = ({children}: AuthProviderProps) => {
       const count = snapshotCount.data().count;
       if (count === 0) {
         await signout();
-        // await AsyncStorage.removeItem(STUDENT_KEY);
         return student ? 'COR_UNREGISTERED' : 'FACULTY_PERMISSION_NULL';
       }
       const src = additionalUserInfo?.profile?.picture;
@@ -95,11 +88,21 @@ const AuthProvider = ({children}: AuthProviderProps) => {
   useEffect(
     () =>
       auth().onAuthStateChanged(user => {
-        handleState('currentUser', user);
         if (user !== null && user.email !== null) {
+          OneSignal.initialize(ONE_SIGNAL_APP_ID);
+          OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+          OneSignal.Notifications.requestPermission(true);
+          OneSignal.Notifications.addEventListener('click', event => {
+            console.log('OneSignal: notification clicked:', event);
+          });
           OneSignal.login(user.email);
         }
-        setState(prevState => ({...prevState, isLoading: false}));
+
+        setState(prevState => ({
+          ...prevState,
+          currentUser: user,
+          isLoading: false,
+        }));
       }),
     [],
   );

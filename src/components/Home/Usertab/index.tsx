@@ -89,9 +89,9 @@ export const HeadingTemplate = (props: HeadingTemplateProps) => {
       <Text className="text-xl font-bold capitalize text-black">{title}</Text>
       <TouchableOpacity
         className={
-          currentStudent.email == 'null' ? 'opacity-25' : 'opacity-100'
+          currentStudent.email === 'null' ? 'opacity-25' : 'opacity-100'
         }
-        disabled={currentStudent.email == 'null'}
+        disabled={currentStudent.email === 'null'}
         onPress={handlePressNavigation}>
         <SvgContainer uri={arrowUri} size="sm" />
       </TouchableOpacity>
