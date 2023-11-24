@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Modal, ToastAndroid, TouchableOpacity, View} from 'react-native';
+import {Image, Modal, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import {Text} from '~/components';
-import BackHeader from '~/components/BackHeader';
 import {useChat} from '~/contexts/ChatContext';
+import {useNav} from '~/contexts/NavigationContext';
 import {useUser} from '~/contexts/UserContext';
 import {ConcernProps} from '~/types/complaints';
 import {collectionRef} from '~/utils/firebase';
@@ -10,13 +10,17 @@ import {collectionRef} from '~/utils/firebase';
 const ChatNav = () => {
   const {role} = useUser();
   const {handleSelectedChat, selectedChat, handleOtherConcerns} = useChat();
-  // const navigation = useNavigation();
+  const {handleNavigation, initialRouteName} = useNav();
   const {currentStudent} = useUser();
   const [modal, setModal] = useState(false);
   const condition =
     selectedChat === null ||
     selectedChat === 'adviser' ||
     currentStudent.email === 'null';
+
+  function handlePressRoute() {
+    handleNavigation(initialRouteName);
+  }
 
   // function handleGoBack() {
   //   navigation.goBack();
@@ -68,25 +72,30 @@ const ChatNav = () => {
           </View>
         </TouchableOpacity>
       </Modal>
-      <View className="h-16 flex-row items-center px-2">
-        <BackHeader />
-        <View className="flex-1 flex-row items-center justify-center">
-          <View>
-            <Text className="text-xl text-white">Complaints/Concerns</Text>
-            <Text className="text-xs text-white">
+      <View className="h-16 flex-row items-center justify-between px-2">
+        <TouchableOpacity onPress={handlePressRoute}>
+          <Image
+            source={require('~/assets/arrow-sm-right-svgrepo-com.png')}
+            className="h-12 w-12 rotate-180 "
+          />
+        </TouchableOpacity>
+        <Image
+          source={require('~/assets/chatHeader.png')}
+          className="ml-8 h-10 w-1/2"
+          resizeMode="center"
+        />
+        {/* <Text className="text-xs text-white">
               {currentStudent.recipient === 'class_section'
                 ? 'Chat your Class Mayor & Adviser Here'
                 : currentStudent.recipient === 'bm'
                 ? ''
                 : 'You are now talking to the Program Chair'}
-            </Text>
-          </View>
-          <TouchableOpacity onPress={() => setModal(true)}>
-            <Text className="ml-12 rounded-full border border-paper px-3 py-1 text-sm text-paper">
-              i
-            </Text>
-          </TouchableOpacity>
-        </View>
+            </Text> */}
+        <TouchableOpacity onPress={() => setModal(true)}>
+          <Text className="ml-12 rounded-full border border-paper px-3 py-1 text-sm text-paper">
+            i
+          </Text>
+        </TouchableOpacity>
       </View>
       {(role === 'mayor' || role === 'adviser') && (
         <View className="bg-paper shadow-sm">

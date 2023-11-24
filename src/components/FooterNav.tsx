@@ -21,7 +21,7 @@ const FooterNav = () => {
           onPress={handlePressProject}>
           <View className="items-center">
             <Image
-              className="h-10 w-10"
+              className="h-12 w-12"
               source={require('~/assets/project_suggestion_icon.png')}
             />
             <Text className="text-sm font-bold text-black">

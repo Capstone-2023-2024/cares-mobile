@@ -2,9 +2,8 @@
 
 2023/11/20
 
-- CICS Seal replaced by alternate CICS Icon in Announcements
-- Replace ImageBackground with a latest picture of Bulacan State University - Bustos Campus (Opacity changed to 0.3)
-- Replace page title with Image
+- Image Carousel for Calendar of Activities in dashboard
+- Fixed the heading of chats
 
 # Developer Note:
 
