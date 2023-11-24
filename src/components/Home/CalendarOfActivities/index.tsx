@@ -22,7 +22,6 @@ const CalendarOfActivities = () => {
     borderRadius: 5,
     backgroundColor: 'black',
   };
-  const carouselStyle = {alignItems: 'center'};
 
   // Filter out posts without images
   const filteredData = data.filter(
@@ -53,7 +52,7 @@ const CalendarOfActivities = () => {
         <View className="-ml-2">
           <Carousel
             ref={carouselRef}
-            style={carouselStyle}
+            style={{alignItems: 'center'}}
             layout={'stack'}
             data={filteredData}
             renderItem={({item}) => (

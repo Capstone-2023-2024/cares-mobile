@@ -174,7 +174,7 @@ function UserProvider({children}: UserProviderProps) {
         Alert.alert('Error in setting up student in Home');
       }
     }
-    return setup();
+    return void setup();
   }, [currentUser, handleRole]);
 
   return (

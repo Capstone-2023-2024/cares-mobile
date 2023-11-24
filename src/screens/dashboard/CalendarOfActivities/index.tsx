@@ -49,10 +49,9 @@ const CalendarOfActivities = () => {
               const filtered = data.filter(
                 props => props.markedDates.indexOf(e.dateString) > -1,
               )[0];
-              {
-                filtered?.id !== undefined &&
-                  handleNavigation('Announcements', filtered?.id);
-              }
+
+              filtered?.id !== undefined &&
+                handleNavigation('Announcements', filtered?.id);
             }}
             markingType={
               markedDates !== undefined &&
@@ -75,17 +74,16 @@ const CalendarOfActivities = () => {
           showsVerticalScrollIndicator={true}
           keyExtractor={({id}) => id}
           renderItem={({item}) => {
-            const {id, markedDates, endDate, type} = item;
-            const dates = markedDates.map(date => date.split('-')[2]);
+            const dates = item.markedDates.map(date => date.split('-')[2]);
             const expiration = new Date();
-            expiration.setTime(endDate);
+            expiration.setTime(item.endDate);
             const date = expiration.toLocaleString().split(',')[0];
             const dateMonth = date?.substring(0, date?.lastIndexOf('/'));
-            return type === 'event' &&
+            return item.type === 'event' &&
               expiration.getTime() > new Date().getTime() ? (
               <TouchableOpacity
                 className="h-auto"
-                onPress={() => handleNavigation('Announcements', id)}>
+                onPress={() => handleNavigation('Announcements', item.id)}>
                 <View className="relative mb-3 w-full flex-row">
                   <View className="h-20 w-24 content-center items-center justify-center border-2">
                     <Text className="px-4 py-4 text-2xl font-black text-black">
@@ -98,7 +96,7 @@ const CalendarOfActivities = () => {
             ) : (
               <TouchableOpacity
                 className="h-auto"
-                onPress={() => handleNavigation('Announcements', id)}>
+                onPress={() => handleNavigation('Announcements', item.id)}>
                 <View className=" mb-3 w-full flex-row">
                   <View className="mb-3 h-20 w-24 content-center items-center justify-center border-2">
                     <Text className="px-4 py-4 text-xl font-black text-black">
