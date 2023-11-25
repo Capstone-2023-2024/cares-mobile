@@ -8,6 +8,8 @@ import React, {
   useState,
 } from 'react';
 import {Alert} from 'react-native';
+import {OneSignal} from 'react-native-onesignal';
+import {Role} from '~/screens/authentication/Landing/types';
 import type {StudentWithClassSection} from '~/types/student';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
@@ -17,7 +19,6 @@ import type {
   UserProviderProps,
   UserStateProps,
 } from './types';
-import {Role} from '~/screens/authentication/Landing/types';
 
 const initialStudent: StudentWithClassSection = {
   studentNo: 'null',
@@ -176,6 +177,22 @@ function UserProvider({children}: UserProviderProps) {
     }
     return void setup();
   }, [currentUser, handleRole]);
+  useEffect(() => {
+    function loginOnesignal() {
+      if (state.currentStudent.studentNo !== initialStudent.studentNo) {
+        OneSignal.login(state.currentStudent.studentNo);
+      }
+    }
+    return loginOnesignal();
+  }, [state.currentStudent.studentNo]);
+  useEffect(() => {
+    function setupOneSignalTag() {
+      if (state.role !== null) {
+        return OneSignal.User.addTag('role', state.role);
+      }
+    }
+    return setupOneSignalTag();
+  }, [state.role]);
 
   return (
     <UserContext.Provider value={{...state, handleRole, setSection}}>

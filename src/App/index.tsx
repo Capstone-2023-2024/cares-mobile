@@ -1,6 +1,9 @@
+import {ONE_SIGNAL_APP_ID} from '@env';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import React from 'react';
+import React, {useEffect} from 'react';
+import {Alert} from 'react-native';
+import {LogLevel, OneSignal} from 'react-native-onesignal';
 import HeaderDefault from '~/components/Header';
 import CtxProviders from '~/contexts';
 import {useAuth} from '~/contexts/AuthContext';
@@ -10,6 +13,21 @@ import {pathWithoutUserList, pathWithUserList} from '~/utils/navPaths';
 import type {IteratePathsType, StackType} from './types';
 
 const App = () => {
+  useEffect(() => {
+    function oneSignalEvent() {
+      OneSignal.initialize(ONE_SIGNAL_APP_ID);
+      OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+      void OneSignal.Notifications.requestPermission(true);
+      return OneSignal.Notifications.addEventListener('click', event => {
+        const actionId = event.result.actionId ?? 'actionId';
+        const url = event.result.url ?? 'url';
+        const notification = event.notification;
+        console.log({notification});
+        Alert.alert('OneSignal: notification clicked:', `${actionId} ${url}`);
+      });
+    }
+    return oneSignalEvent();
+  }, []);
   return (
     <CtxProviders>
       <NavigationRouter />

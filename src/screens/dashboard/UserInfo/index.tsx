@@ -10,6 +10,7 @@ import type {StudentWithClassSection} from '~/types/student';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import type {TextRowType} from './types';
+import {OneSignal} from 'react-native-onesignal';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
@@ -28,7 +29,8 @@ const UserInfo = () => {
   } = currentStudent;
 
   function handleSignout() {
-    signout();
+    OneSignal.logout();
+    return void signout();
   }
   async function handleSectionSelect(
     section: StudentWithClassSection['section'],

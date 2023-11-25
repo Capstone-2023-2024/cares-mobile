@@ -1,9 +1,8 @@
-import {ONE_SIGNAL_APP_ID, WEB_CLIENT_ID} from '@env';
+import {WEB_CLIENT_ID} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {LogLevel, OneSignal} from 'react-native-onesignal';
 import Loading from '~/components/SplashScreen';
 import {Role} from '~/screens/authentication/Landing/types';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
@@ -88,16 +87,6 @@ const AuthProvider = ({children}: AuthProviderProps) => {
   useEffect(
     () =>
       auth().onAuthStateChanged(user => {
-        if (user !== null && user.email !== null) {
-          OneSignal.initialize(ONE_SIGNAL_APP_ID);
-          OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-          OneSignal.Notifications.requestPermission(true);
-          OneSignal.Notifications.addEventListener('click', event => {
-            console.log('OneSignal: notification clicked:', event);
-          });
-          OneSignal.login(user.email);
-        }
-
         setState(prevState => ({
           ...prevState,
           currentUser: user,
