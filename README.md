@@ -13,3 +13,4 @@
 - Announcement needs to have a clear section between Calendar of Activities
 - Adviser need to setup section in user context
 - Name RegEx can be changed to: /^[A-Z]_(\ [A-Z]+)_, [^0-9]+/ for detecting names without Middle Initials, but it will also include '.' with CORs with '.'
+- Early Complaint version

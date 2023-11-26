@@ -1,7 +1,7 @@
 export const login = 'Login';
 export const register = 'Register';
 
-export const chats = 'Chats';
+export const chats = 'Complaints';
 export const home = 'Home';
 export const announce = 'Announcements';
 export const schedule = 'CalendarOfActivities';

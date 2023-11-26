@@ -12,8 +12,7 @@ export interface DateFileProps {
 export type CollectionPath =
   | 'about'
   | 'announcement'
-  | 'chat'
-  | 'concerns'
+  | 'complaints'
   | 'permission'
   | 'project_suggestion'
   | Role;

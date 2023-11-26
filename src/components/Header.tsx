@@ -20,7 +20,7 @@ function Header({}: {withBack?: boolean}) {
     if (currentStudent.section === undefined) {
       return Alert.alert('No section', 'Please set up your section first');
     }
-    handleNavigation('Chats');
+    handleNavigation('Complaints');
   }
   const renderChatIcon = () =>
     role !== 'faculty' &&
