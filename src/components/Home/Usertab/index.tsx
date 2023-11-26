@@ -100,7 +100,7 @@ export const HeadingTemplate = (props: HeadingTemplateProps) => {
 };
 
 export const TabContainer = ({children}: {children: ReactNode}) => {
-  return <View className="border-b-2 border-primary py-6">{children}</View>;
+  return <View className="border-b-2 border-primary py-2">{children}</View>;
 };
 
 export default Usertab;
