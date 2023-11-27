@@ -1,9 +1,8 @@
 # Changelog:
 
-2023/11/20
+2023/11/28
 
-- Image Carousel for Calendar of Activities in dashboard
-- Fixed the heading of chats
+- Black icons for chat and project, pagination stack, chat ui sample and seperate profile picture components for proper layout
 
 # Developer Note:
 
