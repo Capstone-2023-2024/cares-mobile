@@ -9,7 +9,7 @@ import {
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
+  KeyboardAvoidingView,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {collectionRef} from '~/utils/firebase';
@@ -55,6 +55,12 @@ const RenderInputMessageContainer = () => {
     (higherUpComplaintRecord.length > 0 &&
       higherUpComplaintRecord[0]?.status === 'processing');
 
+  console.log(
+    selectedChatId,
+    selectedChatHead,
+    newConcernDetails,
+    renderCondition,
+  );
   async function selectMultipleFile() {
     try {
       const results = await DocumentPicker.pick({
@@ -190,14 +196,14 @@ const RenderInputMessageContainer = () => {
   console.log(files);
 
   return (
-    <View
+    <KeyboardAvoidingView
       className={`${
         renderCondition ||
         selectedChatId === 'object' ||
         selectedChatHead === 'class_section'
           ? 'absolute'
           : 'hidden'
-      } bottom-0 h-16 w-full flex-row items-center border-t-2 bg-paper p-2`}>
+      } bottom-16 h-16 w-full flex-row items-center border-t-2 bg-paper p-2`}>
       <TouchableOpacity
         disabled={currentStudentInfo?.email === 'null'}
         onPress={selectMultipleFile}
@@ -226,7 +232,7 @@ const RenderInputMessageContainer = () => {
         }>
         <Image source={require('~/assets/send.png')} className="h-9 w-9" />
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

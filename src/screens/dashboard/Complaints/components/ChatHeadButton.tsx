@@ -25,10 +25,11 @@ const ChatHeadButton = ({
   replaceTextBaseStyle,
   ...rest
 }: ChatHeadButtonProps) => {
-  const buttonBaseStyle = 'rounded-xl p-2 duration-300 ease-in-out';
+  const buttonBaseStyle =
+    'rounded-xl p-2 duration-300 ease-in-out w-32 min-w-max';
   const trueButtonBaseStyle = 'bg-secondary';
   const falseButtonBaseStyle = 'bg-primary';
-  const textBaseStyle = 'text-white capitalize';
+  const textBaseStyle = 'text-white capitalize text-center';
   const trueTextBaseStyle = '';
   const falseTextBaseStyle = '';
 

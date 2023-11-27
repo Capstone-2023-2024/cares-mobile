@@ -52,7 +52,7 @@ const ComplaintBox = () => {
   }
 
   return (
-    <View className={`${showMayorModal ? 'h-3/5' : 'h-4/5'}`}>
+    <View className={`${showMayorModal ? 'h-3/5' : 'mb-12 h-min'}`}>
       <RenderActionButtons targetArray={targetArray} />
       <Modal
         transparent

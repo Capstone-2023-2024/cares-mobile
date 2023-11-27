@@ -37,7 +37,7 @@ const RenderChatHeads = ({
 
   return (
     <View>
-      <View className="flex w-full flex-row gap-2 overflow-x-auto bg-primary/30 p-4">
+      <View className="flex w-full flex-row justify-evenly overflow-x-auto bg-primary/30 p-4">
         {[...new Set(recipients)].map(value => {
           return (
             <ChatHeadButton
