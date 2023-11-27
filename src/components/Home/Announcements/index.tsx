@@ -47,14 +47,14 @@ const Announcements = () => {
       ) : (
         <View className="items-center">
           <Carousel
-            className=""
+            layout={'stack'}
             ref={carouselRef}
             data={data}
             renderItem={({item}) => <Container {...item} />}
             sliderWidth={500} // Adjust the width as needed
-            itemWidth={400} // Adjust the width as needed
-            autoplay
-            loop
+            itemWidth={450} // Adjust the width as needed
+            /* autoplay
+            loop */
             autoplayInterval={2500} // Adjust the interval as needed
             inactiveSlideOpacity={0.5} // Adjust the opacity for inactive slides
             onSnapToItem={handleSnapToItem}
@@ -69,7 +69,7 @@ const Announcements = () => {
 const Container = (props: AnnouncementProps) => {
   const {handleNavigation} = useNav();
   const {currentStudent} = useUser();
-  const {id, department, message, photoUrl, postedBy, type} = props;
+  const {id, department, message, photoUrl, postedBy} = props;
 
   function handlePressReadMore(announcementId: string) {
     handleNavigation('Announcements', announcementId);
@@ -79,68 +79,52 @@ const Container = (props: AnnouncementProps) => {
     <TouchableOpacity
       onPress={() => handlePressReadMore(id)}
       activeOpacity={0.8}>
-      <View className="ml-2 mr-2  items-center justify-center overflow-hidden rounded-2xl border-2 bg-paper p-4 shadow-md">
-        <View className="flex-row">
-          <View className="items-start">
-            <View className="flex-row items-center justify-center">
-              {currentStudent.email === 'null' ? (
-                <View className="h-8 w-8 bg-primary" />
-              ) : (
-                <Image
-                  source={require('~/assets/cares_icon_5th_variant.png')}
-                  className="h-14 w-14 "
-                  resizeMode="center"
-                />
-              )}
-              <View className="ml-6">
-                <Text className="text-center text-base font-bold uppercase text-black">
-                  {currentStudent.email === 'null' ? '.....' : department}
-                </Text>
-                <Text className="text-center text-base font-bold text-black">
-                  {currentStudent.email === 'null' ? '......' : 'DEPARTMENT'}
-                </Text>
-              </View>
-              <View className="ml-6 rounded-lg bg-primary px-2 py-1 ">
-                {currentStudent.email === 'null' ? (
-                  <View className="h-12 w-12  bg-secondary" />
-                ) : (
-                  <Text className="text-xs capitalize text-paper">
-                    {type === 'university_memorandum' ? 'memo' : type}
-                  </Text>
-                )}
-              </View>
-            </View>
-            <Text className=" mx-16 my-3 text-xs text-black ">
-              {currentStudent.email === 'null'
-                ? '........'
-                : message.substring(0, 23)}
-            </Text>
-            <TouchableOpacity
-              className="self-center"
-              onPress={() => handlePressReadMore(id)}>
-              <Text className="justify-center rounded-full border border-black p-1 px-2 text-xs">
-                {currentStudent.email === 'null' ? '.....' : 'Read More'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          {photoUrl !== undefined ? (
-            <View className="ml-5 h-28 w-24 overflow-hidden bg-primary/40">
-              {currentStudent.email === 'null' ? (
-                <View className="h-12 w-12 bg-primary" />
-              ) : (
-                <Image
-                  className="h-28 w-24 "
-                  source={require('~/assets/error.svg')}
-                  src={retrieveImageFBStorage(photoUrl)}
-                  resizeMode="cover"
-                />
-              )}
-            </View>
-          ) : (
+      <View className=" mx-10 items-center  overflow-hidden rounded-2xl border-2 bg-paper shadow-md ">
+        <View className="mt-2 flex-row items-center">
+          {currentStudent.email === 'null' ? (
             <View />
+          ) : (
+            <Image
+              source={require('~/assets/cares_icon_5th_variant.png')}
+              className="-ml-4 h-14 w-14"
+              resizeMode="center"
+            />
           )}
+          <Text className="ml-4 text-center text-base font-bold uppercase text-black">
+            {currentStudent.email === 'null' ? '.....' : department}
+            <Text>{'\n'}</Text>
+            {currentStudent.email === 'null' ? '......' : 'DEPARTMENT'}
+          </Text>
         </View>
-        <Text className="-mb-2 mt-5 text-xs">
+        <Text className="mb-1 mt-2 text-sm text-black ">
+          {currentStudent.email === 'null'
+            ? '........'
+            : message.substring(0, 23)}
+        </Text>
+        {photoUrl !== undefined ? (
+          <View className=" h-48 w-72 items-center overflow-hidden ">
+            {currentStudent.email === 'null' ? (
+              <View />
+            ) : (
+              <Image
+                className="mb-2 h-48 w-72"
+                source={require('~/assets/error.svg')}
+                src={retrieveImageFBStorage(photoUrl)}
+                resizeMode="cover"
+              />
+            )}
+          </View>
+        ) : (
+          <View />
+        )}
+        <TouchableOpacity
+          className="mt-2 self-center"
+          onPress={() => handlePressReadMore(id)}>
+          <Text className="justify-center rounded-full border border-black p-1 px-2 text-xs">
+            {currentStudent.email === 'null' ? '.....' : 'Read More'}
+          </Text>
+        </TouchableOpacity>
+        <Text className=" my-2 text-xs">
           {currentStudent.email === 'null' ? '...' : `Posted by: ${postedBy}`}
         </Text>
       </View>

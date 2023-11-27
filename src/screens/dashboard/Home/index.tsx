@@ -42,8 +42,8 @@ const Home = () => {
         {renderSectionBannerSetup()}
         <ScrollView>
           <Usertab name={currentStudent.name} />
-          <Announcements />
           <CalendarOfActivities />
+          <Announcements />
         </ScrollView>
       </Background>
       <View>

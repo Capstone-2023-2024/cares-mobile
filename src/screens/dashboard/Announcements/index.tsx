@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Image, Modal, SectionList, View} from 'react-native';
+import {Image, Modal, SectionList, TextInput, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SelectDropdown from 'react-native-select-dropdown';
 import {Text} from '~/components';
@@ -92,7 +92,7 @@ const Announcements = () => {
               resizeMode="stretch"
             />
           </View>
-          <View className="mb-4 flex-row items-center justify-center">
+          <View className="mb-4 flex-row items-center justify-evenly">
             <SelectDropdown
               disabled={currentStudent.email === 'null'}
               defaultValue={type}
@@ -112,6 +112,20 @@ const Announcements = () => {
               data={['Event', 'University Memo', 'Recognition', 'Others']}
               onSelect={handleType}
             />
+            <View className="mr-12 w-44 flex-row items-center rounded-full border bg-white">
+              <View className="mx-4 flex-row items-center">
+                <Image
+                  source={require('~/assets/search.png')}
+                  className="h-8 w-8 "
+                />
+                <TextInput
+                  className=""
+                  placeholder="Enter text here"
+                  /*  onChangeText={handleInputChange}
+                value={inputText} */
+                />
+              </View>
+            </View>
           </View>
         </>
       )}

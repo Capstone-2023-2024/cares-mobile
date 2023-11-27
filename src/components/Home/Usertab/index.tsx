@@ -85,7 +85,7 @@ export const HeadingTemplate = (props: HeadingTemplateProps) => {
   }
 
   return (
-    <View className="flex-row justify-between px-8 py-6">
+    <View className="flex-row justify-between px-8 py-4">
       <Text className="text-xl font-bold capitalize text-black">{title}</Text>
       <TouchableOpacity
         className={
