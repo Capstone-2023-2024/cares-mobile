@@ -8,7 +8,7 @@ const ProfilePicture = () => {
   const initialUserLink = '../../assets/error.svg';
 
   return (
-    <View className="-ml-7 h-20 w-20 overflow-hidden rounded-full border-2 border-black">
+    <View className="ml-6 h-20 w-20 overflow-hidden rounded-full border-2 border-black">
       {currentUser === null ? (
         <View />
       ) : (

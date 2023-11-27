@@ -86,7 +86,7 @@ const Container = (props: AnnouncementProps) => {
           ) : (
             <Image
               source={require('~/assets/cares_icon_5th_variant.png')}
-              className="-ml-4 h-14 w-14"
+              className="-ml-8 h-14 w-14"
               resizeMode="center"
             />
           )}
@@ -102,12 +102,12 @@ const Container = (props: AnnouncementProps) => {
             : message.substring(0, 23)}
         </Text>
         {photoUrl !== undefined ? (
-          <View className=" h-48 w-72 items-center overflow-hidden ">
+          <View className=" h-48 w-96 items-center overflow-hidden ">
             {currentStudent.email === 'null' ? (
               <View />
             ) : (
               <Image
-                className="mb-2 h-48 w-72"
+                className="mb-2 h-48 w-11/12 "
                 source={require('~/assets/error.svg')}
                 src={retrieveImageFBStorage(photoUrl)}
                 resizeMode="cover"

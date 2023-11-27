@@ -22,7 +22,7 @@ const Usertab = ({name}: UsertabProps) => {
     handleNavigation('UserInfo');
   }
   const renderNameAndGreeting = () => (
-    <View className="ml-2">
+    <View className="ml-1">
       <Text className="ml-2 text-sm font-bold">
         {currentStudent.email === 'null' ? '......' : 'Welcome back'}
       </Text>

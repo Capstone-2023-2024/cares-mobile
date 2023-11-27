@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {Alert, Modal, TouchableOpacity, View} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {Text} from '~/components';
-import ProfilePicture from '~/components/ProfilePicture';
+import ProfilePictureUserInfo from '~/components/ProfilePictureUserInfo';
 import {useAuth} from '~/contexts/AuthContext';
 import {useUser} from '~/contexts/UserContext';
 import type {StudentWithClassSection} from '~/types/student';
@@ -175,7 +175,7 @@ const Hero = () => {
 
   return (
     <View className="mx-auto mt-9 w-11/12 flex-row rounded-xl bg-accent p-6">
-      <ProfilePicture />
+      <ProfilePictureUserInfo />
       {role === 'faculty' || role === 'adviser'
         ? renderFacultyUI()
         : renderStudentUI()}
