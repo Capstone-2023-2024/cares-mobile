@@ -8,6 +8,8 @@ import {retrieveImageFBStorage} from '~/utils/image';
 import {HeadingTemplate, TabContainer} from '../../../components/Home/Usertab';
 import {useUser} from '~/contexts/UserContext';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
+import { getImageFromStorage } from '@cares/utils/media';
+import { FIRESTORE_STORAGE_BUCKET } from '@env';
 
 const Announcements = () => {
   const {data} = useAnnouncement();
@@ -99,7 +101,7 @@ const Container = (props: AnnouncementProps) => {
         <Text className="mb-1 mt-2 text-sm text-black ">
           {currentStudent.email === 'null'
             ? '........'
-            : message.substring(0, 23)}
+            : props.title}
         </Text>
         {photoUrl !== undefined ? (
           <View className=" h-48 w-96 items-center overflow-hidden ">
@@ -109,7 +111,7 @@ const Container = (props: AnnouncementProps) => {
               <Image
                 className="mb-2 h-48 w-11/12 "
                 source={require('~/assets/error.svg')}
-                src={retrieveImageFBStorage(photoUrl)}
+                src={getImageFromStorage({imageName: photoUrl[0], ref: 'images', storageBucket: FIRESTORE_STORAGE_BUCKET})}
                 resizeMode="cover"
               />
             )}

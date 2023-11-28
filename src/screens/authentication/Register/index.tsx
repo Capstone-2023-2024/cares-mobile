@@ -79,6 +79,7 @@ const Register = () => {
       if (result === false) {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }
+      console.log(result)
       const corWithEmail = {...result, email};
       setStudentInfo(corWithEmail);
     }

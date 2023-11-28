@@ -1,3 +1,5 @@
+import { getImageFromStorage } from '@cares/utils/media';
+import { FIRESTORE_STORAGE_BUCKET } from '@env';
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {Image, Modal, SectionList, TextInput, View} from 'react-native';
@@ -142,7 +144,7 @@ const Announcements = () => {
 
           const photoArrayOneSRC =
             photoUrl !== undefined
-              ? retrieveImageFBStorage(photoUrl ?? '')
+              ? getImageFromStorage({imageName: photoUrl[0] ?? '', ref: 'images', storageBucket: FIRESTORE_STORAGE_BUCKET})
               : '';
 
           return (
@@ -156,7 +158,7 @@ const Announcements = () => {
                 <Text className="mt-5 text-xl font-black text-black">
                   {`${department.toUpperCase()} Department`}
                   {'\n'}
-                  <Text className="text-base font-light">Sino Nagpost</Text>
+                  {/* <Text className="text-base font-light">{postedBy}</Text> */}
                 </Text>
               </View>
               {photoUrl === undefined ? (
@@ -224,22 +226,24 @@ const Container = (props: AnnouncementProps) => {
             <Text className=" -mt-1">{message}</Text> // Whole Message
           )}
           <View className="mt-5 flex-row items-center justify-center">
-            <Text>Tags:</Text>
-            {tags?.map(value => {
-              const date = new Date();
-              date.setTime(endDate);
-              return (
-                <Text
-                  key={value}
-                  className="m-1 w-max rounded-lg bg-gray-500 px-2 py-1 text-sm text-paper">
-                  {value}
-                </Text>
-              );
-            })}
+            <Text className='text-xl font-bold'>Title:</Text>
+<Text className='text-xl font-bold'>{props.title}</Text>            
+            {/* ?.map(value => {
+            //   const date = new Date();
+            //   date.setTime(endDate);
+            //   return (
+            //     <Text
+            //       key={value}
+            //       className="m-1 w-max rounded-lg bg-gray-500 px-2 py-1 text-sm text-paper">
+            //       {value}
+            //     </Text>
+            //   );
+            // */}
           </View>
           <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text>
           {type !== 'event' ? (
-            <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
+            <></>
+            // <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
           ) : (
             <View>
               <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
