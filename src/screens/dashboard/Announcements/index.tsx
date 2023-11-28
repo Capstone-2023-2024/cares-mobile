@@ -1,16 +1,14 @@
-import { getImageFromStorage } from '@cares/utils/media';
-import { FIRESTORE_STORAGE_BUCKET } from '@env';
+import {AnnouncementProps} from '@cares/types/announcement';
+import {getImageFromStorage} from '@cares/utils/media';
+import {FIRESTORE_STORAGE_BUCKET} from '@env';
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Image, Modal, SectionList, TextInput, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Image, Modal, SectionList, View} from 'react-native';
+import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import SelectDropdown from 'react-native-select-dropdown';
-import {Text} from '~/components';
-// import {Textfield} from '~/components/Textfield';
+import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useUser} from '~/contexts/UserContext';
-import {AnnouncementProps} from '~/types/announcement';
-import {retrieveImageFBStorage} from '~/utils/image';
 
 const Announcements = () => {
   const {data, type, handleTypeChange} = useAnnouncement();
@@ -69,7 +67,7 @@ const Announcements = () => {
   //     ...data.filter(data => {
   //       return (
   //         data.type === type &&
-  //         data.tags.filter(value => /.*${text}.*/.test(value))
+  //         data.title.filter(value => /.*${text}.*/.test(value))
   //       );
   //     }),
   //   ]);
@@ -133,18 +131,22 @@ const Announcements = () => {
       )}
       <SectionList
         keyExtractor={({id}) => id}
-        sections={announcementData.map(({photoUrl, ...rest}) => ({
-          title: {photoUrl, department: rest.department, type: rest.type},
+        sections={announcementData.map(({photoUrls, ...rest}) => ({
+          title: {photoUrls, department: rest.department, type: rest.type},
           data: [{...rest}],
         }))}
         renderSectionHeader={({section}) => {
           const {
-            title: {department, photoUrl}, // type
+            title: {department, photoUrls}, // type
           } = section;
 
           const photoArrayOneSRC =
-            photoUrl !== undefined
-              ? getImageFromStorage({imageName: photoUrl[0] ?? '', ref: 'images', storageBucket: FIRESTORE_STORAGE_BUCKET})
+            photoUrls !== undefined
+              ? getImageFromStorage({
+                  imageName: photoUrls[0] ?? '',
+                  ref: 'images',
+                  storageBucket: FIRESTORE_STORAGE_BUCKET,
+                })
               : '';
 
           return (
@@ -161,7 +163,7 @@ const Announcements = () => {
                   {/* <Text className="text-base font-light">{postedBy}</Text> */}
                 </Text>
               </View>
-              {photoUrl === undefined ? (
+              {photoUrls === undefined ? (
                 <View className="" />
               ) : (
                 <TouchableOpacity
@@ -186,7 +188,7 @@ const Announcements = () => {
 };
 
 const Container = (props: AnnouncementProps) => {
-  const {message, postedBy, endDate, type, tags, dateCreated} = props;
+  const {message, postedBy, endDate, type, title, dateCreated} = props;
   const endingDay = new Date();
   const postedDate = new Date();
   endingDay.setTime(endDate);
@@ -226,8 +228,8 @@ const Container = (props: AnnouncementProps) => {
             <Text className=" -mt-1">{message}</Text> // Whole Message
           )}
           <View className="mt-5 flex-row items-center justify-center">
-            <Text className='text-xl font-bold'>Title:</Text>
-<Text className='text-xl font-bold'>{props.title}</Text>            
+            <Text className="text-xl font-bold">Title:</Text>
+            <Text className="text-xl font-bold">{title}</Text>
             {/* ?.map(value => {
             //   const date = new Date();
             //   date.setTime(endDate);
@@ -243,8 +245,8 @@ const Container = (props: AnnouncementProps) => {
           <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text>
           {type !== 'event' ? (
             <></>
-            // <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
           ) : (
+            // <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
             <View>
               <Text className="text-center font-semibold text-black">{`Posted date: ${postedDate.toLocaleString()}`}</Text>
               <Text className="text-center font-semibold text-black">{`Until: ${endingDay.toLocaleString()}`}</Text>

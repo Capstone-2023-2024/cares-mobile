@@ -1,13 +1,19 @@
 import React, {type ReactNode} from 'react';
-import AuthProvider from './AuthContext';
-import UserContext from './UserContext';
 import AnnouncementProvider from './AnnouncementContext';
+import AuthProvider from './AuthContext';
+import ContentManipulationProvider from './ContentManipulationContext';
+import ModalProvider from './ModalContext';
+import UniversalProvider from './UniversalContext';
+import UserContext from './UserContext';
 
-interface CtxProviderProps {
+interface BaseProvidersProps {
   children: ReactNode;
 }
 
-const CtxProviders = ({children}: CtxProviderProps) => {
+interface GeneralProvidersProps extends BaseProvidersProps {}
+interface ComplaintProvidersProps extends BaseProvidersProps {}
+
+const GeneralProviders = ({children}: GeneralProvidersProps) => {
   return (
     <AuthProvider>
       <UserContext>
@@ -17,4 +23,16 @@ const CtxProviders = ({children}: CtxProviderProps) => {
   );
 };
 
-export default CtxProviders;
+const ComplaintProviders = ({children}: ComplaintProvidersProps) => {
+  return (
+    <UniversalProvider>
+      <ModalProvider>
+        <ContentManipulationProvider>
+          <ComplaintProviders>{children}</ComplaintProviders>
+        </ContentManipulationProvider>
+      </ModalProvider>
+    </UniversalProvider>
+  );
+};
+
+export {ComplaintProviders, GeneralProviders};

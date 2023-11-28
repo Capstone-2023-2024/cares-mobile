@@ -1,9 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
 import {SvgUri as SVG} from 'react-native-svg';
-import {Text} from '~/components';
-import {uri} from './utils';
+import Text from '~/components/Text';
 import type {SvgProps} from './types';
+import {uri} from './utils';
 
 const SvgFallback = () => {
   return (

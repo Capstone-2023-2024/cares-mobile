@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import Loading from '~/components/SplashScreen';
-import {Role} from '~/screens/authentication/Landing/types';
+import type {Role} from '~/screens/authentication/Landing/types';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import type {

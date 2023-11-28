@@ -1,9 +1,13 @@
 import React from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
-import {Text} from '~/components';
+import {ScrollView, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import Background from '~/components/Background';
 import FooterNav from '~/components/FooterNav';
-import {Announcements, CalendarOfActivities, Usertab} from '~/components/Home';
+import Loading from '~/components/SplashScreen';
+import Text from '~/components/Text';
+import {default as Announcements} from '~/components/others/home/Announcements';
+import {default as CalendarOfActivities} from '~/components/others/home/CalendarOfActivities';
+import {default as Usertab} from '~/components/others/home/Usertab';
 import {useNav} from '~/contexts/NavigationContext';
 import {useUser} from '~/contexts/UserContext';
 
@@ -36,6 +40,10 @@ const Home = () => {
     );
   };
 
+  if (currentStudent.name === undefined) {
+    return <Loading />;
+  }
+
   return (
     <View className="flex-1">
       <Background>
@@ -46,9 +54,7 @@ const Home = () => {
           <Announcements />
         </ScrollView>
       </Background>
-      <View>
-        <FooterNav />
-      </View>
+      <FooterNav />
     </View>
   );
 };

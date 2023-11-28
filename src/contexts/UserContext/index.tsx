@@ -1,3 +1,8 @@
+import type {
+  ReadStudentInfoProps,
+  SectionType,
+  StudentInfoProps,
+} from '@cares/types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import React, {
@@ -10,7 +15,6 @@ import React, {
 import {Alert} from 'react-native';
 import {OneSignal} from 'react-native-onesignal';
 import {Role} from '~/screens/authentication/Landing/types';
-import type {StudentWithClassSection} from '~/types/student';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import {useAuth} from '../AuthContext';
@@ -20,22 +24,7 @@ import type {
   UserStateProps,
 } from './types';
 
-const initialStudent: StudentWithClassSection = {
-  studentNo: 'null',
-  college: 'null',
-  schoolYear: 'null',
-  name: 'null',
-  course: 'null',
-  gender: 'null',
-  major: 'null',
-  curriculum: 'null',
-  age: 'null',
-  yearLevel: 'null',
-  recipient: 'class_section',
-  scholarship: 'null',
-  email: 'null',
-  section: undefined,
-};
+const initialStudent: Partial<ReadStudentInfoProps> = {};
 const userStateProps: UserStateProps = {
   role: null,
   currentStudent: {...initialStudent},
@@ -55,10 +44,13 @@ function UserProvider({children}: UserProviderProps) {
     setState(prevState => ({...prevState, role: props}));
   }, []);
 
-  function setSection(section: UserStateProps['currentStudent']['section']) {
+  function setSection(section: SectionType) {
     const {currentStudent, ...rest} = state;
-    const newUserState: StudentWithClassSection = {...currentStudent, section};
-    setState({...rest, currentStudent: newUserState});
+    const newStudent: Partial<ReadStudentInfoProps> = {
+      ...currentStudent,
+      section,
+    };
+    setState({...rest, currentStudent: newStudent});
   }
 
   useEffect(() => {
@@ -129,7 +121,7 @@ function UserProvider({children}: UserProviderProps) {
             if (typeof studentCache === 'string') {
               const parsedStudentCache = JSON.parse(
                 studentCache,
-              ) as StudentWithClassSection;
+              ) as StudentInfoProps;
               return setState(prevState => ({
                 ...prevState,
                 currentStudent: parsedStudentCache,
@@ -150,7 +142,7 @@ function UserProvider({children}: UserProviderProps) {
 
               return setState(prevState => ({
                 ...prevState,
-                currentStudent: studentInfo as StudentWithClassSection,
+                currentStudent: studentInfo as StudentInfoProps,
               }));
             }
           } else if (role === 'faculty' || role === 'adviser') {
@@ -178,18 +170,18 @@ function UserProvider({children}: UserProviderProps) {
     return void setup();
   }, [currentUser, handleRole]);
   useEffect(() => {
-    function loginOnesignal() {
-      if (state.currentStudent.studentNo !== initialStudent.studentNo) {
-        OneSignal.login(state.currentStudent.studentNo);
-      }
+    function oneSignalLogin() {
+      const currentStudentNo = state.currentStudent.studentNo;
+      const studentNoExist = currentStudentNo !== undefined;
+      studentNoExist && OneSignal.login(currentStudentNo);
     }
-    return loginOnesignal();
+    return oneSignalLogin();
   }, [state.currentStudent.studentNo]);
   useEffect(() => {
     function setupOneSignalTag() {
-      if (state.role !== null) {
-        return OneSignal.User.addTag('role', state.role);
-      }
+      const role = state.role;
+      const roleExists = role !== null;
+      roleExists && OneSignal.User.addTag('role', role);
     }
     return setupOneSignalTag();
   }, [state.role]);

@@ -1,5 +1,5 @@
-import type {AnnouncementProps} from '~/types/announcement';
+import type {AnnouncementProps} from '@cares/types/announcement';
 
-export interface ContainerProps extends Omit<AnnouncementProps, 'id'> {
+export interface ContainerProps extends AnnouncementProps {
   single?: boolean;
 }

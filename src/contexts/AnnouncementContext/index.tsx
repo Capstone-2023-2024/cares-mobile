@@ -1,5 +1,8 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import type {AnnouncementProps} from '~/types/announcement';
+import type {
+  AnnouncementProps,
+  ReadAnnouncementProps,
+} from '@cares/types/announcement';
 import {collectionRef} from '~/utils/firebase';
 import type {
   AnnouncementContextProps,
@@ -8,7 +11,7 @@ import type {
 } from './types';
 
 const initState: AnnouncementStateProps = {
-  tag: '',
+  title: '',
   data: [],
   type: 'event',
 };
@@ -34,7 +37,7 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
     }
     return setState(prevState => ({...prevState, type: 'recognition'}));
   }
-  function handleTag(tag: AnnouncementStateProps['tag']) {
+  function handleTag(tag: AnnouncementStateProps['title']) {
     setState(prevState => ({...prevState, tag}));
   }
 
@@ -78,14 +81,14 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
     //   return eventRecognitionQuery;
     // }
     return queryAnnouncement.onSnapshot(snapshot => {
-      const announcementHolder: AnnouncementProps[] = [];
+      const announcementHolder: ReadAnnouncementProps[] = [];
       snapshot.docs.forEach(doc => {
-        const data = doc.data();
         const id = doc.id;
+        const data = doc.data() as AnnouncementProps;
         announcementHolder.push({
-          ...data,
           id,
-        } as AnnouncementProps);
+          ...data,
+        });
       });
       setState(prevState => ({...prevState, data: announcementHolder}));
     });

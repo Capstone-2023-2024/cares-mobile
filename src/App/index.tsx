@@ -5,7 +5,7 @@ import React, {useEffect} from 'react';
 import {Alert} from 'react-native';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import HeaderDefault from '~/components/Header';
-import CtxProviders from '~/contexts';
+import {GeneralProviders} from '~/contexts';
 import {useAuth} from '~/contexts/AuthContext';
 import NavigationProvider, {useNav} from '~/contexts/NavigationContext';
 import Screens, {optionsList} from '~/screens';
@@ -29,9 +29,9 @@ const App = () => {
     return oneSignalEvent();
   }, []);
   return (
-    <CtxProviders>
+    <GeneralProviders>
       <NavigationRouter />
-    </CtxProviders>
+    </GeneralProviders>
   );
 };
 

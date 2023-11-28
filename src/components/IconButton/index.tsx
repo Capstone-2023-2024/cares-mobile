@@ -1,5 +1,6 @@
 import React from 'react';
-import {Image, TouchableOpacity} from 'react-native';
+import {Image} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import type {IconButtonProps} from './types';
 
 const IconButton = (props: IconButtonProps) => {

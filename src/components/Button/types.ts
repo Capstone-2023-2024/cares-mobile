@@ -1,10 +1,9 @@
 import type {ReactNode} from 'react';
-import type {GestureResponderEvent} from 'react-native';
+import type {TouchableOpacityProps} from 'react-native-gesture-handler';
 
-export interface ButtonBase {
+export interface ButtonBase extends TouchableOpacityProps {
   children: ReactNode;
   disabled?: boolean;
-  onPress: (event: GestureResponderEvent) => void;
 }
 
 export interface ButtonProps extends ButtonBase {

@@ -1,5 +1,7 @@
-import {StudentCORProps} from '~/types/student';
+import type {StudentCORProps} from '~/types/student';
 
-export interface PushToCacheProps {
+interface PushToCacheProps {
   usersCache: StudentCORProps[];
 }
+
+export type {PushToCacheProps};

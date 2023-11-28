@@ -3,12 +3,11 @@ import {Alert, Image, TouchableOpacity, View} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {Extractor} from 'react-native-pdf-extractor';
 import type {Transient} from 'react-native-pdf-extractor/src/types';
-import {Text} from '~/components';
 import {Button, Link} from '~/components/Button';
-import {Heading} from '~/components/Heading';
-import {Textfield} from '~/components/Textfield';
+import Heading from '~/components/Heading';
+import Text from '~/components/Text';
+import Textfield from '~/components/Textfield';
 import {useNav} from '~/contexts/NavigationContext';
-import type {Error} from '~/types/error';
 import type {StudentCORProps} from '~/types/student';
 import {collectionRef} from '~/utils/firebase';
 import type {CORPatternsProps, FileType} from './types';
@@ -50,11 +49,9 @@ const Register = () => {
       }
       Alert.alert('File is not a PDF file');
     } catch (err) {
-      const {code} = err as Error;
-      if (code !== 'DOCUMENT_PICKER_CANCELED') {
-        Alert.alert(`File is not a valid PDF file: ${code}`);
-        return setFile(null);
-      }
+      // console.log(err)
+      Alert.alert('File is not a valid PDF file');
+      return setFile(null);
     }
   }
   async function handlePDFResult(data: Transient | null) {
@@ -79,7 +76,7 @@ const Register = () => {
       if (result === false) {
         return Alert.alert(`Invalid COR data. Acquire here: ${bsuPortal}`);
       }
-      console.log(result)
+      console.log(result);
       const corWithEmail = {...result, email};
       setStudentInfo(corWithEmail);
     }
@@ -114,6 +111,19 @@ const Register = () => {
       reset();
     }
   }
+
+  const renderFileSize = ({name, size, uri}: FileType) => {
+    const formatName = name?.substring(0, 8);
+    const convertedSizeToKb = size ?? NaN / milToKB;
+
+    return (
+      <View>
+        <Text className="font-semibold">{`${formatName}...`}</Text>
+        <Text>{`${Math.floor(convertedSizeToKb)} KB`}</Text>
+        <Text>{`Path: ${uri}`}</Text>
+      </View>
+    );
+  };
 
   return (
     <View className="h-2/3 justify-center">
@@ -153,17 +163,7 @@ const Register = () => {
               className="h-full w-full"
             />
           </View>
-          {file && (
-            <View>
-              <Text className="font-semibold">{`${file.name?.substring(
-                0,
-                8,
-              )}...`}</Text>
-              <Text>{`${Math.floor(
-                file.size ? file.size / milToKB : NaN,
-              )} KB`}</Text>
-            </View>
-          )}
+          {file && renderFileSize(file)}
         </View>
         {!file && (
           <Text

@@ -1,16 +1,16 @@
+import type {StudentInfoProps} from '@cares/types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {Alert, Modal, TouchableOpacity, View} from 'react-native';
+import {OneSignal} from 'react-native-onesignal';
 import SelectDropdown from 'react-native-select-dropdown';
-import {Text} from '~/components';
+import Text from '~/components/Text';
 import ProfilePictureUserInfo from '~/components/ProfilePictureUserInfo';
 import {useAuth} from '~/contexts/AuthContext';
 import {useUser} from '~/contexts/UserContext';
-import type {StudentWithClassSection} from '~/types/student';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import type {TextRowType} from './types';
-import {OneSignal} from 'react-native-onesignal';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
@@ -32,9 +32,7 @@ const UserInfo = () => {
     OneSignal.logout();
     return void signout();
   }
-  async function handleSectionSelect(
-    section: StudentWithClassSection['section'],
-  ) {
+  async function handleSectionSelect(section: StudentInfoProps['section']) {
     try {
       await AsyncStorage.setItem(
         CURRENT_STUDENT_KEY,
@@ -60,7 +58,7 @@ const UserInfo = () => {
     </>
   );
   const renderStudentUI = () => {
-    const splitName = name.split(',');
+    const splitName = (name ?? '').split(',');
     const splitNameResult = splitName[1]?.trim().split('.');
     const lastName = splitName[0] ?? 'lastname';
     const splitNameResultFirstLength = splitNameResult?.[0]?.length ?? -1;
@@ -78,14 +76,14 @@ const UserInfo = () => {
         <TextRow title="first_name" value={firstName} />
         <TextRow title="middle_initial" value={middleInitial} />
         <TextRow title="last_name" value={lastName} />
-        <TextRow title="college" value={college} />
-        <TextRow title="year_level" value={yearLevel} />
-        <TextRow title="school_year" value={schoolYear} />
-        <TextRow title="curriculum" value={curriculum} />
-        <TextRow title="scholarship" value={scholarship} />
-        <TextRow title="major" value={major} />
-        <TextRow title="sex" value={gender} />
-        <TextRow title="age" value={age} />
+        <TextRow title="college" value={college ?? ''} />
+        <TextRow title="year_level" value={yearLevel ?? ''} />
+        <TextRow title="school_year" value={schoolYear ?? ''} />
+        <TextRow title="curriculum" value={curriculum ?? ''} />
+        <TextRow title="scholarship" value={scholarship ?? ''} />
+        <TextRow title="major" value={major ?? ''} />
+        <TextRow title="sex" value={gender ?? ''} />
+        <TextRow title="age" value={age ?? ''} />
         <View className="self-center">{renderSelectDropDown()}</View>
       </>
     );

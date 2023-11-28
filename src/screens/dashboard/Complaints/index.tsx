@@ -1,38 +1,29 @@
 import type {ComplaintBaseProps, ComplaintProps} from '@cares/types/complaint';
 import type {FirestoreDatabaseProps} from '@cares/types/document';
 import type {AdviserInfoProps, StudentInfoProps} from '@cares/types/user';
-import React, {useCallback, useEffect, useState} from 'react';
-import {
-  Alert,
-  FlatList,
-  Modal,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {Alert, View} from 'react-native';
+import {OneSignal} from 'react-native-onesignal';
+import Header from '~/components/Header';
 import Loading from '~/components/SplashScreen';
+import ChatHeadButton from '~/components/others/complaints/ChatHeadButton';
+import ComplaintBox from '~/components/others/complaints/ComplaintBox';
+import ComplaintBoxRenderer from '~/components/others/complaints/ComplaintBoxRenderer';
+import RenderChatHeads from '~/components/others/complaints/RenderChatHeads';
+import RenderInputMessageContainer from '~/components/others/complaints/RenderInputMessageContainer';
+import RenderStudents from '~/components/others/complaints/RenderStudents';
 import {useAuth} from '~/contexts/AuthContext';
-import {collectionRef} from '~/utils/firebase';
-import {
-  ChatHeadButton,
-  ComplaintBox,
-  ComplaintBoxRenderer,
-  RenderChatHeads,
-  RenderInputMessageContainer,
-  RenderStudents,
-} from './components';
-import ComplaintsProvider, {useComplaints} from './contexts/ComplaintsProvider';
+import ComplaintsProvider, {useComplaints} from '~/contexts/ComplaintContext';
 import ContentManipulationProvider, {
   useContentManipulation,
-} from './contexts/ContentManipulationProvider';
-import ModalProvider, {useModal} from './contexts/ModalProvider';
+} from '~/contexts/ContentManipulationContext';
+import ModalProvider, {useModal} from '~/contexts/ModalContext';
+import UniversalProvider, {useUniversal} from '~/contexts/UniversalContext';
 import type {
   UniversalProviderStateProps,
   YearLevelSectionProps,
-} from './contexts/UniversalProvider';
-import UniversalProvider, {useUniversal} from './contexts/UniversalProvider';
-import Header from '~/components/Header';
-import {OneSignal} from 'react-native-onesignal';
+} from '~/contexts/UniversalContext/types';
+import {collectionRef} from '~/utils/firebase';
 
 interface ReadComplaintBaseProps
   extends ComplaintBaseProps,
@@ -82,10 +73,10 @@ const ComplaintsWrapper = () => {
           .get();
 
         if (!adviserSnapshot.empty) {
-          const doc = adviserSnapshot.docs[0];
-          const adviserData = doc?.data() as AdviserInfoProps;
-          const id = doc?.id ?? 'null';
-          setAdviserInfo(adviserData, id);
+          const snap = adviserSnapshot.docs[0];
+          const adviserData = snap?.data() as AdviserInfoProps;
+          const id = snap?.id ?? 'null';
+          setAdviserInfo({...adviserData, id});
         }
       } else {
         const adviserSnapshot = await collectionRef('adviser')
@@ -93,9 +84,9 @@ const ComplaintsWrapper = () => {
           .get();
         if (!adviserSnapshot.empty) {
           const doc = adviserSnapshot.docs[0];
-          const adviserData = doc?.data() as AdviserInfoProps;
           const id = doc?.id ?? '';
-          setAdviserInfo(adviserData, id);
+          const adviserData = doc?.data() as AdviserInfoProps;
+          setAdviserInfo({...adviserData, id});
           setRole('adviser');
         }
       }
@@ -118,7 +109,6 @@ const ComplaintsWrapper = () => {
 const MainPage = () => {
   const {
     currentStudentComplaints,
-    otherComplaints,
     setClassSectionComplaints,
     setCurrentStudentComplaints,
     setOtherComplaints,
@@ -127,7 +117,6 @@ const MainPage = () => {
     selectedChatHead,
     selectedStudent,
     setMessage,
-    setNewComplaints,
     setSelectedChatId,
     setSelectedStudent,
     setSelectedChatHead,
@@ -141,7 +130,7 @@ const MainPage = () => {
     setMayorInfo,
     returnComplaintsQuery,
   } = useUniversal();
-  const {showMayorModal, setShowMayorModal, setShowStudents} = useModal();
+  const {setShowMayorModal, setShowStudents} = useModal();
 
   const getChattablesForStudent = useCallback(
     async ({yearLevel, section}: YearLevelSectionProps) => {
@@ -259,22 +248,6 @@ const MainPage = () => {
     }
   }, [fetchOtherComplaints]);
   /** If role is `mayor` it is directed to `adviser`, else if role is `student` it is directed to `mayor` */
-  function handleNewConcern() {
-    if (currentStudentInfo?.studentNo !== undefined) {
-      const recipient = role === 'mayor' ? 'adviser' : 'mayor';
-      const newConcernDetails: Omit<ComplaintProps, 'messages'> = {
-        status: 'processing',
-        recipient,
-        studentNo: currentStudentInfo.studentNo,
-        dateCreated: new Date().getTime(),
-      };
-      setSelectedChatHead(recipient);
-      setSelectedChatId('object');
-      // setShowMayorModal(false);
-      return setNewComplaints(newConcernDetails);
-    }
-    Alert.alert('studentNo is undefined');
-  }
   const renderClassSectionButton = () => {
     const classSectionName = 'class_section';
     return (
@@ -353,19 +326,7 @@ const MainPage = () => {
       <View className="h-full">
         {role !== 'student' ? (
           <>
-            <RenderChatHeads
-              handleNewConcern={handleNewConcern}
-              data={otherComplaints
-                .filter(props => selectedChatHead === props.recipient)
-                .sort((a, b) => b.dateCreated - a.dateCreated)}
-              condition={showMayorModal}
-              chatHeadOnClick={selectedChatHead => {
-                selectedChatHead !== 'students' && setSelectedStudent(null);
-                setSelectedChatId(null);
-                setSelectedChatHead(selectedChatHead);
-                setShowStudents(false);
-                setShowMayorModal(true);
-              }}>
+            <RenderChatHeads>
               <ChatHeadButton
                 name={role === 'mayor' ? 'My Classmates' : 'Students'}
                 onPress={() => {
@@ -393,19 +354,7 @@ const MainPage = () => {
             />
           </>
         ) : (
-          <RenderChatHeads
-            handleNewConcern={handleNewConcern}
-            data={otherComplaints
-              .filter(props => props.recipient === selectedChatHead)
-              .sort((a, b) => b.dateCreated - a.dateCreated)}
-            condition={showMayorModal}
-            chatHeadOnClick={selectedChatHead => {
-              setSelectedChatHead(selectedChatHead);
-              setSelectedChatId(null);
-              setShowMayorModal(true);
-            }}>
-            {renderClassSectionButton()}
-          </RenderChatHeads>
+          <RenderChatHeads>{renderClassSectionButton()}</RenderChatHeads>
         )}
         <ComplaintBox />
         <RenderInputMessageContainer />

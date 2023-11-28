@@ -1,14 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
-import {
-  Image,
-  ScrollView,
-  TextInput,
-  ToastAndroid,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {Text} from '~/components';
+import {Image, ScrollView, ToastAndroid, View} from 'react-native';
+import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
+import BackHeader from '~/components/BackHeader';
+import Text from '~/components/Text';
 import TickingClock from '~/components/TickingClock';
 import {useAuth} from '~/contexts/AuthContext';
 import {arrayUnion, collectionRef} from '~/utils/firebase';
@@ -19,7 +14,6 @@ import type {
   PollStateValue,
   PollStyledTextProps,
 } from './types';
-import BackHeader from '~/components/BackHeader';
 
 const ProjectSuggestions = () => {
   const [state, setState] = useState<EventWithIdProps[]>([]);

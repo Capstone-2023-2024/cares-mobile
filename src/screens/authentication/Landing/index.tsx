@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import {ImageBackground, View} from 'react-native';
-import {Text} from '~/components';
+import Text from '~/components/Text';
 import {Button} from '~/components/Button';
 import {useNav} from '~/contexts/NavigationContext';
 import {useUser} from '~/contexts/UserContext';

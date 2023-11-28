@@ -2,8 +2,8 @@ import type {ReactNode} from 'react';
 import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
 
 export interface InitialStateProps {
-  currentUser: FirebaseAuthTypes.User | null;
   isLoading: boolean;
+  currentUser: FirebaseAuthTypes.User | null;
 }
 export interface AuthContextType extends InitialStateProps {
   signout: () => Promise<void>;

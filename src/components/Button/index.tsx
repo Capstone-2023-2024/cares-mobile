@@ -1,6 +1,6 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
-import {Text} from '~/components';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import Text from '~/components/Text';
 import type {ButtonProps, LinkProps} from './types';
 
 export const Button = (props: ButtonProps) => {
@@ -8,15 +8,18 @@ export const Button = (props: ButtonProps) => {
 
   function style() {
     let base = 'px-4 p-2 rounded-lg shadow-md active:scale-115';
-    if (rest.disabled) {
-      return `${base} bg-slate-300`;
+    return rest.disabled ? `${base} bg-slate-300` : typeBasedStyle(type);
+
+    function typeBasedStyle(props: ButtonProps['type']) {
+      switch (props) {
+        case 'error':
+          return `${base} bg-red-500`;
+        case 'success':
+          return `${base} bg-green-500`;
+        default:
+          return `${base} bg-primary`;
+      }
     }
-    if (type === 'error') {
-      return `${base} bg-red-500`;
-    } else if (type === 'success') {
-      return `${base} bg-green-500`;
-    }
-    return `${base} bg-primary`;
   }
 
   return (
