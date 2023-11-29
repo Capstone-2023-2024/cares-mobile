@@ -1,22 +1,24 @@
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
-import type {CollectionPath} from '~/types/firebase';
-import type {ResultType} from '~/types/student';
+import type {CollectionPathType} from '@cares/types/firebase';
+import type {StudentNameResultProps} from '@cares/types/user';
 
 const app = firebase.app();
-export const arrayUnion = (data: any) =>
+const arrayUnion = (data: any) =>
   firebase.firestore.FieldValue.arrayUnion(data);
+const increment = (data: number) =>
+  firebase.firestore.FieldValue.increment(data);
 
-export const firestoreApp = firestore(app);
-export const collectionRef = (path: CollectionPath) =>
+const firestoreApp = firestore(app);
+const collectionRef = (path: CollectionPathType) =>
   firestoreApp.collection(path);
 
-export const validateEmail = (email: string) => {
+const validateEmail = (email: string) => {
   const bulsuRegex = /^[a-z]+(\.[a-z]+)*@bulsu\.edu\.ph$/;
   return bulsuRegex.test(email);
 };
 
-export function validateEmailWithCOR(result: ResultType) {
+function validateEmailWithCOR(result: StudentNameResultProps) {
   const {name, type} = result;
   const lastNameEndex = name.indexOf(',') ?? NaN;
   const initialDotStart = name.indexOf('.') ?? NaN;
@@ -46,3 +48,12 @@ export function validateEmailWithCOR(result: ResultType) {
     '',
   )}.${lastName}.${middleInitial}@bulsu.edu.ph`;
 }
+
+export {
+  arrayUnion,
+  increment,
+  firestoreApp,
+  collectionRef,
+  validateEmail,
+  validateEmailWithCOR,
+};

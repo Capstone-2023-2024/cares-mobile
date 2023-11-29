@@ -1,256 +1,627 @@
+import type {
+  CommentProps,
+  OptionProps,
+  PollEventProps,
+  ReadPollEventProps,
+} from '@cares/types/poll';
+import {setUpPrefix} from '@cares/utils/date';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, ToastAndroid, View} from 'react-native';
-import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
-import BackHeader from '~/components/BackHeader';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {
+  Image,
+  KeyboardAvoidingView,
+  Modal,
+  TouchableOpacity as VanillaTouchableOpacity,
+  View,
+} from 'react-native';
+import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
+import {ActivityIndicator} from 'react-native-paper';
 import Text from '~/components/Text';
+import Textfield from '~/components/Textfield';
 import TickingClock from '~/components/TickingClock';
 import {useAuth} from '~/contexts/AuthContext';
 import {arrayUnion, collectionRef} from '~/utils/firebase';
-import type {
-  EventProps,
-  EventWithIdProps,
-  PollStateProps,
-  PollStateValue,
-  PollStyledTextProps,
-} from './types';
 
 const ProjectSuggestions = () => {
-  const [state, setState] = useState<EventWithIdProps[]>([]);
-
-  function renderPolls() {
-    return state.map(props => (
-      <View key={props.id} className="w-full items-center ">
-        <Poll {...props} />
-      </View>
-    ));
-  }
+  const [state, setState] = useState<ReadPollEventProps[]>([]);
 
   useEffect(() => {
     const unsub = collectionRef('project_suggestion')
       .orderBy('dateOfExpiration', 'desc')
       .where('dateOfExpiration', '>', new Date().getTime())
-      .limit(5)
+      .limit(10)
       .onSnapshot(snapshot => {
-        const placeholder: EventWithIdProps[] = [];
+        const placeholder: ReadPollEventProps[] = [];
         snapshot.forEach(doc => {
           const id = doc.id;
-          const data = doc.data() as EventProps;
-          placeholder.push({...data, id});
+          const data = doc.data() as PollEventProps;
+          const options = data.options.sort((a, b) => a.index - b.index);
+          placeholder.push({...data, options, id});
         });
         setState(placeholder);
       });
-    return () => {
-      unsub();
-    };
+    return unsub;
   }, []);
 
   return (
-    <View className="flex-1 bg-stone-300">
-      <ScrollView>
-        <BackHeader />
-        {renderPolls()}
-      </ScrollView>
-    </View>
+    <FlatList
+      data={state}
+      keyExtractor={props => props.id}
+      renderItem={({item}) => (
+        <View key={item.id} className="w-full items-center ">
+          <Poll {...item} />
+        </View>
+      )}
+    />
   );
 };
 
-const Poll = ({
-  question,
-  options,
-  id,
-  votes,
-  state,
-  dateOfExpiration,
-  postedBy,
-}: EventWithIdProps) => {
-  const initState: PollStateProps = {
-    idea: null,
+interface PollStateProps {
+  idea: string;
+  index: number;
+  maxLength: number;
+  comments: CommentProps[];
+  currentComment: string;
+  showComments: CommentProps[];
+  showCommentInput: boolean;
+  showCloseConfirmation: boolean;
+  currentIndex: number;
+  offset: {
+    height: number;
+    width: number;
   };
+}
+
+const Poll = (props: ReadPollEventProps) => {
+  const {
+    question,
+    options,
+    id,
+    votes,
+    state,
+    dateOfExpiration,
+    postedBy,
+    comments,
+  } = props;
   const {currentUser} = useAuth();
-  const [pollState, setPollState] = useState(initState);
-  const condition = pollState.idea !== null && pollState.idea.trim() !== '';
+  const [pollState, setPollState] = useState<PollStateProps>({
+    idea: '',
+    index: -1,
+    currentIndex: -1,
+    maxLength: -1,
+    comments: [],
+    currentComment: '',
+    showComments: [],
+    showCommentInput: false,
+    showCloseConfirmation: false,
+    offset: {
+      height: 0,
+      width: 0,
+    },
+  });
+  const undefinedNaN = -1;
+  const flatListRef = useRef<FlatList | null>(null);
+  // const sampleComment: CommentProps[] = [
+  //   {
+  //     commenter: 'carranzagcarlo@gmail.com',
+  //     value: 'Poo',
+  //     dateCreated: new Date().getTime(),
+  //   },
+  //   {
+  //     commenter: 'giancarlo.carranza.a@gmail.com',
+  //     value: 'Laa',
+  //     dateCreated: new Date().getTime(),
+  //   },
+  //   {
+  //     commenter: 'mamama.a@gmail.com',
+  //     value: 'LaKKakaa',
+  //     dateCreated: new Date().getTime(),
+  //   },
+  // ];
+  const targetPollDocRef = collectionRef('project_suggestion').doc(id);
+  const commentCondition = pollState.currentComment.trim() === '';
+  const initOptions = (value: string): OptionProps => ({
+    value,
+    index: 0,
+  });
 
-  function handleState(key: keyof PollStateProps, value: PollStateValue) {
-    setPollState(prevState => ({...prevState, [key]: value}));
+  function handleChangeText(text: string, key: keyof typeof pollState) {
+    setPollState(prevState => ({...prevState, [key]: text}));
   }
-  async function handleChangeText(text: string) {
-    handleState('idea', text);
+
+  function getNewOptionsPrevVote(currentValue: string) {
+    const email = currentUser?.email ?? 'NO_EMAIL';
+    /** Targeted option destructured */
+    const targetedOption =
+      options.filter(props => currentValue === props.value)[0] ??
+      initOptions('');
+
+    /** The rest of the options */
+    const restOptions = options.filter(props => currentValue !== props.value);
+
+    /** Getting previous voted value */
+    const emailKey = Object.keys(votes ?? {}).filter(
+      key => email === key,
+    )[0] as keyof typeof votes;
+    const prevVotedValue = votes?.[emailKey];
+
+    const data: {
+      targetedOption: OptionProps;
+      restOptions: OptionProps[];
+      prevVotedValue?: string;
+    } = {targetedOption, restOptions, prevVotedValue};
+    return data;
   }
-  async function handleOptionPress(value: string) {
-    try {
-      await AsyncStorage.setItem(id, value);
-      const storedValue = await AsyncStorage.getItem(id);
-      if (storedValue !== null && currentUser !== null) {
-        let index = -1;
-        options.forEach(({name}, i) => {
-          if (storedValue === name) {
-            index = i;
+  function toggleModal(
+    value: boolean,
+    key: 'showCommentInput' | 'showCloseConfirmation',
+  ) {
+    setPollState(prevState => ({
+      ...prevState,
+      [key]: value,
+    }));
+  }
+  /** This will be the key for rendering the comment section */
+  const loadCommentData = useCallback(() => {
+    const initCondition = pollState.index === undefinedNaN;
+    const fetchIndex = initCondition ? 0 : pollState.index;
+    const commentHolder = comments ?? [];
+    const initCommentData = commentHolder[0] ?? {
+      value: '',
+      commenter: 'NO_EMAIL',
+      dateCreated: NaN,
+    };
+
+    setPollState(prevState => ({
+      ...prevState,
+      index: fetchIndex,
+      comments: commentHolder,
+      showComments: [
+        ...(initCondition ? [initCommentData] : prevState.showComments),
+      ],
+      maxLength: comments?.length ?? 0,
+    }));
+  }, [comments, pollState.index, undefinedNaN]);
+
+  /** See More or Hide */
+  function paginateComments() {
+    setPollState(prevState => {
+      const RESETINDEX = 0;
+      const incrementBy = 1;
+      let advanceIndex = prevState.index + incrementBy;
+      const indexCondition = advanceIndex >= prevState.maxLength;
+      console.log({advanceIndex}, prevState.maxLength);
+      const result = indexCondition
+        ? {
+            ...prevState,
+            index: RESETINDEX,
+            showComments: [
+              prevState.comments[RESETINDEX] ?? {
+                commenter: '',
+                value: '',
+                dateCreated: NaN,
+              },
+            ],
           }
-        });
-        if (index > -1) {
-          const newVotes = {...votes, [currentUser.email ?? '']: storedValue};
-          await collectionRef('project_suggestion').doc(id).update({
-            votes: newVotes,
-          });
-        }
-      }
-    } catch (err) {
-      ToastAndroid.show('Option pressed error', ToastAndroid.SHORT);
+        : {
+            ...prevState,
+            index: advanceIndex,
+            showComments: [
+              ...prevState.showComments,
+              prevState.comments[advanceIndex] ?? {
+                commenter: '',
+                value: '',
+                dateCreated: NaN,
+              },
+            ],
+          };
+      return result;
+    });
+    if (flatListRef.current !== null) {
+      flatListRef.current.scrollToEnd({animated: true});
+      // flatListRef.current.scrollToIndex({
+      //   animated: true,
+      //   index: pollState.index,
+      // });
     }
   }
-  async function handleSubmitIdea() {
-    try {
-      if (pollState.idea !== null) {
-        const isOptionsUndefined = options === undefined;
-        const name = pollState.idea?.toLowerCase();
-        const data = {
-          name,
-          value: 1,
-        };
-        const union = arrayUnion(data);
-        if (isOptionsUndefined) {
-          await collectionRef('project_suggestion').doc(id).update({
-            options: union,
-          });
-        } else {
-          const target = options.filter(value => name === value.name);
-          const rest = options.filter(value => name !== value.name);
-          if (target.length > 0) {
-            const targetName = target[0]?.name ?? '';
-            let value = target[0]?.value ?? 0;
-            value += 1;
-            const update = await collectionRef('project_suggestion')
-              .doc(id)
-              .update({
-                options: [...rest, {name: targetName, value}],
-              });
-            return update;
-          }
-          rest.push(data);
-          await collectionRef('project_suggestion')
-            .doc(id)
-            .update({
-              options: [...rest],
-            });
-        }
-      }
-      setPollState(initState);
-    } catch (err) {
-      // console.log(err);
-      ToastAndroid.show('Error in submitting idea', ToastAndroid.SHORT);
-    }
+  // const onViewableItemsChanged = (event: {
+  //   viewableItems: ViewToken[];
+  //   changed: ViewToken[];
+  // }) => {
+  //   console.log(event);
+  // const height = event.nativeEvent.layout.height;
+  // const width = event.nativeEvent.layout.width;
+  // const indexx = event.nativeEvent.layout.y;
+  // console.log({indexx, height});
+  // setPollState(prevState => ({
+  //   ...prevState,
+  //   offset: {height: height * prevState.index, width},
+  // }));
+  // };
+
+  function handleCommentUpload() {
+    const postComment = pollState.currentComment;
+    const commentData: CommentProps = {
+      value: postComment,
+      commenter: currentUser?.email ?? '',
+      dateCreated: new Date().getTime(),
+    };
+
+    setPollState(prevState => ({
+      ...prevState,
+      currentComment: '',
+      showCommentInput: false,
+      showCloseConfirmation: false,
+    }));
+
+    commentData.value.trim() !== '' &&
+      void targetPollDocRef.update({
+        comments: arrayUnion(commentData),
+      });
   }
+
+  // function handleSubmitIdea() {
+  //   try {
+  //     const newIdea = pollState.idea?.toLowerCase();
+  //     const initOptionRef = initOptions(newIdea);
+  //     const filterOptions = options.filter(props => newIdea !== props.value);
+  //     const isIdeaNotOption = filterOptions.length === 0;
+
+  //     const {targetedOption, restOptions} = getNewOptionsPrevVote(newIdea);
+  //     const {vote, value, index} = targetedOption;
+  //     let targetVoteCount = vote ?? undefinedNaN;
+
+  //     /** Update options from Server */
+  //     const union = arrayUnion(initOptionRef);
+  //     void targetPollDocRef.update(() => ({
+  //       options: isIdeaNotOption
+  //         ? /** Append initialized option */
+  //           union
+  //         : /** TODO: Reconsidering because this logic is almost identical to option press */ [
+  //             ...restOptions.map(props => ({
+  //               ...props,
+  //               vote: (props.vote ?? 0) > 0 ? (props.vote ?? 0) - 1 : 0,
+  //             })),
+  //             targetVoteCount >= 0
+  //               ? {value, vote: targetVoteCount + 1, index}
+  //               : {value, index},
+  //           ],
+  //     }));
+
+  //     setPollState(prevState => ({...prevState, idea: ''}));
+  //   } catch (err) {
+  //     // console.log(err);
+  //     ToastAndroid.show('Error in submitting idea', ToastAndroid.SHORT);
+  //   }
+  // }
+
   function renderOptions() {
-    function setSelectionStyle() {
-      if (currentUser !== null && votes !== undefined) {
-        const email = currentUser.email ?? '';
-        const result = Object.keys(votes ?? {}).filter(key => email === key)[0];
-        if (result !== undefined) {
-          // const currentValue = votes.result ?? '';
-          return votes[result];
-        }
-      }
-      return '';
+    const filteredEmail = currentUser?.email ?? '';
+    const filteredVotes = votes ?? {};
+
+    /** Sets the condition for Poll Button */
+    function setButtonStyle(email: string, votes: {[x: string]: string}) {
+      const result = Object.keys(votes ?? {}).filter(key => email === key)[0];
+      return result !== undefined && votes[result];
     }
 
-    return options.map(({name}, index) => {
-      const result = Object.values(votes ?? {}).filter(val => name === val);
-      const CONDITION = setSelectionStyle() === name;
+    /** Update vote onPress in Firestore */
+    function handleOptionPress(selectedValue: string, email: string) {
+      const {targetedOption, restOptions, prevVotedValue} =
+        getNewOptionsPrevVote(selectedValue);
+      const {vote, value, index} = targetedOption;
+      let targetVoteCount = vote ?? undefinedNaN;
+      const newOptions = [
+        ...restOptions.map(props => ({
+          ...props,
+          vote:
+            prevVotedValue === props.value ? (props.vote ?? 0) - 1 : props.vote,
+        })),
+        targetVoteCount > undefinedNaN
+          ? {
+              value,
+              vote:
+                prevVotedValue === value
+                  ? targetVoteCount
+                  : targetVoteCount + 1,
+              index,
+            }
+          : {value, index},
+      ].sort((a, b) => a.index - b.index);
+
+      void targetPollDocRef.update({
+        options: newOptions,
+        votes: {[email]: value},
+      });
+    }
+    return options.map(({value, vote}, index) => {
+      const condition = setButtonStyle(filteredEmail, filteredVotes) === value;
 
       return (
         <TouchableOpacity
           key={index}
           className={`${
-            CONDITION ? ' bg-green-100/70' : 'border bg-white '
-          } mx-2 mb-3 w-fit flex-row justify-between rounded-full p-2 shadow-sm duration-300 ease-in-out`}
-          onPress={() => handleOptionPress(name)}>
-          <PollStyledText value={name} condition={CONDITION} />
+            condition ? 'scale-95 bg-secondary' : 'scale-90 bg-primary/40'
+          } mx-auto my-1 w-11/12 flex-row justify-between rounded-full p-1 duration-300 ease-in-out`}
+          onPress={async () => {
+            try {
+              await AsyncStorage.setItem(id, value);
+              const email = currentUser?.email ?? '';
+              const storedValue = (await AsyncStorage.getItem(id)) ?? '';
+              handleOptionPress(storedValue, email);
+            } catch (err) {
+              console.log(err);
+            }
+          }}>
+          <PollStyledText value={value} condition={condition} />
           <PollStyledText
-            value={JSON.stringify(result?.length ?? 0)}
-            condition={CONDITION}
+            value={vote?.toString() ?? '0'}
+            condition={condition}
           />
         </TouchableOpacity>
       );
     });
   }
+  // const renderWithUnpublishedPoll = () => {
+  //   return (
+  //     <View>
+  //       <View className="mb-3">
+  //         <Text className="self-center p-2 text-xl font-semibold">
+  //           {question}
+  //         </Text>
+  //         <TickingClock title="time remaining" expiration={dateOfExpiration} />
+  //       </View>
+  //       <TextInput
+  //         className="mb-2 rounded-lg border p-3"
+  //         placeholder="Submit entry here regarding the question..."
+  //         value={pollState.idea ?? ''}
+  //         onChangeText={text => handleChangeText(text, 'idea')}
+  //       />
+  //       <TouchableOpacity
+  //         disabled={!condition}
+  //         className={`${
+  //           condition ? 'bg-primary' : 'bg-slate-200'
+  //         } rounded-lg p-2 shadow-sm`}
+  //         onPress={handleSubmitIdea}>
+  //         <Text
+  //           className={`${
+  //             condition ? 'text-paper' : 'text-slate-300'
+  //           } rounded-lg text-center capitalize`}>
+  //           submit
+  //         </Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   );
+  // };
+  const renderWithPublishedPoll = () => {
+    return (
+      <View className="w-11/12 overflow-hidden rounded-3xl border border-primary bg-primary/20 p-2 shadow-md">
+        <View className="p-2">
+          <View>
+            <View className="flex-row justify-between pb-4">
+              <View className="flex-row gap-2">
+                <Image
+                  source={require('~/assets/cares_icon.png')}
+                  className="h-8 w-8"
+                  resizeMode="center"
+                />
+                <View>
+                  <Text className="text-xl font-black uppercase text-primary">
+                    CICS Department
+                  </Text>
+                  <Text className="text-base font-bold text-primary/70">
+                    {postedBy}
+                  </Text>
+                </View>
+              </View>
+              <TickingClock expiration={dateOfExpiration} />
+            </View>
+            {/* <VanillaTouchableOpacity
+              onPress={loadCommentData}
+              className="absolute inset-0 rounded-full bg-secondary px-2">
+              <Text className="text-white">Simulate Comment Data Flow</Text>
+            </VanillaTouchableOpacity> */}
+            <Text className="mx-auto w-11/12 text-start font-normal text-primary/70">
+              {question}
+            </Text>
+          </View>
+        </View>
+        <View className="pb-2">{renderOptions()}</View>
+        <View className="h-11/12 mx-auto w-11/12 rounded-3xl bg-primary p-4 ">
+          <View className="flex-row justify-between">
+            <Text className="text-xl text-white">Comments</Text>
+            <TouchableOpacity
+              disabled={pollState.maxLength < 0}
+              onPress={() =>
+                setPollState(prevState => ({
+                  ...prevState,
+                  showCommentInput: true,
+                }))
+              }
+              className={`${
+                pollState.maxLength < 0 ? 'bg-slate-200' : 'bg-secondary'
+              } rounded-full px-2`}>
+              <Text
+                className={
+                  pollState.maxLength < 0 ? 'text-slate-300' : 'text-paper'
+                }>
+                +
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {renderComments()}
+        </View>
+      </View>
+    );
+  };
+  const renderComments = () => {
+    switch (pollState.maxLength) {
+      /** initial state */
+      case undefinedNaN:
+        return <ActivityIndicator color="white" animating={true} />;
+      /** loadComments is mounted */
+      case 0:
+        return (
+          <View className="py-4">
+            <Text className="text-center  text-paper">No comment</Text>
+          </View>
+        );
+      default:
+        return (
+          <>
+            <FlatList
+              ref={flatListRef}
+              className={`${
+                pollState.index > 2 ? 'h-48' : 'h-max'
+              } rounded-lg bg-paper/60 p-2`}
+              data={pollState.showComments}
+              onScroll={event => {
+                const contentSize = event.nativeEvent.contentSize;
+                const yPosition = event.nativeEvent.contentOffset.y;
+                const newIndex = Math.round(yPosition / contentSize.height);
+                // console.log({
+                //   yPosition,
+                //   contentHeight: contentSize.height,
+                //   calc: contentSize.height - yPosition,
+                // });
+                if (newIndex !== pollState.currentIndex) {
+                  setPollState(prevState => ({
+                    ...prevState,
+                    currentIndex: newIndex,
+                  }));
+                }
+              }}
+              // keyExtractor={props => props.commenter}
+              renderItem={({item}) => {
+                const {commenter, value, dateCreated} = item;
+                const date = new Date();
+                date.setTime(dateCreated);
+                return (
+                  <View
+                    className={
+                      ' w-full flex-row items-end justify-between p-2'
+                    }>
+                    <View>
+                      <Text className="text-sm text-black">{commenter}</Text>
+                      <Text className="text-sm text-primary">{value}</Text>
+                    </View>
+                    <Text className="text-xs text-secondary">
+                      {setUpPrefix(date)}
+                    </Text>
+                  </View>
+                );
+              }}
+            />
+            <TouchableOpacity
+              onPress={paginateComments}
+              className="mx-auto mt-2 w-max rounded-lg border border-paper px-2 py-1">
+              <Text className="text-center capitalize text-paper">
+                {pollState.index + 1 === pollState.maxLength
+                  ? 'hide'
+                  : 'show more'}
+              </Text>
+            </TouchableOpacity>
+          </>
+        );
+    }
+  };
+
+  useEffect(() => {
+    return loadCommentData();
+  }, [loadCommentData]);
 
   return (
-    <View className="w-full flex-col items-center justify-center ">
-      {state === 'unpublished' ? (
-        <View>
-          <View className="mb-3">
-            <Text className="self-center p-2 text-xl font-semibold">
-              {question}
-            </Text>
-            <TickingClock
-              title="time remaining"
-              expiration={dateOfExpiration}
-            />
-          </View>
-          <TextInput
-            className="mb-2 rounded-lg border p-3"
-            placeholder="Submit entry here regarding the question..."
-            value={pollState.idea ?? ''}
-            onChangeText={handleChangeText}
-          />
-          <TouchableOpacity
-            disabled={!condition}
-            className={`${
-              condition ? 'bg-primary' : 'bg-slate-200'
-            } rounded-lg p-2 shadow-sm`}
-            onPress={handleSubmitIdea}>
-            <Text
-              className={`${
-                condition ? 'text-paper' : 'text-slate-300'
-              } rounded-lg text-center capitalize`}>
-              submit
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View className="w-11/12 rounded-2xl border bg-gray-200">
-          <View className="mx-3 mb-3">
-            <View className="ml-4 flex-row">
-              <Image
-                source={require('~/assets/cares_icon.png')}
-                className="my-4 mr-2 h-14 w-14"
-                resizeMode="center"
+    <View className="w-full flex-col items-center justify-center">
+      <Modal
+        transparent
+        animationType="fade"
+        onRequestClose={() => toggleModal(false, 'showCommentInput')}
+        visible={pollState.showCommentInput}>
+        <KeyboardAvoidingView className=" h-full bg-primary/40">
+          <VanillaTouchableOpacity
+            className="h-full "
+            activeOpacity={100}
+            onPress={() => {
+              pollState.currentComment.trim() === ''
+                ? toggleModal(false, 'showCommentInput')
+                : toggleModal(true, 'showCloseConfirmation');
+            }}>
+            <Modal
+              transparent
+              visible={pollState.showCloseConfirmation}
+              animationType="slide">
+              <View className="h-full items-center justify-center bg-secondary/80">
+                <Text className="font-bold text-paper">Discard Comment?</Text>
+                <View className="flex-row">
+                  <VanillaTouchableOpacity
+                    className="m-2 rounded-xl bg-green-500 px-4 py-2 shadow-sm"
+                    onPress={() => {
+                      handleChangeText('', 'currentComment');
+                      setPollState(prevState => ({
+                        ...prevState,
+                        showCloseConfirmation: false,
+                        showCommentInput: false,
+                      }));
+                    }}>
+                    <Text className="text-paper">Yes</Text>
+                  </VanillaTouchableOpacity>
+                  <VanillaTouchableOpacity
+                    className="m-2 rounded-xl bg-red-500 px-4 py-2 shadow-sm"
+                    onPress={() => toggleModal(false, 'showCloseConfirmation')}>
+                    <Text className="text-paper">No</Text>
+                  </VanillaTouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+            <View className="m-auto w-max rounded-2xl bg-paper p-4">
+              {/* <Text></Text> */}
+              <Textfield
+                placeholder="Input your comment here"
+                value={pollState.currentComment}
+                onChangeText={text => handleChangeText(text, 'currentComment')}
               />
-              <Text className="mt-5 text-xl font-black text-black">
-                CICS Department
-                {'\n'}
-                <Text className="text-base font-light">{`Posted by: ${postedBy}`}</Text>
-              </Text>
+              <VanillaTouchableOpacity
+                onPress={handleCommentUpload}
+                disabled={commentCondition}
+                className={`${
+                  commentCondition ? 'bg-slate-200' : 'bg-secondary'
+                } mx-auto w-max rounded-2xl px-4 py-2`}>
+                <Text
+                  className={`${
+                    commentCondition ? 'text-slate-300' : 'text-paper'
+                  } text-center`}>
+                  Post
+                </Text>
+              </VanillaTouchableOpacity>
             </View>
-            <Text className="mx-2 mb-2 text-center text-base font-normal">
-              {question}
-            </Text>
-          </View>
-          <View className="mx-4 mb-2  ">{renderOptions()}</View>
-          <View className="mx-4 mb-3 rounded-2xl bg-gray-600">
-            <Text className="my-4 ml-4 text-xl text-white">Comments</Text>
-            <View className="mx-4 mb-4 rounded-3xl bg-slate-400">
-              <Text className="ml-4 p-2 text-base text-black">
-                SinoNagComment: Hatdog
-              </Text>
-            </View>
-          </View>
-          <View className="mx-32  mb-3 rounded-full border">
-            <Text className="text-center">See More</Text>
-          </View>
+          </VanillaTouchableOpacity>
+        </KeyboardAvoidingView>
+      </Modal>
+      {state === 'published' ? (
+        renderWithPublishedPoll()
+      ) : (
+        <View className="h-screen w-full items-center justify-center bg-blue-200">
+          <Text>No Polls</Text>
         </View>
       )}
+      {/* ? renderWithUnpublishedPoll() */}
     </View>
   );
 };
 
-const PollStyledText = ({condition, value}: PollStyledTextProps) => {
-  return (
-    <Text className={`${condition ? 'text-green-400' : 'text-black'}`}>
-      {value}
-    </Text>
-  );
-};
+interface PollStyledTextProps {
+  condition: boolean;
+  value: string;
+}
+
+const PollStyledText = ({condition, value}: PollStyledTextProps) => (
+  <Text
+    className={`${
+      condition ? 'text-bold text-lg text-paper' : 'text-primary'
+    } p-2`}>
+    {value}
+  </Text>
+);
 
 export default ProjectSuggestions;

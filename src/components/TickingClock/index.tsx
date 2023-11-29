@@ -27,15 +27,21 @@ const TickingClock = ({expiration, title}: TickingClockProps) => {
   const seconds = time.getSeconds();
 
   return (
-    <View className="w-1/3 rounded-lg bg-secondary p-2">
-      <Text className="font-bold capitalize text-paper">{title}</Text>
+    <View className="my-auto h-1/2 w-max rounded-lg bg-transparent px-2 py-1">
+      {title && (
+        <Text className="font-bold capitalize text-paper">{title}</Text>
+      )}
       <View className="flex-row">
-        <Text className="text-paper">{date < 10 ? `0${date}` : date}:</Text>
-        <Text className="text-paper">{hours < 10 ? `0${hours}` : hours}:</Text>
-        <Text className="text-paper">
+        <Text className="font-semibold text-primary/70">
+          {date < 10 ? `0${date}` : date}:
+        </Text>
+        <Text className="font-semibold text-primary/70">
+          {hours < 10 ? `0${hours}` : hours}:
+        </Text>
+        <Text className="font-semibold text-primary/70">
           {minutes < 10 ? `0${minutes}` : minutes}:
         </Text>
-        <Text className="text-paper">
+        <Text className="font-semibold text-primary/70">
           {seconds < 10 ? `0${seconds}` : seconds}
         </Text>
       </View>
