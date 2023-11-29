@@ -112,7 +112,7 @@ const Announcements = () => {
               data={['Event', 'University Memo', 'Recognition', 'Others']}
               onSelect={handleType}
             />
-            <View className="mr-12 w-44 flex-row items-center rounded-full border bg-white">
+            <View className=" mr-12 w-44 flex-row items-center rounded-full border bg-white">
               <View className="mx-4 flex-row items-center">
                 <Image
                   source={require('~/assets/search.png')}

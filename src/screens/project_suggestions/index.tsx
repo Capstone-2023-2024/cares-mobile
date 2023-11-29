@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {ActivityIndicator} from 'react-native-paper';
+import BackHeader from '~/components/BackHeader';
 import Text from '~/components/Text';
 import Textfield from '~/components/Textfield';
 import TickingClock from '~/components/TickingClock';
@@ -397,21 +398,21 @@ const Poll = (props: ReadPollEventProps) => {
   // };
   const renderWithPublishedPoll = () => {
     return (
-      <View className="w-11/12 overflow-hidden rounded-3xl border border-primary bg-primary/20 p-2 shadow-md">
+      <View className="mb-10 w-11/12 overflow-hidden rounded-3xl border border-primary bg-primary/40 p-2 shadow-md">
         <View className="p-2">
           <View>
             <View className="flex-row justify-between pb-4">
               <View className="flex-row gap-2">
                 <Image
                   source={require('~/assets/cares_icon.png')}
-                  className="h-8 w-8"
+                  className="h-12 w-12"
                   resizeMode="center"
                 />
                 <View>
-                  <Text className="text-xl font-black uppercase text-primary">
+                <Text className="text-xl font-black uppercase text-black">
                     CICS Department
                   </Text>
-                  <Text className="text-base font-bold text-primary/70">
+                  <Text className="text-base font-bold text-primary/100">
                     {postedBy}
                   </Text>
                 </View>
@@ -423,15 +424,15 @@ const Poll = (props: ReadPollEventProps) => {
               className="absolute inset-0 rounded-full bg-secondary px-2">
               <Text className="text-white">Simulate Comment Data Flow</Text>
             </VanillaTouchableOpacity> */}
-            <Text className="mx-auto w-11/12 text-start font-normal text-primary/70">
+             <Text className="mx-auto w-11/12 text-start font-normal text-black">
               {question}
             </Text>
           </View>
         </View>
         <View className="pb-2">{renderOptions()}</View>
-        <View className="h-11/12 mx-auto w-11/12 rounded-3xl bg-primary p-4 ">
+        <View className="h-11/12 mx-auto mb-2 w-11/12 rounded-2xl bg-primary p-4">
           <View className="flex-row justify-between">
-            <Text className="text-xl text-white">Comments</Text>
+          <Text className="mb-2 text-xl text-white">Comments</Text>
             <TouchableOpacity
               disabled={pollState.maxLength < 0}
               onPress={() =>
@@ -508,7 +509,7 @@ const Poll = (props: ReadPollEventProps) => {
             />
             <TouchableOpacity
               onPress={paginateComments}
-              className="mx-auto mt-2 w-max rounded-lg border border-paper px-2 py-1">
+              className="mx-auto mt-4 w-max rounded-lg border border-paper  px-2 py-1">
               <Text className="text-center capitalize text-paper">
                 {pollState.index + 1 === pollState.maxLength
                   ? 'hide'
@@ -525,7 +526,8 @@ const Poll = (props: ReadPollEventProps) => {
   }, [loadCommentData]);
 
   return (
-    <View className="w-full flex-col items-center justify-center">
+    <View className="flex h-full w-full flex-col items-center justify-center bg-white">
+      <BackHeader />
       <Modal
         transparent
         animationType="fade"
@@ -611,7 +613,7 @@ interface PollStyledTextProps {
 const PollStyledText = ({condition, value}: PollStyledTextProps) => (
   <Text
     className={`${
-      condition ? 'text-bold text-lg text-paper' : 'text-primary'
+      condition ? 'text-bold text-lg text-paper' : 'text-black'
     } p-2`}>
     {value}
   </Text>

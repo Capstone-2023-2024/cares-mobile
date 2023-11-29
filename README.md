@@ -10,9 +10,11 @@
 
 # Changelog:
 
-2023/11/28
+2023/11/29
 
 - Black icons for chat and project, pagination stack, chat ui sample and seperate profile picture components for proper layout
+
+- Adjusted spacing of comments and font colors for better readability (Project Suggestions)
 
 # Developer Note:
 
