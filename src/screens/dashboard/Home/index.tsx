@@ -40,7 +40,7 @@ const Home = () => {
     );
   };
 
-  if (currentStudent.name === undefined) {
+  if (currentStudent.name === undefined && role === null) {
     return <Loading />;
   }
 

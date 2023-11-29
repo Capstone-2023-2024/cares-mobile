@@ -1,3 +1,13 @@
+# TODO(s)
+
+- Splash Screen Animated & Loading Component
+- Fix upload images in production
+- Fix name of Faculty in the Dashboard
+- Give data entry for the Faculty for more customization
+- WriteBatch for related data across collections
+- Polished integration of notification `announcements`, `chats`
+- Fix Calendar of Activities
+
 # Changelog:
 
 2023/11/28

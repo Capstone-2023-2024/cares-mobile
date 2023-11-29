@@ -1,33 +1,92 @@
+import {MarkedDatesProps} from '@cares/types/announcement';
 import React, {useEffect, useState} from 'react';
 import {FlatList, Image, TouchableOpacity, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
-import type {MarkedDates} from 'react-native-calendars/src/types';
+import type {
+  DateData,
+  MarkedDates,
+  MarkingTypes,
+} from 'react-native-calendars/src/types';
 import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useNav} from '~/contexts/NavigationContext';
 
+interface CalendarStateProps {
+  markedDates: MarkedDates;
+  markingType: MarkingTypes;
+  calendar: {
+    month: number;
+    year: number;
+  };
+}
+
 const CalendarOfActivities = () => {
+  const date = new Date();
   const {data} = useAnnouncement();
   const {handleNavigation} = useNav();
-  const [markedDates, setMarkedDates] = useState<MarkedDates>({});
+  const [state, setState] = useState<CalendarStateProps>({
+    markedDates: {},
+    markingType: 'multi-period',
+    calendar: {
+      month: date.getMonth() + 1,
+      year: date.getFullYear(),
+    },
+  });
+
+  function handleMonthChange(props: DateData) {
+    setState(prevState => ({
+      ...prevState,
+      calendar: {
+        month: props.month,
+        year: props.year,
+      },
+    }));
+  }
+
+  function handleDayPress(event: DateData) {
+    console.log({event});
+
+    // filtered?.id !== undefined &&
+    //   handleNavigation('Announcements', filtered?.id);
+  }
+
+  interface ExtendedReactCalendarProps
+    extends Omit<MarkedDatesProps, 'calendar'> {
+    marked?: boolean;
+    startingDay?: boolean;
+    endingDay?: boolean;
+  }
 
   useEffect(() => {
-    const unsub = data.forEach(props => {
-      const length = props.markedDates.length;
-      const endingDay = length - 1;
-      props.markedDates.forEach((value, i) =>
-        setMarkedDates(prevState => ({
-          ...prevState,
-          [value]: {
-            startingDay: i < 1,
-            endingDay: endingDay === i,
-            color: 'lightgreen',
-            textColor: 'white',
-          },
-        })),
+    return data.forEach(({markedDates}) => {
+      const dateKeys = Object.keys(markedDates).sort((a, b) =>
+        a.localeCompare(b),
       );
+      const objLength = dateKeys.length;
+      let markedDatesHolder: Record<string, ExtendedReactCalendarProps> = {};
+      dateKeys.forEach((key, i) => {
+        const objRest = markedDates[key];
+        if (objLength === 1) {
+          console.log(key, 'one length');
+          return (markedDatesHolder[key] = {marked: true, ...objRest});
+        }
+        switch (i) {
+          case 0:
+            console.log(key, 'starting');
+            return (markedDatesHolder[key] = {startingDay: true, ...objRest});
+          case objLength - 1:
+            console.log(key, 'ending');
+            return (markedDatesHolder[key] = {endingDay: true, ...objRest});
+          default:
+            console.log(key, 'default');
+            return (markedDatesHolder[key] = {...objRest});
+        }
+      });
+      setState(prevState => ({
+        ...prevState,
+        markedDates: {...prevState.markedDates, ...markedDatesHolder},
+      }));
     });
-    return () => unsub;
   }, [data]);
 
   return (
@@ -40,30 +99,18 @@ const CalendarOfActivities = () => {
         />
       </View>
 
-      {markedDates && (
+      {state && (
         <View className="mx-4 my-3 rounded-2xl bg-gray-200 ">
           <Calendar
             className="w-25 mx-5 my-5 rounded-xl border-2"
-            onDayPress={e => {
-              const filtered = data.filter(
-                props => props.markedDates.indexOf(e.dateString) > -1,
-              )[0];
-
-              filtered?.id !== undefined &&
-                handleNavigation('Announcements', filtered?.id);
-            }}
-            markingType={
-              markedDates !== undefined &&
-              markedDates.length !== undefined &&
-              Object.keys(markedDates).length <= 1
-                ? 'dot'
-                : 'period'
-            }
-            markedDates={{...markedDates}}
+            onMonthChange={handleMonthChange}
+            onDayPress={handleDayPress}
+            markingType={'period'}
+            markedDates={{...state.markedDates}}
           />
         </View>
       )}
-      <View className="mx-4 ml-6 h-64 border bg-customADC2D2 ">
+      {/* <View className="mx-4 ml-6 h-64 border bg-customADC2D2 ">
         <View className="border-b ">
           <Text className="mb-4 ml-4 mt-4 font-bold"> Month</Text>
         </View>
@@ -110,7 +157,7 @@ const CalendarOfActivities = () => {
             );
           }}
         />
-      </View>
+      </View> */}
     </View>
   );
 };

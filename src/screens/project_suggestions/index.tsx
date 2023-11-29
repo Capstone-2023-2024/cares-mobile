@@ -163,7 +163,8 @@ const Poll = (props: ReadPollEventProps) => {
   }
   /** This will be the key for rendering the comment section */
   const loadCommentData = useCallback(() => {
-    const initCondition = pollState.index === undefinedNaN;
+    const initCondition =
+      pollState.index === undefinedNaN || comments === undefined;
     const fetchIndex = initCondition ? 0 : pollState.index;
     const commentHolder = comments ?? [];
     const initCommentData = commentHolder[0] ?? {
@@ -473,40 +474,32 @@ const Poll = (props: ReadPollEventProps) => {
             <FlatList
               ref={flatListRef}
               className={`${
-                pollState.index > 2 ? 'h-48' : 'h-max'
+                pollState.index === 2 ? 'h-1/3' : 'h-max'
               } rounded-lg bg-paper/60 p-2`}
               data={pollState.showComments}
               onScroll={event => {
                 const contentSize = event.nativeEvent.contentSize;
                 const yPosition = event.nativeEvent.contentOffset.y;
-                const newIndex = Math.round(yPosition / contentSize.height);
-                // console.log({
-                //   yPosition,
-                //   contentHeight: contentSize.height,
-                //   calc: contentSize.height - yPosition,
-                // });
-                if (newIndex !== pollState.currentIndex) {
-                  setPollState(prevState => ({
-                    ...prevState,
-                    currentIndex: newIndex,
-                  }));
-                }
+                // const newIndex = Math.round(yPosition / contentSize.height);
+                console.log({height: contentSize.height, yPosition});
+                // if (newIndex !== pollState.currentIndex) {
+                //   setPollState(prevState => ({
+                //     ...prevState,
+                //     currentIndex: newIndex,
+                //   }));
+                // }
               }}
-              // keyExtractor={props => props.commenter}
               renderItem={({item}) => {
                 const {commenter, value, dateCreated} = item;
                 const date = new Date();
                 date.setTime(dateCreated);
                 return (
-                  <View
-                    className={
-                      ' w-full flex-row items-end justify-between p-2'
-                    }>
+                  <View className={'relative h-max w-full p-2'}>
                     <View>
                       <Text className="text-sm text-black">{commenter}</Text>
                       <Text className="text-sm text-primary">{value}</Text>
                     </View>
-                    <Text className="text-xs text-secondary">
+                    <Text className="absolute bottom-0 right-0 text-xs text-secondary">
                       {setUpPrefix(date)}
                     </Text>
                   </View>

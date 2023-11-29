@@ -62,9 +62,8 @@ const AuthProvider = ({children}: AuthProviderProps) => {
       const student = role === 'mayor' || role === 'student';
       const collectionReference = student
         ? collectionRef('student').where('email', '==', profile?.email)
-        : collectionRef('permission')
-            .where('email', '==', profile?.email)
-            .where('roleInString', '==', 'faculty');
+        : collectionRef('permission').where('email', '==', profile?.email);
+
       const snapshotCount = await collectionReference.count().get();
       const count = snapshotCount.data().count;
       if (count === 0) {
