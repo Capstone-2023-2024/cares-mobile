@@ -83,7 +83,7 @@ function Header({}: {withBack?: boolean}) {
             <View className="flex-col items-center">
               <Image
                 source={require('~/assets/info.png')}
-                className="-ml-2 h-12 w-12 invert"
+                className="-ml-2 h-8 w-8 invert"
                 resizeMode="stretch"
                 style={{tintColor: 'white'}}
               />

@@ -50,9 +50,9 @@ const ComplaintBox = () => {
   function formatImageName(item: string) {
     return `${currentStudentInfo?.email.replace(/@/, '%40')}%2F${item}`;
   }
-
+  console.log({showMayorModal});
   return (
-    <View className={`${showMayorModal ? 'h-3/5' : 'mb-12 h-min'}`}>
+    <View className="flex-1">
       <RenderActionButtons targetArray={targetArray} />
       <Modal
         transparent

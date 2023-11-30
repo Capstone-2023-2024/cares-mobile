@@ -1,7 +1,6 @@
 import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
-  Alert,
   Image,
   Modal,
   TouchableOpacity as VanillaTouchableOpacity,
@@ -11,17 +10,12 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Text from '~/components/Text';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {useUser} from '~/contexts/UserContext';
 
 function Header({}: {withBack?: boolean}) {
   const {currentUser} = useAuth();
-  const {currentStudent, role} = useUser();
   const {handleNavigation, initialRouteName} = useNav();
   const [modal, setModal] = useState(false);
   const route = useRoute();
-
-  const complaintRenderCondition =
-    role !== 'faculty' && route.name !== 'Chats' && currentStudent !== null;
 
   function handlePressRoute() {
     route.name.toLowerCase() === 'home'
@@ -29,18 +23,11 @@ function Header({}: {withBack?: boolean}) {
       : handleNavigation(initialRouteName);
   }
 
-  function handlePressChats() {
-    if (currentStudent.section === undefined) {
-      return Alert.alert('No section', 'Please set up your section first');
-    }
-    handleNavigation('Complaints');
-  }
-
   return (
     <View
       className={`${
         route.name.toLowerCase() === 'home' || currentUser === null
-      } relative h-16 flex-row items-center px-2`}>
+      } relative h-16 flex-row items-center`}>
       {route.name.toLowerCase() === 'home'}
       <Modal
         visible={modal}
@@ -94,18 +81,6 @@ function Header({}: {withBack?: boolean}) {
             resizeMode="stretch"
           />
         </TouchableOpacity>
-
-        {complaintRenderCondition && (
-          <TouchableOpacity
-            disabled={currentStudent.email === 'null'}
-            className="h-12 w-12 items-center"
-            onPress={handlePressChats}>
-            <Image
-              className="-mr-60 h-full w-full"
-              source={require('~/assets/chat.png')}
-            />
-          </TouchableOpacity>
-        )}
       </View>
     </View>
   );

@@ -201,7 +201,7 @@ const RenderInputMessageContainer = () => {
         renderCondition ||
         selectedChatId === 'object' ||
         selectedChatHead === 'class_section'
-          ? 'absolute'
+          ? 'block'
           : 'hidden'
       } h-18 bottom-0 w-full flex-row items-center border-t-2 bg-paper p-2`}>
       <TouchableOpacity
