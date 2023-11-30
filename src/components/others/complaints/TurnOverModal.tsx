@@ -1,7 +1,8 @@
 import type {ComplaintProps} from '@cares/types/complaint';
 import React, {useState} from 'react';
-import {View} from 'react-native';
+import {Modal} from 'react-native';
 import {TouchableOpacity, TextInput} from 'react-native-gesture-handler';
+import {TouchableOpacity as VanillaTouchableOpacity} from 'react-native';
 import Text from '~/components/Text';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
@@ -13,7 +14,7 @@ interface TurnOverMessageProps {
 }
 
 const TurnOverModal = () => {
-  const {setShowTurnOverModal} = useModal();
+  const {showTurnOverModal, setShowTurnOverModal} = useModal();
   const {actionButton, setTurnOverMessage} = useContentManipulation();
   const [state, setState] = useState({
     turnOverMessage: '',
@@ -23,10 +24,17 @@ const TurnOverModal = () => {
     setShowTurnOverModal(false);
   }
 
-  function handleTurnOver() {
+  async function handleTurnOver() {
+    console.log('pressed');
     setShowTurnOverModal(false);
     setTurnOverMessage(state.turnOverMessage);
-    void actionButton('turn-over');
+
+    try {
+      await actionButton('turn-over');
+    } catch (err) {
+      console.log(err);
+    }
+
     setTurnOverMessage(null);
     setState(prevState => ({...prevState, turnOverMessage: ''}));
   }
@@ -36,7 +44,9 @@ const TurnOverModal = () => {
   }
 
   return (
-    <View className="fixed inset-0 z-20 bg-blue-400">
+    <Modal
+      visible={showTurnOverModal}
+      className="fixed inset-0 z-20 bg-blue-400">
       <TouchableOpacity
         className="absolute right-2 top-2 rounded-full bg-red-500 px-2"
         onPress={closeTurnOverModal}>
@@ -48,10 +58,10 @@ const TurnOverModal = () => {
         value={state.turnOverMessage}
         onChangeText={handleTurnOverMessage}
       />
-      <TouchableOpacity
+      <VanillaTouchableOpacity
         disabled={state.turnOverMessage.trim() === ''}
         className={`${
-          state.turnOverMessage.trim() === '' ? 'bg-slate-200' : 'bg-green'
+          state.turnOverMessage.trim() === '' ? 'bg-slate-200' : 'bg-green-500'
         } rounded-lg p-2 duration-300 ease-in-out`}
         onPress={handleTurnOver}>
         <Text
@@ -62,8 +72,8 @@ const TurnOverModal = () => {
           } capitalize`}>
           send
         </Text>
-      </TouchableOpacity>
-    </View>
+      </VanillaTouchableOpacity>
+    </Modal>
   );
 };
 

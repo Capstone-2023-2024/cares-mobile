@@ -3,18 +3,18 @@ import {View} from 'react-native';
 import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
-import {useUniversal} from '~/contexts/UniversalContext';
 import ComplaintBoxRenderer from './ComplaintBoxRenderer';
 import ChatHeadButton from './ChatHeadButton';
 import type {ComplaintBoxRendererProps} from './ComplaintBoxRenderer';
 import {RecipientType} from '@cares/types/permission';
+import {useUser} from '~/contexts/UserContext';
 
 interface RenderChatHeadsProps
   extends Omit<ComplaintBoxRendererProps, 'condition' | 'data'> {
   children?: ReactNode;
 }
 const RenderChatHeads = ({children, ...rest}: RenderChatHeadsProps) => {
-  const {role} = useUniversal();
+  const {role} = useUser();
   const {otherComplaints} = useComplaints();
   const {showMayorModal, setShowMayorModal, setShowStudents} = useModal();
   const {

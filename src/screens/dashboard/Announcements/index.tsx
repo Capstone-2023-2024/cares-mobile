@@ -10,20 +10,15 @@ import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useUser} from '~/contexts/UserContext';
 
-interface TypedParamsProps {
-  id: string;
-}
-
 const Announcements = () => {
   const {data, type, handleTypeChange} = useAnnouncement();
   const [modalImage, setModalImage] = useState(false);
   const [photoSelected, setPhotoSelected] = useState('');
   const {params} = useRoute();
   const {currentStudent} = useUser();
-  const typedParam: TypedParamsProps = params as TypedParamsProps;
   const [announcementData, setAnnouncementData] = useState([
-    ...(typeof params === 'object'
-      ? data.filter(({id}) => id === typedParam.id)
+    ...(typeof params === 'string'
+      ? data.filter(({id}) => id === params)
       : data.filter(props => {
           const today = new Date();
           const endDate = new Date();
@@ -31,7 +26,6 @@ const Announcements = () => {
           return props.type === 'event' && endDate.getTime() > today.getTime();
         })),
   ]);
-  console.log({params});
 
   function handlePressImage(value: boolean, src?: string) {
     setModalImage(value);

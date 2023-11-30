@@ -1,6 +1,5 @@
 import type {
   ClassSectionProps,
-  CurrentUserRoleType,
   ReadAdviserInfoProps,
   StudentInfoProps,
 } from '@cares/types/user';
@@ -11,7 +10,7 @@ interface YearLevelSectionProps {
   section: StudentInfoProps['section'];
 }
 interface UniversalProviderStateProps {
-  role?: CurrentUserRoleType;
+  currentSelectedActivityId?: string;
   queryId: string | null;
   mayorInfo?: StudentInfoProps;
   adviserInfo?: ReadAdviserInfoProps;
@@ -20,7 +19,9 @@ interface UniversalProviderStateProps {
 }
 
 interface UniversalContextProps extends UniversalProviderStateProps {
-  setRole: (value: UniversalProviderStateProps['role']) => void;
+  setCurrentSelectedActivityId: (
+    value: UniversalProviderStateProps['currentSelectedActivityId'],
+  ) => void;
   setMayorInfo: (value: StudentInfoProps) => void;
   setAdviserInfo: (value: ReadAdviserInfoProps) => void;
   setStudentsInfo: (value: StudentInfoProps[]) => void;

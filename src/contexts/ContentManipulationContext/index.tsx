@@ -94,7 +94,7 @@ const ContentManipulationProvider = ({
     [],
   );
   async function actionButton(type: ComplaintProps['status']) {
-    console.log(queryId);
+    console.log({queryId});
     try {
       if (typeof state.selectedChatId === 'string') {
         if (queryId !== null) {

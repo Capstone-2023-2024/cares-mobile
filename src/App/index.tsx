@@ -2,22 +2,17 @@ import {ONE_SIGNAL_APP_ID} from '@env';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
-import {Alert, ToastAndroid} from 'react-native';
+import {Alert} from 'react-native';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import HeaderDefault from '~/components/Header';
 import {GeneralProviders} from '~/contexts';
 import {useAuth} from '~/contexts/AuthContext';
 import NavigationProvider, {useNav} from '~/contexts/NavigationContext';
 import Screens, {optionsList} from '~/screens';
-import {pathWithoutUserList, pathWithUserList} from '~/utils/navPaths';
+import {pathWithUserList, pathWithoutUserList} from '~/utils/navPaths';
 import type {IteratePathsType, StackType} from './types';
 
 const App = () => {
-  ToastAndroid.show(
-    `${console ? 'console' : 'no_console'}`,
-    ToastAndroid.SHORT,
-  );
-
   useEffect(() => {
     function oneSignalEvent() {
       OneSignal.initialize(ONE_SIGNAL_APP_ID);

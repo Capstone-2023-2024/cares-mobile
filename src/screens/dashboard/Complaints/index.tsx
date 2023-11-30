@@ -1,6 +1,10 @@
 import type {ComplaintBaseProps, ComplaintProps} from '@cares/types/complaint';
 import type {FirestoreDatabaseProps} from '@cares/types/document';
-import type {AdviserInfoProps, StudentInfoProps} from '@cares/types/user';
+import type {
+  AdviserInfoProps,
+  CurrentUserRoleType,
+  StudentInfoProps,
+} from '@cares/types/user';
 import React, {useCallback, useEffect} from 'react';
 import {Alert, View} from 'react-native';
 import {OneSignal} from 'react-native-onesignal';
@@ -20,10 +24,7 @@ import ContentManipulationProvider, {
 } from '~/contexts/ContentManipulationContext';
 import ModalProvider, {useModal} from '~/contexts/ModalContext';
 import UniversalProvider, {useUniversal} from '~/contexts/UniversalContext';
-import type {
-  UniversalProviderStateProps,
-  YearLevelSectionProps,
-} from '~/contexts/UniversalContext/types';
+import type {YearLevelSectionProps} from '~/contexts/UniversalContext/types';
 import {useUser} from '~/contexts/UserContext';
 import {collectionRef} from '~/utils/firebase';
 
@@ -33,7 +34,7 @@ interface ReadComplaintBaseProps
 interface ReadComplaintProps extends ComplaintProps, FirestoreDatabaseProps {}
 interface FetchComplaintCollectionsProps {
   studentNo?: string;
-  recipient: UniversalProviderStateProps['role'];
+  recipient: CurrentUserRoleType;
 }
 
 const LIMIT = 15;

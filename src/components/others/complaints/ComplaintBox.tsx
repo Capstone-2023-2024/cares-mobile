@@ -8,6 +8,7 @@ import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
 import {useUniversal} from '~/contexts/UniversalContext';
+import {useUser} from '~/contexts/UserContext';
 import ProfilePictureContainer from './ProfilePictureContainer';
 import RenderActionButtons from './RenderActionButtons';
 
@@ -21,7 +22,8 @@ const ComplaintBox = () => {
   const {showMayorModal} = useModal();
   const {currentStudentComplaints, otherComplaints, classSectionComplaints} =
     useComplaints();
-  const {role, studentsInfo, adviserInfo, currentStudentInfo} = useUniversal();
+  const {role} = useUser();
+  const {studentsInfo, adviserInfo, currentStudentInfo} = useUniversal();
   const {selectedChatId, selectedChatHead, selectedStudent} =
     useContentManipulation();
   const [state, setState] = useState({

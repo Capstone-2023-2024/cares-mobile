@@ -76,13 +76,13 @@ const Container = (props: ReadAnnouncementProps) => {
   const loadingInput = '..........';
   const {id, department, photoUrls, postedBy, type} = props;
 
-  function handlePressReadMore(announcementId: string) {
+  function handleAnnouncementPress(announcementId: string) {
     handleNavigation('Announcements', announcementId);
   }
 
   return (
     <TouchableOpacity
-      onPress={() => handlePressReadMore(id)}
+      onPress={() => handleAnnouncementPress(id)}
       activeOpacity={0.8}>
       <View className="mx-auto w-5/6 items-center overflow-hidden rounded-2xl border-2 bg-paper p-4 shadow-md">
         <View className="flex-row items-center">
@@ -136,7 +136,7 @@ const Container = (props: ReadAnnouncementProps) => {
         )}
         <TouchableOpacity
           className="mt-2 self-center"
-          onPress={() => handlePressReadMore(id)}>
+          onPress={() => handleAnnouncementPress(id)}>
           <Text className="justify-center rounded-full border border-black p-1 px-2 text-xs">
             {conditionRender ? loadingInput : 'Read More'}
           </Text>

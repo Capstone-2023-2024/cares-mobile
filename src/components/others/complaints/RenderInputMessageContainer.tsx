@@ -16,10 +16,12 @@ import {collectionRef} from '~/utils/firebase';
 import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useUniversal} from '~/contexts/UniversalContext';
+import {useUser} from '~/contexts/UserContext';
 
 /**TODO: Optimized this together with Mayor UI */
 const RenderInputMessageContainer = () => {
-  const {role, currentStudentInfo, queryId} = useUniversal();
+  const {role} = useUser();
+  const {currentStudentInfo, queryId, adviserInfo} = useUniversal();
   const {currentStudentComplaints, otherComplaints} = useComplaints();
   const {
     files,
@@ -113,7 +115,7 @@ const RenderInputMessageContainer = () => {
           timestamp: new Date().getTime(),
           sender:
             role === 'adviser'
-              ? currentStudentInfo?.email ?? 'adviser'
+              ? adviserInfo?.email ?? 'adviser'
               : currentStudentInfo?.studentNo ?? 'anonymous',
           message,
         };

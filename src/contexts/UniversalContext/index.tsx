@@ -24,7 +24,7 @@ const universalInitState: UniversalProviderStateProps = {
 };
 const UniversalContext = createContext<UniversalContextProps>({
   ...universalInitState,
-  setRole: () => null,
+  setCurrentSelectedActivityId: () => null,
   setMayorInfo: () => null,
   setAdviserInfo: () => null,
   setStudentsInfo: () => null,
@@ -44,9 +44,10 @@ const UniversalContext = createContext<UniversalContextProps>({
 const UniversalProvider = ({children}: UniversalProviderProps) => {
   const [state, setState] = useState(universalInitState);
   const {adviserInfo, currentStudentInfo} = state;
-  const setRole = useCallback(
-    (role: UniversalProviderStateProps['role']) =>
-      setState(prevState => ({...prevState, role})),
+  const setCurrentSelectedActivityId = useCallback(
+    (
+      currentSelectedActivityId: UniversalProviderStateProps['currentSelectedActivityId'],
+    ) => setState(prevState => ({...prevState, currentSelectedActivityId})),
     [],
   );
   const setMayorInfo = useCallback(
@@ -172,12 +173,12 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
     <UniversalContext.Provider
       value={{
         ...state,
-        setRole,
         setMayorInfo,
         setAdviserInfo,
         setStudentsInfo,
         returnComplaintsQuery,
         setCurrentStudentInfo,
+        setCurrentSelectedActivityId,
       }}>
       {children}
     </UniversalContext.Provider>

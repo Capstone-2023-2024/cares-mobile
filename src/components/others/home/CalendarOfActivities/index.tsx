@@ -13,13 +13,27 @@ const HomeCalendarOfActivities = () => {
   const {data} = useAnnouncement();
   const {currentStudent} = useUser();
   const carouselRef = useRef(null);
-  const announcementEvent = data.filter(props => props.type === 'event');
-  const [activeIndex, setActiveIndex] = useState(0);
+  const restAnnouncements = data
+    .filter(props => props.type === 'event')
+    .sort((a, b) => a.endDate - b.endDate);
+  /** FIlter announcement to current Month and Year */
+  const filteredAnnouncement = restAnnouncements.filter(props => {
+    const endDate = new Date();
+    const date = new Date();
+    const currentMonth = date.getMonth();
+    const currentYear = date.getFullYear();
+    endDate.setTime(props.endDate);
+    const endMonth = endDate.getMonth();
+    const endYear = endDate.getFullYear();
+
+    return currentMonth === endMonth && currentYear === endYear;
+  });
   const {handleNavigation} = useNav();
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const pagination = (
     <Pagination
-      dotsLength={announcementEvent.length}
+      dotsLength={filteredAnnouncement.length}
       activeDotIndex={activeIndex}
       containerStyle={{paddingTop: 1}}
       dotStyle={{
@@ -38,7 +52,7 @@ const HomeCalendarOfActivities = () => {
     <TabContainer>
       <HeadingTemplate
         disabled={
-          announcementEvent.length === 0 || currentStudent.email === 'null'
+          filteredAnnouncement.length === 0 || currentStudent.email === 'null'
         }
         title="calendar of activities"
         navigation="CalendarOfActivities"
@@ -46,7 +60,7 @@ const HomeCalendarOfActivities = () => {
       <View className="items-center">
         <Carousel
           layout="tinder"
-          data={announcementEvent}
+          data={filteredAnnouncement}
           ref={carouselRef}
           renderItem={({item}) => {
             const {title, markedDates, id} = item;
@@ -56,9 +70,18 @@ const HomeCalendarOfActivities = () => {
             return (
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={() => handleNavigation('Announcements', {id})}
+                onPress={() =>
+                  handleNavigation(
+                    'CalendarOfActivities',
+                    JSON.stringify({
+                      id,
+                      filteredAnnouncement,
+                      restAnnouncements,
+                    }),
+                  )
+                }
                 className={`${
-                  announcementEvent.map(({id}) => id).indexOf(id) ===
+                  filteredAnnouncement.map(({id}) => id).indexOf(id) ===
                   activeIndex
                     ? 'bg-secondary'
                     : 'bg-secondary/50'

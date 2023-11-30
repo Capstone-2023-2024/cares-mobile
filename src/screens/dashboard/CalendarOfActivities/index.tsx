@@ -1,15 +1,30 @@
-import {MarkedDatesProps} from '@cares/types/announcement';
-import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {
+  MarkedDatesProps,
+  ReadAnnouncementProps,
+} from '@cares/types/announcement';
+import {useRoute} from '@react-navigation/native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {ListRenderItemInfo, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import type {
   DateData,
   MarkedDates,
   MarkingTypes,
 } from 'react-native-calendars/src/types';
-import {useAnnouncement} from '~/contexts/AnnouncementContext';
+import {FlatList} from 'react-native-gesture-handler';
+import CalendarActivityButton from '~/components/CalendarActivityButton';
+import Text from '~/components/Text';
+import {useUniversal} from '~/contexts/UniversalContext';
+import {currentMonth} from '~/utils/date';
 
-interface CalendarStateProps {
+interface CalendarParamProps {
+  id: string;
+  filteredAnnouncement: ReadAnnouncementProps[];
+  restAnnouncements: ReadAnnouncementProps[];
+}
+
+interface CalendarStateProps extends Omit<CalendarParamProps, 'id'> {
+  currentSelectedID: string;
   markedDates: MarkedDates;
   markingType: MarkingTypes;
   calendar: {
@@ -18,10 +33,24 @@ interface CalendarStateProps {
   };
 }
 
+interface ExtendedReactCalendarProps
+  extends Omit<MarkedDatesProps, 'calendar'> {
+  marked?: boolean;
+  startingDay?: boolean;
+  endingDay?: boolean;
+}
+
 const CalendarOfActivities = () => {
   const date = new Date();
-  const {data} = useAnnouncement();
+  const route = useRoute();
+  const FLATLIST_COMPONENT_HEIGHT = 110;
+  const {setCurrentSelectedActivityId, currentSelectedActivityId} =
+    useUniversal();
+  const flatListRef = useRef<FlatList | null>(null);
   const [state, setState] = useState<CalendarStateProps>({
+    filteredAnnouncement: [],
+    restAnnouncements: [],
+    currentSelectedID: '',
     markedDates: {},
     markingType: 'multi-period',
     calendar: {
@@ -29,69 +58,134 @@ const CalendarOfActivities = () => {
       year: date.getFullYear(),
     },
   });
+  const currentMonthInfo = currentMonth({
+    month: state.calendar.month - 1,
+    year: state.calendar.year,
+  });
 
   function handleMonthChange(props: DateData) {
-    setState(prevState => ({
-      ...prevState,
-      calendar: {
-        month: props.month,
-        year: props.year,
-      },
-    }));
-  }
+    state.filteredAnnouncement.length > 0 &&
+      flatListRef.current?.scrollToIndex({
+        animated: true,
+        index: 0,
+      });
+    setState(prevState => {
+      const filteredAnnouncement = prevState.restAnnouncements.filter(
+        restProps => {
+          const endDate = new Date();
+          const currentMonth = props.month - 1;
+          const currentYear = props.year;
+          endDate.setTime(restProps.endDate);
+          const endMonth = endDate.getMonth();
+          const endYear = endDate.getFullYear();
 
+          return currentMonth === endMonth && currentYear === endYear;
+        },
+      );
+      const markedDates = setMarkedDates(filteredAnnouncement);
+
+      return {
+        ...prevState,
+        filteredAnnouncement,
+        markedDates: {
+          ...prevState.markedDates,
+          ...markedDates,
+        },
+        calendar: {
+          month: props.month,
+          year: props.year,
+        },
+      };
+    });
+  }
   function handleDayPress(event: DateData) {
     console.log({event});
-
-    // filtered?.id !== undefined &&
-    //   handleNavigation('Announcements', filtered?.id);
   }
 
-  interface ExtendedReactCalendarProps
-    extends Omit<MarkedDatesProps, 'calendar'> {
-    marked?: boolean;
-    startingDay?: boolean;
-    endingDay?: boolean;
-  }
-
-  useEffect(() => {
-    return data.forEach(({markedDates}) => {
-      const dateKeys = Object.keys(markedDates).sort((a, b) =>
-        a.localeCompare(b),
-      );
-      const objLength = dateKeys.length;
+  const setMarkedDates = useCallback(
+    (announcementData: ReadAnnouncementProps[]) => {
       let markedDatesHolder: Record<string, ExtendedReactCalendarProps> = {};
-      dateKeys.forEach((key, i) => {
-        const objRest = markedDates[key];
-        if (objLength === 1) {
-          console.log(key, 'one length');
-          return (markedDatesHolder[key] = {marked: true, ...objRest});
-        }
-        switch (i) {
-          case 0:
-            console.log(key, 'starting');
-            return (markedDatesHolder[key] = {startingDay: true, ...objRest});
-          case objLength - 1:
-            console.log(key, 'ending');
-            return (markedDatesHolder[key] = {endingDay: true, ...objRest});
-          default:
-            console.log(key, 'default');
-            return (markedDatesHolder[key] = {...objRest});
-        }
+      announcementData.forEach(({markedDates}) => {
+        const dateKeys = Object.keys(markedDates).sort((a, b) =>
+          a.localeCompare(b),
+        );
+        const objLength = dateKeys.length;
+        dateKeys.forEach((key, i) => {
+          const objRest = markedDates[key];
+          if (objLength === 1) {
+            return (markedDatesHolder[key] = {marked: true, ...objRest});
+          }
+          switch (i) {
+            case 0:
+              return (markedDatesHolder[key] = {startingDay: true, ...objRest});
+            case objLength - 1:
+              return (markedDatesHolder[key] = {endingDay: true, ...objRest});
+            default:
+              return (markedDatesHolder[key] = {...objRest});
+          }
+        });
       });
+      return markedDatesHolder;
+    },
+    [],
+  );
+  const setFilteredAnnouncementAndAnimation = useCallback(() => {
+    const condition = typeof route.params === 'string';
+    if (condition) {
+      const {id, filteredAnnouncement, restAnnouncements} = JSON.parse(
+        route.params,
+      ) as CalendarParamProps;
+
+      const markedDatesHolder = setMarkedDates(filteredAnnouncement);
+      setCurrentSelectedActivityId(id);
       setState(prevState => ({
         ...prevState,
-        markedDates: {...prevState.markedDates, ...markedDatesHolder},
+        markedDates: {
+          ...prevState.markedDates,
+          ...markedDatesHolder,
+        },
+        restAnnouncements,
+        filteredAnnouncement,
       }));
-    });
-  }, [data]);
+    }
+  }, [route.params, setCurrentSelectedActivityId, setMarkedDates]);
+
+  useEffect(() => {
+    setFilteredAnnouncementAndAnimation();
+  }, [setFilteredAnnouncementAndAnimation]);
 
   return (
     <View className="flex-1 bg-stone-300">
       {state && (
-        <View className="mx-4 my-3 rounded-2xl bg-gray-200 ">
+        <View className="h-10/12 m-auto w-11/12 rounded-2xl bg-gray-200">
           <Calendar
-            className="w-25 mx-5 my-5 rounded-xl border-2"
+            className="rounded-xl border-2"
+            theme={{
+              // backgroundColor: '#767373',
+              calendarBackground: '#D2D2D2',
+              textSectionTitleColor: '#28303B',
+              textSectionTitleDisabledColor: '#d9e1e8',
+              selectedDayBackgroundColor: '#00adf5',
+              selectedDayTextColor: '#ffffff',
+              todayTextColor: '#00adf5',
+              dayTextColor: '#2d4150',
+              textDisabledColor: '#d9e1e8',
+              dotColor: '#000',
+              selectedDotColor: '#ffffff',
+              arrowColor: '#f5f5f5',
+              disabledArrowColor: '#d9e1e8',
+              monthTextColor: '#000',
+              indicatorColor: '#000',
+              textDayFontFamily: 'monospace',
+              textMonthFontFamily: 'monospace',
+              textDayHeaderFontFamily: 'monospace',
+              textDayFontWeight: '300',
+              textMonthFontWeight: 'bold',
+              textDayHeaderFontWeight: '300',
+              textDayFontSize: 16,
+              textMonthFontSize: 16,
+              textDayHeaderFontSize: 16,
+            }}
             onMonthChange={handleMonthChange}
             onDayPress={handleDayPress}
             markingType={'period'}
@@ -99,56 +193,42 @@ const CalendarOfActivities = () => {
           />
         </View>
       )}
-      {/* <View className="mx-4 ml-6 h-64 border bg-customADC2D2 ">
+      <View className="mx-4 ml-6 h-64 border bg-customADC2D2 ">
         <View className="border-b ">
-          <Text className="mb-4 ml-4 mt-4 font-bold"> Month</Text>
+          <Text className="mb-4 ml-4 mt-4 font-bold">
+            {currentMonthInfo?.name}
+          </Text>
         </View>
         <FlatList
-          className="mt-2 p-2"
-          data={data}
+          className="h-32"
+          ref={flatListRef}
+          data={state.filteredAnnouncement}
+          onScroll={e => {
+            const {contentOffset} = e.nativeEvent;
+            const position = contentOffset.y / FLATLIST_COMPONENT_HEIGHT;
+            const currentIndex = Math.floor(position);
+            const currentData = state.filteredAnnouncement[currentIndex];
+            setCurrentSelectedActivityId(currentData?.id ?? '');
+          }}
+          onLayout={() => {
+            const ids = state.filteredAnnouncement.map(props => props.id);
+            const index = ids.indexOf(currentSelectedActivityId ?? '');
+            flatListRef.current?.scrollToIndex({
+              animated: true,
+              index,
+            });
+          }}
           showsVerticalScrollIndicator={true}
           keyExtractor={({id}) => id}
-          renderItem={({item}) => {
-            const dates = item.markedDates.map(date => date.split('-')[2]);
-            const expiration = new Date();
-            expiration.setTime(item.endDate);
-            const date = expiration.toLocaleString().split(',')[0];
-            const dateMonth = date?.substring(0, date?.lastIndexOf('/'));
-            return item.type === 'event' &&
-              expiration.getTime() > new Date().getTime() ? (
-              <TouchableOpacity
-                className="h-auto"
-                onPress={() => handleNavigation('Announcements', item.id)}>
-                <View className="relative mb-3 w-full flex-row">
-                  <View className="h-20 w-24 content-center items-center justify-center border-2">
-                    <Text className="px-4 py-4 text-2xl font-black text-black">
-                      {dates.toString()}
-                    </Text>
-                  </View>
-                  <Text className="ml-3 py-5 text-lg font-black text-black">{`[End date: ${dateMonth}]`}</Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                className="h-auto"
-                onPress={() => handleNavigation('Announcements', item.id)}>
-                <View className=" mb-3 w-full flex-row">
-                  <View className="mb-3 h-20 w-24 content-center items-center justify-center border-2">
-                    <Text className="px-4 py-4 text-xl font-black text-black">
-                      {dates.toString()}
-                    </Text>
-                  </View>
-                  <Text className="ml-3 py-5 text-lg font-black text-black">
-                    [{dates.toString()}]
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          }}
+          renderItem={_renderItem}
         />
-      </View> */}
+      </View>
     </View>
   );
 };
+
+const _renderItem = ({item}: ListRenderItemInfo<ReadAnnouncementProps>) => (
+  <CalendarActivityButton {...item} />
+);
 
 export default CalendarOfActivities;

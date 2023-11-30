@@ -91,6 +91,7 @@ const Register = () => {
         .where('studentNo', '==', studentInfo.studentNo)
         .count()
         .get();
+      console.log({result});
       const count = result.data().count;
       const stringYear = new Date().getFullYear().toString();
       const currentSchoolyear = studentInfo.schoolYear.match(stringYear);

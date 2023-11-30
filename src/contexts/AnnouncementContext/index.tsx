@@ -42,7 +42,7 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
   }
 
   useEffect(() => {
-    const limitNumber = 30;
+    const limitNumber = 12;
     const queryAnnouncement = collectionRef('announcement')
       // .where('type', '==', state.type)
       // .where('endDate', '>', new Date().getTime())

@@ -11,13 +11,14 @@ const FooterNav = () => {
   const {currentStudent, role} = useUser();
   const route = useRoute();
   const complaintRenderCondition =
-    role !== 'faculty' && route.name !== 'Chats' && currentStudent !== null;
-
+    role !== 'faculty' &&
+    route.name !== 'Complaints' &&
+    currentStudent !== null;
+  console.log({role});
   function handlePressChats() {
-    if (currentStudent.section === undefined) {
-      return Alert.alert('No section', 'Please set up your section first');
-    }
-    handleNavigation('Complaints');
+    (role === 'adviser' || currentStudent.section !== undefined) &&
+      handleNavigation('Complaints');
+    Alert.alert('No section', 'Please set up your section first');
   }
 
   return (
