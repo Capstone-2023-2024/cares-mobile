@@ -17,7 +17,9 @@ const GeneralProviders = ({children}: GeneralProvidersProps) => {
   return (
     <AuthProvider>
       <UserContext>
-        <AnnouncementProvider>{children}</AnnouncementProvider>
+        <UniversalProvider>
+          <AnnouncementProvider>{children}</AnnouncementProvider>
+        </UniversalProvider>
       </UserContext>
     </AuthProvider>
   );
@@ -25,13 +27,11 @@ const GeneralProviders = ({children}: GeneralProvidersProps) => {
 
 const ComplaintProviders = ({children}: ComplaintProvidersProps) => {
   return (
-    <UniversalProvider>
-      <ModalProvider>
-        <ContentManipulationProvider>
-          <ComplaintProviders>{children}</ComplaintProviders>
-        </ContentManipulationProvider>
-      </ModalProvider>
-    </UniversalProvider>
+    <ModalProvider>
+      <ContentManipulationProvider>
+        <ComplaintProviders>{children}</ComplaintProviders>
+      </ContentManipulationProvider>
+    </ModalProvider>
   );
 };
 

@@ -2,6 +2,7 @@ import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {Alert, Image, Modal, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {TouchableOpacity as VanillaTouchableOpacity} from 'react-native';
 import Text from '~/components/Text';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
@@ -15,7 +16,9 @@ function Header({}: {withBack?: boolean}) {
   const route = useRoute();
 
   function handlePressRoute() {
-    handleNavigation(initialRouteName);
+    route.name.toLowerCase() === 'home'
+      ? setModal(true)
+      : handleNavigation(initialRouteName);
   }
   function handlePressChats() {
     if (currentStudent.section === undefined) {
@@ -47,11 +50,11 @@ function Header({}: {withBack?: boolean}) {
         animationType="slide"
         transparent
         onRequestClose={() => setModal(false)}>
-        <TouchableOpacity
+        <VanillaTouchableOpacity
           className="flex-1"
           activeOpacity={1}
-          onPressOut={() => setModal(false)}>
-          <View className="h-screen bg-primary p-5 shadow-sm">
+          onPress={() => setModal(false)}>
+          <View className="h-full bg-primary p-5 shadow-sm">
             <Text className="mt-10 text-center text-lg font-bold text-paper">
               CARES (Cultivating Assistance, Resolution, and Empowerment for
               Students){'\n'}
@@ -82,10 +85,9 @@ function Header({}: {withBack?: boolean}) {
               heard, and CARES is here to facilitate that process.
             </Text>
           </View>
-        </TouchableOpacity>
+        </VanillaTouchableOpacity>
       </Modal>
       <TouchableOpacity
-        onLongPress={() => setModal(true)}
         className="flex-row items-center"
         onPress={handlePressRoute}>
         <View className="justify-between">

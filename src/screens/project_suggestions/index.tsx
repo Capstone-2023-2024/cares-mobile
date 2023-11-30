@@ -5,6 +5,7 @@ import type {
   ReadPollEventProps,
 } from '@cares/types/poll';
 import {setUpPrefix} from '@cares/utils/date';
+import {imageDimension} from '@cares/utils/media';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
@@ -20,6 +21,7 @@ import Text from '~/components/Text';
 import Textfield from '~/components/Textfield';
 import TickingClock from '~/components/TickingClock';
 import {useAuth} from '~/contexts/AuthContext';
+import {useUniversal} from '~/contexts/UniversalContext';
 import {arrayUnion, collectionRef} from '~/utils/firebase';
 
 const ProjectSuggestions = () => {
@@ -35,7 +37,7 @@ const ProjectSuggestions = () => {
         snapshot.forEach(doc => {
           const id = doc.id;
           const data = doc.data() as PollEventProps;
-          const options = data.options.sort((a, b) => a.index - b.index);
+          const options = data.options?.sort((a, b) => a.index - b.index);
           placeholder.push({...data, options, id});
         });
         setState(placeholder);
@@ -84,6 +86,7 @@ const Poll = (props: ReadPollEventProps) => {
     comments,
   } = props;
   const {currentUser} = useAuth();
+  const {studentsInfo} = useUniversal();
   const [pollState, setPollState] = useState<PollStateProps>({
     idea: '',
     index: -1,
@@ -329,7 +332,7 @@ const Poll = (props: ReadPollEventProps) => {
               index,
             }
           : {value, index},
-      ].sort((a, b) => a.index - b.index);
+      ]?.sort((a, b) => a.index - b.index);
 
       void targetPollDocRef.update({
         options: newOptions,
@@ -491,14 +494,34 @@ const Poll = (props: ReadPollEventProps) => {
               }}
               renderItem={({item}) => {
                 const {commenter, value, dateCreated} = item;
+                const studentInfo = studentsInfo?.filter(
+                  props => commenter === props.email,
+                )[0];
                 const date = new Date();
                 date.setTime(dateCreated);
                 return (
                   <View className={'relative h-max w-full p-2'}>
-                    <View>
-                      <Text className="text-sm text-black">{commenter}</Text>
-                      <Text className="text-sm text-primary">{value}</Text>
-                    </View>
+                    {studentInfo ? (
+                      <View>
+                        <Image
+                          src={studentInfo.src}
+                          source={require('~/assets/error.svg')}
+                          className="h-8 w-8"
+                          {...imageDimension(24)}
+                        />
+                        <View>
+                          <Text className="text-sm text-black">
+                            {studentInfo.name}
+                          </Text>
+                          <Text className="text-sm text-primary">{value}</Text>
+                        </View>
+                      </View>
+                    ) : (
+                      <View>
+                        <Text className="text-sm text-black">{commenter}</Text>
+                        <Text className="text-sm text-primary">{value}</Text>
+                      </View>
+                    )}
                     <Text className="absolute bottom-0 right-0 text-xs text-secondary">
                       {setUpPrefix(date)}
                     </Text>

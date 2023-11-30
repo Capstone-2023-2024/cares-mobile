@@ -121,6 +121,7 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
       const studentQuery = collectionRef('student')
         .where('yearLevel', '==', yearLevel)
         .where('section', '==', section);
+
       async function getStudentsFromServer() {
         const snapshot = await studentQuery.get();
         const studentsHolder: StudentInfoProps[] = [];
@@ -132,6 +133,7 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
           studentsArrayKey,
           JSON.stringify(studentsHolder),
         );
+        console.log(studentsHolder);
         setStudentsInfo(studentsHolder);
       }
       AsyncStorage.getItem(studentsArrayKey)
