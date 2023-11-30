@@ -16,7 +16,6 @@ const HomeAnnouncements = () => {
   const {data} = useAnnouncement();
   const {currentStudent} = useUser();
   const stateLengthEmpty = data.length === 0;
-
   const carouselRef = useRef(null);
   const [activeIndex, setActiveIndex] = React.useState(0);
 
@@ -72,7 +71,9 @@ const HomeAnnouncements = () => {
 const Container = (props: ReadAnnouncementProps) => {
   const {handleNavigation} = useNav();
   const {currentStudent} = useUser();
-  const {id, department, photoUrls, postedBy} = props;
+  const conditionRender = currentStudent.email === 'null';
+  const loadingInput = '..........';
+  const {id, department, photoUrls, postedBy, type} = props;
 
   function handlePressReadMore(announcementId: string) {
     handleNavigation('Announcements', announcementId);
@@ -82,29 +83,39 @@ const Container = (props: ReadAnnouncementProps) => {
     <TouchableOpacity
       onPress={() => handlePressReadMore(id)}
       activeOpacity={0.8}>
-      <View className=" mx-10 items-center  overflow-hidden rounded-2xl border-2 bg-paper shadow-md ">
-        <View className="mt-2 flex-row items-center">
-          {currentStudent.email === 'null' ? (
-            <View />
-          ) : (
-            <Image
-              source={require('~/assets/cares_icon_5th_variant.png')}
-              className="-ml-8 h-14 w-14"
-              resizeMode="center"
-            />
-          )}
-          <Text className="ml-4 text-center text-base font-bold uppercase text-black">
-            {currentStudent.email === 'null' ? '.....' : department}
-            <Text>{'\n'}</Text>
-            {currentStudent.email === 'null' ? '......' : 'DEPARTMENT'}
-          </Text>
+      <View className="mx-auto w-5/6 items-center overflow-hidden rounded-2xl border-2 bg-paper p-4 shadow-md">
+        <View className="flex-row items-center">
+          <View className="mr-2 h-10 w-10">
+            {conditionRender ? (
+              <View className="h-full w-full rounded-full bg-secondary" />
+            ) : (
+              <Image
+                source={require('~/assets/cares_icon_5th_variant.png')}
+                className="h-full w-full"
+                resizeMode="center"
+              />
+            )}
+          </View>
+          <View className="relative p-2">
+            <Text className="absolute -right-16 top-4 mx-auto w-24 rounded-lg bg-secondary px-2 py-1 text-xs capitalize text-paper">
+              {type}
+            </Text>
+            <Text className="text-base font-bold uppercase text-black">
+              {conditionRender ? loadingInput : department}
+              <Text>{'\n'}</Text>
+              {conditionRender ? loadingInput : 'DEPARTMENT'}
+            </Text>
+            <Text className="text-xs">
+              {conditionRender ? loadingInput : `Posted by: ${postedBy}`}
+            </Text>
+          </View>
         </View>
-        <Text className="mb-1 mt-2 text-sm text-black ">
-          {currentStudent.email === 'null' ? '........' : props.title}
+        <Text className="mx-auto w-64 p-2 text-sm text-black">
+          {conditionRender ? loadingInput : props.title}
         </Text>
         {photoUrls !== undefined ? (
-          <View className=" h-48 w-96 items-center overflow-hidden ">
-            {currentStudent.email === 'null' ? (
+          <View className=" h-48 w-64 items-center overflow-hidden ">
+            {conditionRender ? (
               <View />
             ) : (
               <Image
@@ -126,12 +137,9 @@ const Container = (props: ReadAnnouncementProps) => {
           className="mt-2 self-center"
           onPress={() => handlePressReadMore(id)}>
           <Text className="justify-center rounded-full border border-black p-1 px-2 text-xs">
-            {currentStudent.email === 'null' ? '.....' : 'Read More'}
+            {conditionRender ? loadingInput : 'Read More'}
           </Text>
         </TouchableOpacity>
-        <Text className=" my-2 text-xs">
-          {currentStudent.email === 'null' ? '...' : `Posted by: ${postedBy}`}
-        </Text>
       </View>
     </TouchableOpacity>
   );

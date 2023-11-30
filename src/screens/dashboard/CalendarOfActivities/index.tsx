@@ -1,4 +1,5 @@
 import {MarkedDatesProps} from '@cares/types/announcement';
+import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {FlatList, Image, TouchableOpacity, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
@@ -24,6 +25,7 @@ const CalendarOfActivities = () => {
   const date = new Date();
   const {data} = useAnnouncement();
   const {handleNavigation} = useNav();
+  const route = useRoute();
   const [state, setState] = useState<CalendarStateProps>({
     markedDates: {},
     markingType: 'multi-period',

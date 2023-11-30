@@ -1,7 +1,7 @@
 import {AnnouncementProps} from '@cares/types/announcement';
 import {getImageFromStorage} from '@cares/utils/media';
 import {FIRESTORE_STORAGE_BUCKET} from '@env';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {Image, Modal, SectionList, View} from 'react-native';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
@@ -10,18 +10,20 @@ import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useUser} from '~/contexts/UserContext';
 
+interface TypedParamsProps {
+  id: string;
+}
+
 const Announcements = () => {
   const {data, type, handleTypeChange} = useAnnouncement();
   const [modalImage, setModalImage] = useState(false);
   const [photoSelected, setPhotoSelected] = useState('');
-  const {getState} = useNavigation();
-  const routes = getState().routes;
+  const {params} = useRoute();
   const {currentStudent} = useUser();
-  const params: string | undefined = routes[routes.length - 1]?.params;
-  const paramsExist = typeof params === 'string';
+  const typedParam: TypedParamsProps = params as TypedParamsProps;
   const [announcementData, setAnnouncementData] = useState([
-    ...(paramsExist
-      ? data.filter(({id}) => id === params)
+    ...(typeof params === 'object'
+      ? data.filter(({id}) => id === typedParam.id)
       : data.filter(props => {
           const today = new Date();
           const endDate = new Date();
@@ -29,6 +31,7 @@ const Announcements = () => {
           return props.type === 'event' && endDate.getTime() > today.getTime();
         })),
   ]);
+  console.log({params});
 
   function handlePressImage(value: boolean, src?: string) {
     setModalImage(value);
@@ -83,7 +86,7 @@ const Announcements = () => {
           <RenderImageInModal src={photoSelected} />
         </View>
       </Modal>
-      {!paramsExist && (
+      {typeof params !== 'object' && (
         <>
           <View className="mx-10 mb-4 mt-6 flex items-center justify-center rounded-3xl ">
             <Image
