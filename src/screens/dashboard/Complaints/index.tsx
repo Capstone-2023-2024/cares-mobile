@@ -4,8 +4,9 @@ import type {AdviserInfoProps, StudentInfoProps} from '@cares/types/user';
 import React, {useCallback, useEffect} from 'react';
 import {Alert, View} from 'react-native';
 import {OneSignal} from 'react-native-onesignal';
+import {ActivityIndicator} from 'react-native-paper';
 import Header from '~/components/Header';
-import Loading from '~/components/SplashScreen';
+import Text from '~/components/Text';
 import ChatHeadButton from '~/components/others/complaints/ChatHeadButton';
 import ComplaintBox from '~/components/others/complaints/ComplaintBox';
 import ComplaintBoxRenderer from '~/components/others/complaints/ComplaintBoxRenderer';
@@ -23,6 +24,7 @@ import type {
   UniversalProviderStateProps,
   YearLevelSectionProps,
 } from '~/contexts/UniversalContext/types';
+import {useUser} from '~/contexts/UserContext';
 import {collectionRef} from '~/utils/firebase';
 
 interface ReadComplaintBaseProps
@@ -49,15 +51,12 @@ const Complaints = () => {
 // /** User's initial Set-up */
 const ComplaintsWrapper = () => {
   const {currentUser} = useAuth();
-  const {setRole, setAdviserInfo, setCurrentStudentInfo} = useUniversal();
+  const {setAdviserInfo, setCurrentStudentInfo} = useUniversal();
 
-  /** Setting up setRole, setCurrentStudentInfo, and setAdviserInfo */
+  /**  setCurrentStudentInfo, and setAdviserInfo */
   const fetchUserInfo = useCallback(async () => {
     if (typeof currentUser?.email === 'string') {
       const studentSnapshot = await collectionRef('student')
-        .where('email', '==', currentUser.email)
-        .get();
-      const mayorSnapshot = await collectionRef('mayor')
         .where('email', '==', currentUser.email)
         .get();
 
@@ -66,7 +65,6 @@ const ComplaintsWrapper = () => {
         const data = doc?.data() as StudentInfoProps;
         const {yearLevel, section} = data;
         setCurrentStudentInfo(data);
-        setRole('student');
         const adviserSnapshot = await collectionRef('adviser')
           .where('yearLevel', '==', yearLevel)
           .where('section', '==', section)
@@ -87,14 +85,10 @@ const ComplaintsWrapper = () => {
           const id = doc?.id ?? '';
           const adviserData = doc?.data() as AdviserInfoProps;
           setAdviserInfo({...adviserData, id});
-          setRole('adviser');
         }
       }
-      if (!mayorSnapshot.empty) {
-        setRole('mayor');
-      }
     }
-  }, [currentUser?.email, setAdviserInfo, setCurrentStudentInfo, setRole]);
+  }, [currentUser?.email, setAdviserInfo, setCurrentStudentInfo]);
 
   useEffect(() => {
     return void fetchUserInfo();
@@ -122,7 +116,6 @@ const MainPage = () => {
     setSelectedChatHead,
   } = useContentManipulation();
   const {
-    role,
     queryId,
     studentsInfo,
     currentStudentInfo,
@@ -130,6 +123,7 @@ const MainPage = () => {
     setMayorInfo,
     returnComplaintsQuery,
   } = useUniversal();
+  const {role} = useUser();
   const {setShowMayorModal, setShowStudents} = useModal();
 
   const getChattablesForStudent = useCallback(
@@ -316,8 +310,13 @@ const MainPage = () => {
     }
   }, [role, adviserSetup]);
 
-  if (role === undefined) {
-    return <Loading />;
+  if (role === null) {
+    return (
+      <View className="h-screen items-center justify-center">
+        <Text className="text-bold">Fetching complaints from the server</Text>
+        <ActivityIndicator animating={true} color="gray" />
+      </View>
+    );
   }
 
   return (
