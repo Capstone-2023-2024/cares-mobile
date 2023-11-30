@@ -152,8 +152,9 @@ const Announcements = () => {
                 <Text className="mt-5 text-xl font-black text-black">
                   {`${department.toUpperCase()} Department`}
                   {'\n'}
-                  {/* <Text className="text-base font-light">{postedBy}</Text> */}
+                  <Text className="text-center font-semibold text-black">Department Head</Text>
                 </Text>
+                
               </View>
               {photoUrls === undefined ? (
                 <View className="" />
@@ -217,24 +218,15 @@ const Container = (props: AnnouncementProps) => {
               </View>
             </View>
           ) : (
-            <Text className=" -mt-1">{message}</Text> // Whole Message
-          )}
-          <View className="mt-5 flex-row items-center justify-center">
-            <Text className="text-xl font-bold">Title:</Text>
+            <><View className=" flex-row items-center justify-center">
+            <Text className="text-3xl font-bold">{'[ '}</Text>
             <Text className="text-xl font-bold">{title}</Text>
-            {/* ?.map(value => {
-            //   const date = new Date();
-            //   date.setTime(endDate);
-            //   return (
-            //     <Text
-            //       key={value}
-            //       className="m-1 w-max rounded-lg bg-gray-500 px-2 py-1 text-sm text-paper">
-            //       {value}
-            //     </Text>
-            //   );
-            // */}
-          </View>
-          <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text>
+            <Text className="text-3xl font-bold">{' ]'}</Text>
+              </View><Text className=" my-4">{message}</Text>
+              </> // Whole Message
+          )}
+          
+          {/* <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text> */}
           {type !== 'event' ? (
             <></>
           ) : (
