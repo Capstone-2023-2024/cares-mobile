@@ -57,7 +57,7 @@ const HomeAnnouncements = () => {
             itemWidth={450} // Adjust the width as needed
             autoplay
             loop
-            autoplayInterval={300} // Adjust the interval as needed
+            autoplayInterval={3000} // Adjust the interval as needed
             inactiveSlideOpacity={0.5} // Adjust the opacity for inactive slides
             onSnapToItem={handleSnapToItem}
           />
