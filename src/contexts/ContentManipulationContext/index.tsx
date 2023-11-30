@@ -12,6 +12,7 @@ import type {
   ContentManipulationProviderProps,
   ContentManipulationProviderStateProps,
 } from './types';
+import {useUser} from '../UserContext';
 
 const contentManupulationInitState: ContentManipulationProviderStateProps = {
   message: '',
@@ -49,7 +50,8 @@ const ContentManipulationProvider = ({
 }: ContentManipulationProviderProps) => {
   const [state, setState] = useState(contentManupulationInitState);
   const {currentStudentComplaints} = useComplaints();
-  const {role, currentStudentInfo, queryId} = useUniversal();
+  const {role} = useUser();
+  const {currentStudentInfo, queryId} = useUniversal();
 
   const setMessage = useCallback((value: string) => {
     setState(prevState => ({
@@ -104,7 +106,14 @@ const ContentManipulationProvider = ({
 
           const targetDoc = individualColRef.doc(state.selectedChatId);
           if (type === 'resolved') {
-            await targetDoc.update({status: type});
+            const data = {status: type};
+            await targetDoc.update(data);
+            const docs = await individualColRef
+              .where('referenceId', '==', targetDoc.id)
+              .get();
+            docs.forEach(doc => {
+              void individualColRef.doc(doc.id).update(data);
+            });
           } else if (type === 'turn-over') {
             if (role !== undefined) {
               const turnOverDetails = {
@@ -117,7 +126,7 @@ const ContentManipulationProvider = ({
                     timestamp: new Date().getTime(),
                   },
                 ],
-                recipient: recipientEscalation(role),
+                recipient: role ? recipientEscalation(role) : 'anonymous',
                 status: 'processing',
                 studentNo:
                   currentStudentComplaints?.filter(

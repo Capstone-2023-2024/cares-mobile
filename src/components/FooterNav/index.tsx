@@ -14,10 +14,9 @@ const FooterNav = () => {
     role !== 'faculty' && route.name !== 'Chats' && currentStudent !== null;
 
   function handlePressChats() {
-    if (currentStudent.section === undefined) {
-      return Alert.alert('No section', 'Please set up your section first');
-    }
-    handleNavigation('Complaints');
+    role === 'adviser' || currentStudent.section !== undefined
+      ? handleNavigation('Complaints')
+      : Alert.alert('No section', 'Please set up your section first');
   }
 
   return (

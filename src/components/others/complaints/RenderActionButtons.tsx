@@ -3,22 +3,18 @@ import type {ComplaintProps} from '@cares/types/complaint';
 import {TouchableOpacity, View} from 'react-native';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
-import {useUniversal} from '~/contexts/UniversalContext';
 import {TurnOverModal} from './TurnOverModal';
 import Text from '~/components/Text';
+import {useUser} from '~/contexts/UserContext';
 
 /** TODO: Add notification here */
 const RenderActionButtons = ({targetArray}: {targetArray?: ComplaintProps}) => {
-  const {actionButton, selectedChatId, selectedChatHead} =
-    useContentManipulation();
-  const {role} = useUniversal();
-  const {showTurnOverModal, setShowTurnOverModal} = useModal();
+  const {actionButton} = useContentManipulation();
+  const {role} = useUser();
+  const {setShowTurnOverModal} = useModal();
 
   const condition =
-    targetArray?.status === 'processing' &&
-    role === targetArray?.recipient &&
-    selectedChatHead !== 'class_section' &&
-    selectedChatId !== 'class_section';
+    targetArray?.status === 'processing' && targetArray?.recipient === role;
 
   return (
     <View
@@ -35,7 +31,7 @@ const RenderActionButtons = ({targetArray}: {targetArray?: ComplaintProps}) => {
         onPress={() => setShowTurnOverModal(true)}>
         <Text className="capitalize text-paper">turn-over</Text>
       </TouchableOpacity>
-      {showTurnOverModal && <TurnOverModal />}
+      <TurnOverModal />
     </View>
   );
 };

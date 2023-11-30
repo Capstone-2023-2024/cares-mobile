@@ -112,15 +112,15 @@ const Register = () => {
     }
   }
 
-  const renderFileSize = ({name, size, uri}: FileType) => {
+  const renderFileSize = ({name, size}: FileType) => {
     const formatName = name?.substring(0, 8);
-    const convertedSizeToKb = size ?? NaN / milToKB;
+    const convertedSizeToKb = (size ?? NaN) / milToKB;
 
     return (
-      <View>
+      <View className="relative">
         <Text className="font-semibold">{`${formatName}...`}</Text>
         <Text>{`${Math.floor(convertedSizeToKb)} KB`}</Text>
-        <Text>{`Path: ${uri}`}</Text>
+        {/* <Text className="absolute bottom-0 w-full text-xs">{`Path: ${uri}`}</Text> */}
       </View>
     );
   };

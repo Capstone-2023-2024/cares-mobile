@@ -8,6 +8,7 @@ import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
 import {useUniversal} from '~/contexts/UniversalContext';
 import {TurnOverMessage} from './TurnOverModal';
+import {useUser} from '~/contexts/UserContext';
 
 interface ReadComplaintProps extends ComplaintProps, FirestoreDatabaseProps {}
 
@@ -21,7 +22,8 @@ const ComplaintBoxRenderer = ({
   heading,
   condition,
 }: ComplaintBoxRendererProps) => {
-  const {role, currentStudentInfo} = useUniversal();
+  const {role} = useUser();
+  const {currentStudentInfo} = useUniversal();
   const {
     selectedChatHead,
     selectedChatId,

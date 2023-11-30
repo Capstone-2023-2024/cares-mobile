@@ -10,6 +10,7 @@ import {useModal} from '~/contexts/ModalContext';
 import {useUniversal} from '~/contexts/UniversalContext';
 import ProfilePictureContainer from './ProfilePictureContainer';
 import RenderActionButtons from './RenderActionButtons';
+import {useUser} from '~/contexts/UserContext';
 
 const StyledDateTime = ({timestamp}: {timestamp: Date}) => {
   return (
@@ -21,7 +22,8 @@ const ComplaintBox = () => {
   const {showMayorModal} = useModal();
   const {currentStudentComplaints, otherComplaints, classSectionComplaints} =
     useComplaints();
-  const {role, studentsInfo, adviserInfo, currentStudentInfo} = useUniversal();
+  const {role} = useUser();
+  const {studentsInfo, adviserInfo, currentStudentInfo} = useUniversal();
   const {selectedChatId, selectedChatHead, selectedStudent} =
     useContentManipulation();
   const [state, setState] = useState({
