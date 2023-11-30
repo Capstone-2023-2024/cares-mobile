@@ -31,7 +31,7 @@ const RenderStudents = () => {
     <View
       className={`${
         showStudents ? 'flex' : 'hidden'
-      } mx-auto w-full gap-2 overflow-x-auto bg-secondary p-2`}>
+      }  w-full  overflow-x-auto bg-secondary p-2`}>
       {filteredStudentList.length < 0 ? (
         <View>
           <Text>No Complaints</Text>
@@ -43,8 +43,8 @@ const RenderStudents = () => {
               key={studentNo}
               className={`${
                 selectedStudent === studentNo
-                  ? 'scale-95 border-2 border-primary bg-secondary hover:bg-primary/20'
-                  : 'scale-90 bg-paper/90 hover:scale-95 hover:bg-paper'
+                  ? 'scale-95 border-2 border-primary bg-secondary p-4 hover:bg-primary/20'
+                  : 'scale-90 bg-paper/90 p-4 hover:scale-95 hover:bg-paper'
               } h-24 rounded-lg duration-300 ease-in-out`}
               onPress={() => {
                 setSelectedStudent(studentNo);

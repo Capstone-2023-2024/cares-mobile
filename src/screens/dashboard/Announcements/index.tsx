@@ -149,12 +149,13 @@ const Announcements = () => {
                   className="my-4 mr-2 h-16 w-16"
                   resizeMode="center"
                 />
-                <Text className="mt-5 text-xl font-black text-black">
+                <Text className="mt-5 text-2xl font-bold text-black">
                   {`${department.toUpperCase()} Department`}
                   {'\n'}
-                  <Text className="text-center font-semibold text-black">Department Head</Text>
+                  <Text className="text-center font-medium text-black">
+                    Department Head
+                  </Text>
                 </Text>
-                
               </View>
               {photoUrls === undefined ? (
                 <View className="" />
@@ -218,15 +219,17 @@ const Container = (props: AnnouncementProps) => {
               </View>
             </View>
           ) : (
-            <><View className=" flex-row items-center justify-center">
-            <Text className="text-3xl font-bold">{'[ '}</Text>
-            <Text className="text-xl font-bold">{title}</Text>
-            <Text className="text-3xl font-bold">{' ]'}</Text>
-              </View><Text className=" my-4">{message}</Text>
-              </> // Whole Message
+            <>
+              <View className=" flex-row items-center justify-center">
+                <Text className="text-3xl font-bold">{'[ '}</Text>
+                <Text className="text-xl font-bold">{title}</Text>
+                <Text className="text-3xl font-bold">{' ]'}</Text>
+              </View>
+              <Text className=" my-4">{message}</Text>
+            </> // Whole Message
           )}
-          
-          {/* <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text> */}
+
+          <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text>
           {type !== 'event' ? (
             <></>
           ) : (

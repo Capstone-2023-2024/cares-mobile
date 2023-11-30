@@ -203,7 +203,7 @@ const RenderInputMessageContainer = () => {
         selectedChatHead === 'class_section'
           ? 'absolute'
           : 'hidden'
-      } bottom-16 h-16 w-full flex-row items-center border-t-2 bg-paper p-2`}>
+      } h-18 bottom-0 w-full flex-row items-center border-t-2 bg-paper p-2`}>
       <TouchableOpacity
         disabled={currentStudentInfo?.email === 'null'}
         onPress={selectMultipleFile}

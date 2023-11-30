@@ -106,7 +106,7 @@ const ComplaintBox = () => {
                   ? adviserInfo?.src ?? ''
                   : targetStudent?.src ?? ''
               }>
-              <View className="relative flex-1 p-2">
+              <View className="relative flex-1 p-1">
                 <View>
                   <Text
                     className={`${

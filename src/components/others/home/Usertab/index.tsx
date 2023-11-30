@@ -48,7 +48,7 @@ const HomeUsertab = () => {
   // );
 
   return (
-    <View className="border-b-2 border-primary p-4">
+    <View className="w-full border-b-2 border-primary p-4">
       <View className="flex-row items-center justify-evenly">
         <View className="flex-row items-center ">
           {renderProfilePicture()}

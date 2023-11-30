@@ -322,7 +322,7 @@ const MainPage = () => {
   return (
     <>
       <Header />
-      <View className="h-full">
+      <View className="h-4/5">
         {role !== 'student' ? (
           <>
             <RenderChatHeads>
@@ -356,8 +356,8 @@ const MainPage = () => {
           <RenderChatHeads>{renderClassSectionButton()}</RenderChatHeads>
         )}
         <ComplaintBox />
-        <RenderInputMessageContainer />
       </View>
+      <RenderInputMessageContainer />
     </>
   );
 };
