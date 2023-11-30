@@ -5,7 +5,7 @@ import React, {useCallback, useEffect} from 'react';
 import {Alert, View} from 'react-native';
 import {OneSignal} from 'react-native-onesignal';
 import {ActivityIndicator} from 'react-native-paper';
-import Header from '~/components/Header';
+import Header from '~/components/HeaderNoChat';
 import Text from '~/components/Text';
 import ChatHeadButton from '~/components/others/complaints/ChatHeadButton';
 import ComplaintBox from '~/components/others/complaints/ComplaintBox';

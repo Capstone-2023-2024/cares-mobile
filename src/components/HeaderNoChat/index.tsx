@@ -1,12 +1,5 @@
-import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {
-  Alert,
-  Image,
-  Modal,
-  TouchableOpacity as VanillaTouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, Modal, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Text from '~/components/Text';
 import {useAuth} from '~/contexts/AuthContext';
@@ -14,44 +7,37 @@ import {useNav} from '~/contexts/NavigationContext';
 import {useUser} from '~/contexts/UserContext';
 
 function Header({}: {withBack?: boolean}) {
-  const {currentUser} = useAuth();
-  const {currentStudent, role} = useUser();
   const {handleNavigation, initialRouteName} = useNav();
+  useUser();
+  useAuth();
   const [modal, setModal] = useState(false);
-  const route = useRoute();
-
-  const complaintRenderCondition =
-    role !== 'faculty' && route.name !== 'Chats' && currentStudent !== null;
 
   function handlePressRoute() {
-    route.name.toLowerCase() === 'home'
-      ? setModal(true)
-      : handleNavigation(initialRouteName);
+    handleNavigation(initialRouteName);
   }
 
-  function handlePressChats() {
-    if (currentStudent.section === undefined) {
-      return Alert.alert('No section', 'Please set up your section first');
-    }
-    handleNavigation('Complaints');
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
+
+  function handleInfoButtonPress() {
+    setInfoModalVisible(true);
+  }
+
+  function closeModal() {
+    setInfoModalVisible(false);
   }
 
   return (
-    <View
-      className={`${
-        route.name.toLowerCase() === 'home' || currentUser === null
-      } relative h-16 flex-row items-center px-2`}>
-      {route.name.toLowerCase() === 'home'}
+    <View className="h-16 flex-row items-center justify-between bg-paper px-2">
       <Modal
         visible={modal}
         animationType="slide"
         transparent
         onRequestClose={() => setModal(false)}>
-        <VanillaTouchableOpacity
+        <TouchableOpacity
           className="flex-1"
           activeOpacity={1}
-          onPress={() => setModal(false)}>
-          <View className="h-full bg-primary p-5 shadow-sm">
+          onPressOut={() => setModal(false)}>
+          <View className="h-screen bg-primary p-5 shadow-sm">
             <Text className="mt-10 text-center text-lg font-bold text-paper">
               CARES (Cultivating Assistance, Resolution, and Empowerment for
               Students){'\n'}
@@ -82,31 +68,56 @@ function Header({}: {withBack?: boolean}) {
               heard, and CARES is here to facilitate that process.
             </Text>
           </View>
-        </VanillaTouchableOpacity>
+        </TouchableOpacity>
       </Modal>
-      <View className="flex-row justify-between">
+      <Modal
+        visible={infoModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={closeModal}>
         <TouchableOpacity
-          onLongPress={() => setModal(true)}
-          onPress={handlePressRoute}>
+          className="flex-1"
+          activeOpacity={1}
+          onPressOut={closeModal}>
+          <View className="mx-12 my-72 h-64 rounded-2xl border-2 bg-primary p-5 shadow-sm">
+            <View className="flex-col items-center">
+              <Image
+                source={require('~/assets/info.png')}
+                className="-ml-2 h-12 w-12 invert"
+                resizeMode="stretch"
+                style={{tintColor: 'white'}}
+              />
+              <Text className="mt-2 text-start text-xl font-bold text-paper">
+                Raise a Concern/Complaints
+              </Text>
+            </View>
+            <Text className="mt-6 text-justify text-paper">
+              {'\t'}
+              {'\t'}To address concerns or complaints, contact your mayors and
+              engage with your class section for discussions and solutions.
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+      <TouchableOpacity
+        onLongPress={() => setModal(true)}
+        className="flex-row items-center"
+        onPress={handlePressRoute}>
+        <View className="justify-between">
           <Image
             source={require('~/assets/cares_icon1.png')}
             className="-ml-2 h-12 w-64"
             resizeMode="stretch"
           />
-        </TouchableOpacity>
-
-        {complaintRenderCondition && (
-          <TouchableOpacity
-            disabled={currentStudent.email === 'null'}
-            className="h-12 w-12 items-center"
-            onPress={handlePressChats}>
-            <Image
-              className="-mr-60 h-full w-full"
-              source={require('~/assets/chat.png')}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleInfoButtonPress}>
+        <Image
+          source={require('~/assets/info.png')}
+          className="mr-2 h-10 w-10"
+          resizeMode="center"
+        />
+      </TouchableOpacity>
     </View>
   );
 }

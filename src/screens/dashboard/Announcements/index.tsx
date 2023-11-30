@@ -80,7 +80,7 @@ const Announcements = () => {
   // }
 
   return (
-    <View className="mt-8 flex-1 ">
+    <View className="flex-1 bg-stone-400 ">
       <Modal
         animationType="fade"
         visible={modalImage}
@@ -91,6 +91,13 @@ const Announcements = () => {
       </Modal>
       {typeof params !== 'object' && (
         <>
+          <View className="mx-10 mb-4 mt-6 flex items-center justify-center rounded-3xl ">
+            <Image
+              source={require('~/assets/announcements.png')}
+              className="my-4  h-8 w-80"
+              resizeMode="stretch"
+            />
+          </View>
           <View className="mb-4 flex-row items-center justify-evenly">
             <SelectDropdown
               disabled={currentStudent.email === 'null'}
@@ -111,20 +118,6 @@ const Announcements = () => {
               data={['Event', 'University Memo', 'Recognition', 'Others']}
               onSelect={handleType}
             />
-            {/* <View className="relative w-max flex-row items-center rounded-full border bg-blue-400">
-              <View className="absolute inset-y-0 left-0 flex-row items-center">
-                <Image
-                  source={require('~/assets/search.png')}
-                  className="h-8 w-8 "
-                />
-                <TextInput
-                  className=""
-                  placeholder="Enter text here"
-                    onChangeText={handleInputChange}
-                value={inputText}
-                />
-              </View>
-            </View> */}
           </View>
         </>
       )}

@@ -489,6 +489,13 @@ const Poll = (props: ReadPollEventProps) => {
 
   return (
     <View className="flex h-full w-full flex-col items-center justify-center bg-white">
+      <View className="mb-4 w-full items-center bg-gray-500">
+        <Image
+          source={require('~/assets/project-suggestion.png')}
+          className="my-4 h-8 w-80"
+          resizeMode="stretch"
+        />
+      </View>
       <Modal
         transparent
         animationType="fade"
