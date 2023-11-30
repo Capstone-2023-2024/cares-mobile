@@ -1,16 +1,13 @@
 import {MarkedDatesProps} from '@cares/types/announcement';
-import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, TouchableOpacity, View} from 'react-native';
+import {View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import type {
   DateData,
   MarkedDates,
   MarkingTypes,
 } from 'react-native-calendars/src/types';
-import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
-import {useNav} from '~/contexts/NavigationContext';
 
 interface CalendarStateProps {
   markedDates: MarkedDates;
@@ -24,8 +21,6 @@ interface CalendarStateProps {
 const CalendarOfActivities = () => {
   const date = new Date();
   const {data} = useAnnouncement();
-  const {handleNavigation} = useNav();
-  const route = useRoute();
   const [state, setState] = useState<CalendarStateProps>({
     markedDates: {},
     markingType: 'multi-period',
@@ -93,14 +88,6 @@ const CalendarOfActivities = () => {
 
   return (
     <View className="flex-1 bg-stone-300">
-      <View className="mx-10 mb-3 mt-6 flex items-center justify-center">
-        <Image
-          source={require('~/assets/calender_of_activities.png')}
-          className=" h-6 w-11/12  "
-          resizeMode="stretch"
-        />
-      </View>
-
       {state && (
         <View className="mx-4 my-3 rounded-2xl bg-gray-200 ">
           <Calendar

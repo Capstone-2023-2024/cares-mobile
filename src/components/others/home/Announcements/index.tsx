@@ -49,9 +49,10 @@ const HomeAnnouncements = () => {
       ) : (
         <View className="items-center">
           <Carousel
-            layout={'stack'}
-            ref={carouselRef}
             data={data}
+            layout="stack"
+            ref={carouselRef}
+            keyExtractor={props => props.id}
             renderItem={({item}) => <Container {...item} />}
             sliderWidth={500} // Adjust the width as needed
             itemWidth={450} // Adjust the width as needed

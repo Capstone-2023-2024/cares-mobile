@@ -1,10 +1,10 @@
 import {AnnouncementProps} from '@cares/types/announcement';
 import {getImageFromStorage} from '@cares/utils/media';
 import {FIRESTORE_STORAGE_BUCKET} from '@env';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {Image, Modal, SectionList, View} from 'react-native';
-import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import SelectDropdown from 'react-native-select-dropdown';
 import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
@@ -41,6 +41,7 @@ const Announcements = () => {
   }
 
   function handleType(text: string) {
+    console.log(text);
     handleTypeChange(text);
     if (text === 'Event') {
       return setAnnouncementData([
@@ -53,7 +54,9 @@ const Announcements = () => {
       ]);
     } else if (text === 'University Memo') {
       return setAnnouncementData([
-        ...data.filter(props => props.type === 'university_memorandum'),
+        ...data.filter(
+          props => props.type === 'university_memorandum'.replace(/_/, ' '),
+        ),
       ]);
     } else if (text === 'Others') {
       return setAnnouncementData([
@@ -77,7 +80,7 @@ const Announcements = () => {
   // }
 
   return (
-    <View className="flex-1 bg-stone-400 ">
+    <View className="mt-8 flex-1 ">
       <Modal
         animationType="fade"
         visible={modalImage}
@@ -88,13 +91,6 @@ const Announcements = () => {
       </Modal>
       {typeof params !== 'object' && (
         <>
-          <View className="mx-10 mb-4 mt-6 flex items-center justify-center rounded-3xl ">
-            <Image
-              source={require('~/assets/announcements.png')}
-              className="my-4  h-8 w-80"
-              resizeMode="stretch"
-            />
-          </View>
           <View className="mb-4 flex-row items-center justify-evenly">
             <SelectDropdown
               disabled={currentStudent.email === 'null'}
@@ -115,8 +111,8 @@ const Announcements = () => {
               data={['Event', 'University Memo', 'Recognition', 'Others']}
               onSelect={handleType}
             />
-            <View className=" mr-12 w-44 flex-row items-center rounded-full border bg-white">
-              <View className="mx-4 flex-row items-center">
+            {/* <View className="relative w-max flex-row items-center rounded-full border bg-blue-400">
+              <View className="absolute inset-y-0 left-0 flex-row items-center">
                 <Image
                   source={require('~/assets/search.png')}
                   className="h-8 w-8 "
@@ -124,11 +120,11 @@ const Announcements = () => {
                 <TextInput
                   className=""
                   placeholder="Enter text here"
-                  /*  onChangeText={handleInputChange}
-                value={inputText} */
+                    onChangeText={handleInputChange}
+                value={inputText}
                 />
               </View>
-            </View>
+            </View> */}
           </View>
         </>
       )}

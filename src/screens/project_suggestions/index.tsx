@@ -6,6 +6,7 @@ import type {
 } from '@cares/types/poll';
 import {setUpPrefix} from '@cares/utils/date';
 import {imageDimension} from '@cares/utils/media';
+import {removeObjectWithType} from '@cares/utils/validation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
@@ -17,7 +18,6 @@ import {
 } from 'react-native';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {ActivityIndicator} from 'react-native-paper';
-import BackHeader from '~/components/BackHeader';
 import Text from '~/components/Text';
 import Textfield from '~/components/Textfield';
 import TickingClock from '~/components/TickingClock';
@@ -47,15 +47,17 @@ const ProjectSuggestions = () => {
   }, []);
 
   return (
-    <FlatList
-      data={state}
-      keyExtractor={props => props.id}
-      renderItem={({item}) => (
-        <View key={item.id} className="w-full items-center ">
-          <Poll {...item} />
-        </View>
-      )}
-    />
+    <View>
+      <FlatList
+        data={state}
+        keyExtractor={props => props.id}
+        renderItem={({item}) => (
+          <View key={item.id} className="w-full items-center ">
+            <Poll {...item} />
+          </View>
+        )}
+      />
+    </View>
   );
 };
 
@@ -105,23 +107,7 @@ const Poll = (props: ReadPollEventProps) => {
   });
   const undefinedNaN = -1;
   const flatListRef = useRef<FlatList | null>(null);
-  // const sampleComment: CommentProps[] = [
-  //   {
-  //     commenter: 'carranzagcarlo@gmail.com',
-  //     value: 'Poo',
-  //     dateCreated: new Date().getTime(),
-  //   },
-  //   {
-  //     commenter: 'giancarlo.carranza.a@gmail.com',
-  //     value: 'Laa',
-  //     dateCreated: new Date().getTime(),
-  //   },
-  //   {
-  //     commenter: 'mamama.a@gmail.com',
-  //     value: 'LaKKakaa',
-  //     dateCreated: new Date().getTime(),
-  //   },
-  // ];
+
   const targetPollDocRef = collectionRef('project_suggestion').doc(id);
   const commentCondition = pollState.currentComment.trim() === '';
   const initOptions = (value: string): OptionProps => ({
@@ -224,26 +210,8 @@ const Poll = (props: ReadPollEventProps) => {
     });
     if (flatListRef.current !== null) {
       flatListRef.current.scrollToEnd({animated: true});
-      // flatListRef.current.scrollToIndex({
-      //   animated: true,
-      //   index: pollState.index,
-      // });
     }
   }
-  // const onViewableItemsChanged = (event: {
-  //   viewableItems: ViewToken[];
-  //   changed: ViewToken[];
-  // }) => {
-  //   console.log(event);
-  // const height = event.nativeEvent.layout.height;
-  // const width = event.nativeEvent.layout.width;
-  // const indexx = event.nativeEvent.layout.y;
-  // console.log({indexx, height});
-  // setPollState(prevState => ({
-  //   ...prevState,
-  //   offset: {height: height * prevState.index, width},
-  // }));
-  // };
 
   function handleCommentUpload() {
     const postComment = pollState.currentComment;
@@ -266,41 +234,6 @@ const Poll = (props: ReadPollEventProps) => {
       });
   }
 
-  // function handleSubmitIdea() {
-  //   try {
-  //     const newIdea = pollState.idea?.toLowerCase();
-  //     const initOptionRef = initOptions(newIdea);
-  //     const filterOptions = options.filter(props => newIdea !== props.value);
-  //     const isIdeaNotOption = filterOptions.length === 0;
-
-  //     const {targetedOption, restOptions} = getNewOptionsPrevVote(newIdea);
-  //     const {vote, value, index} = targetedOption;
-  //     let targetVoteCount = vote ?? undefinedNaN;
-
-  //     /** Update options from Server */
-  //     const union = arrayUnion(initOptionRef);
-  //     void targetPollDocRef.update(() => ({
-  //       options: isIdeaNotOption
-  //         ? /** Append initialized option */
-  //           union
-  //         : /** TODO: Reconsidering because this logic is almost identical to option press */ [
-  //             ...restOptions.map(props => ({
-  //               ...props,
-  //               vote: (props.vote ?? 0) > 0 ? (props.vote ?? 0) - 1 : 0,
-  //             })),
-  //             targetVoteCount >= 0
-  //               ? {value, vote: targetVoteCount + 1, index}
-  //               : {value, index},
-  //           ],
-  //     }));
-
-  //     setPollState(prevState => ({...prevState, idea: ''}));
-  //   } catch (err) {
-  //     // console.log(err);
-  //     ToastAndroid.show('Error in submitting idea', ToastAndroid.SHORT);
-  //   }
-  // }
-
   function renderOptions() {
     const filteredEmail = currentUser?.email ?? '';
     const filteredVotes = votes ?? {};
@@ -317,6 +250,12 @@ const Poll = (props: ReadPollEventProps) => {
         getNewOptionsPrevVote(selectedValue);
       const {vote, value, index} = targetedOption;
       let targetVoteCount = vote ?? undefinedNaN;
+      const filterVotes = removeObjectWithType(
+        {...votes},
+        'key',
+        currentUser?.email ?? '',
+      );
+
       const newOptions = [
         ...restOptions.map(props => ({
           ...props,
@@ -337,7 +276,7 @@ const Poll = (props: ReadPollEventProps) => {
 
       void targetPollDocRef.update({
         options: newOptions,
-        votes: {[email]: value},
+        votes: Object.assign({[email]: value}, filterVotes),
       });
     }
     return options.map(({value, vote}, index) => {
@@ -412,7 +351,7 @@ const Poll = (props: ReadPollEventProps) => {
                   resizeMode="center"
                 />
                 <View>
-                <Text className="text-xl font-black uppercase text-black">
+                  <Text className="text-xl font-black uppercase text-black">
                     CICS Department
                   </Text>
                   <Text className="text-base font-bold text-primary/100">
@@ -427,7 +366,7 @@ const Poll = (props: ReadPollEventProps) => {
               className="absolute inset-0 rounded-full bg-secondary px-2">
               <Text className="text-white">Simulate Comment Data Flow</Text>
             </VanillaTouchableOpacity> */}
-             <Text className="mx-auto w-11/12 text-start font-normal text-black">
+            <Text className="mx-auto w-11/12 text-start font-normal text-black">
               {question}
             </Text>
           </View>
@@ -435,7 +374,7 @@ const Poll = (props: ReadPollEventProps) => {
         <View className="pb-2">{renderOptions()}</View>
         <View className="h-11/12 mx-auto mb-2 w-11/12 rounded-2xl bg-primary p-4">
           <View className="flex-row justify-between">
-          <Text className="mb-2 text-xl text-white">Comments</Text>
+            <Text className="mb-2 text-xl text-white">Comments</Text>
             <TouchableOpacity
               disabled={pollState.maxLength < 0}
               onPress={() =>
@@ -550,7 +489,6 @@ const Poll = (props: ReadPollEventProps) => {
 
   return (
     <View className="flex h-full w-full flex-col items-center justify-center bg-white">
-      <BackHeader />
       <Modal
         transparent
         animationType="fade"

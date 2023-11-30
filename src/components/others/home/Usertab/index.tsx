@@ -8,13 +8,11 @@ import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {useUser} from '~/contexts/UserContext';
 import {menuDots} from '~/utils/svgIcons';
-import type {UsertabProps} from './types';
 
-const HomeUsertab = ({name}: UsertabProps) => {
+const HomeUsertab = () => {
   const {handleNavigation} = useNav();
   const {currentUser} = useAuth();
   const {currentStudent} = useUser();
-  const {role} = useUser();
 
   function handlePressUserInfo() {
     handleNavigation('UserInfo');
@@ -28,9 +26,7 @@ const HomeUsertab = ({name}: UsertabProps) => {
         <View className="h-6 w-24 bg-primary" />
       ) : (
         <Text className="ml-2 text-lg font-bold capitalize text-black">
-          {name === 'null' && role !== 'mayor' && role !== 'student'
-            ? currentUser?.displayName
-            : name}
+          {currentUser?.displayName}
         </Text>
       )}
     </View>
@@ -52,9 +48,9 @@ const HomeUsertab = ({name}: UsertabProps) => {
   // );
 
   return (
-    <View className=" border-b-2 border-primary p-12">
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center">
+    <View className="border-b-2 border-primary">
+      <View className="flex-row items-center justify-evenly">
+        <View className="flex-row items-center ">
           {renderProfilePicture()}
           {renderNameAndGreeting()}
         </View>

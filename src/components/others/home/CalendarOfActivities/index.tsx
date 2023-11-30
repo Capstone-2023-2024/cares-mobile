@@ -34,7 +34,6 @@ const HomeCalendarOfActivities = () => {
   );
 
   const handleSnapToItem = (index: number) => setActiveIndex(index);
-
   return (
     <TabContainer>
       <HeadingTemplate
@@ -46,10 +45,9 @@ const HomeCalendarOfActivities = () => {
       />
       <View className="items-center">
         <Carousel
-          data={announcementEvent}
           layout="tinder"
+          data={announcementEvent}
           ref={carouselRef}
-          // keyExtractor={props => props.id}
           renderItem={({item}) => {
             const {title, markedDates, id} = item;
             const keys = Object.keys(markedDates).sort((a, b) =>
@@ -70,23 +68,30 @@ const HomeCalendarOfActivities = () => {
                 </Text>
                 <View>
                   {keys.map((key, i) => {
-                    if (keys.length === 1) {
-                      return (
-                        <Text className="text-center text-sm text-paper">{`Only at: ${key}`}</Text>
-                      );
-                    }
-                    switch (i) {
-                      case 0:
+                    const renderConditionalElement = () => {
+                      if (keys.length === 1) {
                         return (
-                          <Text className="text-center text-sm text-paper">{`Starting from: ${key}`}</Text>
+                          <Text className="text-center text-sm text-paper">{`Only at: ${key}`}</Text>
                         );
-                      case keys.length - 1:
-                        return (
-                          <Text className="text-center text-sm text-paper">{`Up to: ${key}`}</Text>
-                        );
-                      default:
-                        return <></>;
-                    }
+                      }
+                      switch (i) {
+                        case 0:
+                          return (
+                            <Text className="text-center text-sm text-paper">{`Starting from: ${key}`}</Text>
+                          );
+                        case keys.length - 1:
+                          return (
+                            <Text className="text-center text-sm text-paper">{`Up to: ${key}`}</Text>
+                          );
+                        default:
+                          return <View />;
+                      }
+                    };
+                    return (
+                      <View key={key + title + i}>
+                        {renderConditionalElement()}
+                      </View>
+                    );
                   })}
                 </View>
               </TouchableOpacity>

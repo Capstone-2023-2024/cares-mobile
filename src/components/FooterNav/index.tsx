@@ -1,5 +1,6 @@
+import {useRoute} from '@react-navigation/native';
 import React from 'react';
-import {Image, View} from 'react-native';
+import {Image, View, Alert} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Text from '~/components/Text';
 import {useNav} from '~/contexts/NavigationContext';
@@ -7,29 +8,49 @@ import {useUser} from '~/contexts/UserContext';
 
 const FooterNav = () => {
   const {handleNavigation} = useNav();
-  const {currentStudent} = useUser();
+  const {currentStudent, role} = useUser();
+  const route = useRoute();
+  const complaintRenderCondition =
+    role !== 'faculty' && route.name !== 'Chats' && currentStudent !== null;
 
-  function handlePressProject() {
-    handleNavigation('ProjectSuggestions');
+  function handlePressChats() {
+    if (currentStudent.section === undefined) {
+      return Alert.alert('No section', 'Please set up your section first');
+    }
+    handleNavigation('Complaints');
   }
 
   return (
-    <View className=" bottom-0 left-0 right-0">
-      <View className="flex-row items-center justify-center border-t-2 bg-white px-12 pt-2">
+    <View className="bottom-2 w-full">
+      <View className="flex-row items-center justify-around border-t-2 border-primary bg-white">
         <TouchableOpacity
-          className="mb-2"
           disabled={currentStudent.email === 'null'}
-          onPress={handlePressProject}>
-          <View className="items-center">
+          onPress={() => handleNavigation('ProjectSuggestions')}
+          className="relative p-6">
+          <View className="h-8 w-8 items-center">
             <Image
-              className="h-12 w-12"
+              className="h-full w-full"
               source={require('~/assets/project_suggestion_icon.png')}
             />
-            <Text className="text-sm font-bold text-black">
+            <Text className="absolute -bottom-5 w-48 text-center text-sm font-bold text-black">
               Project Suggestions
             </Text>
           </View>
         </TouchableOpacity>
+        {complaintRenderCondition && (
+          <TouchableOpacity
+            disabled={currentStudent.email === 'null'}
+            className="h-8 w-8 items-center"
+            onPress={handlePressChats}>
+            <Image
+              className="h-full w-full"
+              source={require('~/assets/chat.png')}
+            />
+            <Text className="absolute -bottom-5 w-48 text-center text-sm font-bold text-black">
+              Complaints
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

@@ -1,17 +1,19 @@
 import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Alert, Image, Modal, View} from 'react-native';
+import {
+  Image,
+  Modal,
+  TouchableOpacity as VanillaTouchableOpacity,
+  View,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {TouchableOpacity as VanillaTouchableOpacity} from 'react-native';
 import Text from '~/components/Text';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {useUser} from '~/contexts/UserContext';
 
 function Header({}: {withBack?: boolean}) {
-  const {handleNavigation, initialRouteName} = useNav();
-  const {currentStudent, role} = useUser();
   const {currentUser} = useAuth();
+  const {handleNavigation, initialRouteName} = useNav();
   const [modal, setModal] = useState(false);
   const route = useRoute();
 
@@ -20,31 +22,21 @@ function Header({}: {withBack?: boolean}) {
       ? setModal(true)
       : handleNavigation(initialRouteName);
   }
-  function handlePressChats() {
-    if (currentStudent.section === undefined) {
-      return Alert.alert('No section', 'Please set up your section first');
-    }
-    handleNavigation('Complaints');
-  }
-  const renderChatIcon = () =>
-    role !== 'faculty' &&
-    route.name !== 'Chats' &&
-    currentUser !== null && (
-      <>
-        <TouchableOpacity
-          disabled={currentStudent.email === 'null'}
-          className="mr-2 h-12 w-12 items-center"
-          onPress={handlePressChats}>
-          <Image
-            source={require('~/assets/chat.png')}
-            className="h-full w-full"
-          />
-        </TouchableOpacity>
-      </>
-    );
 
   return (
-    <View className="h-16 flex-row items-center justify-between bg-paper px-2">
+    <View
+      className={`${
+        route.name.toLowerCase() === 'home' || currentUser === null
+          ? 'bg-transaparent'
+          : 'bg-primary/30'
+      } relative h-16 flex-row items-center justify-between px-2`}>
+      {route.name.toLowerCase() === 'home' && (
+        <Image
+          style={{opacity: 0.3}}
+          source={require('~/assets/BustosImage.jpg')}
+          className="absolute top-0 z-0 h-full bg-cover"
+        />
+      )}
       <Modal
         visible={modal}
         animationType="slide"
@@ -88,17 +80,24 @@ function Header({}: {withBack?: boolean}) {
         </VanillaTouchableOpacity>
       </Modal>
       <TouchableOpacity
-        className="flex-row items-center"
+        className="top-0 z-10 flex-row items-center"
         onPress={handlePressRoute}>
-        <View className="justify-between">
+        <View className="relative justify-between">
+          <Text className="absolute left-12 top-4 z-10 text-2xl font-bold uppercase text-paper">
+            cares
+          </Text>
           <Image
-            source={require('~/assets/cares_icon1.png')}
-            className="-ml-2 h-12 w-64"
-            resizeMode="stretch"
+            source={
+              // route.name.length > 5
+              // ? require('~/assets/cares_icon_header_long_name.png')
+              // :
+              require('~/assets/cares_icon_header_base.png')
+            }
+            className="-ml-2 h-auto w-screen"
+            resizeMode="cover"
           />
         </View>
       </TouchableOpacity>
-      {renderChatIcon()}
     </View>
   );
 }
