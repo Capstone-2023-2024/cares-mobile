@@ -10,11 +10,11 @@ import TabContainer from '~/components/TabContainer';
 import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useNav} from '~/contexts/NavigationContext';
-import {useUser} from '~/contexts/UserContext';
+import {useUniversal} from '~/contexts/UniversalContext';
 
 const HomeAnnouncements = () => {
   const {data} = useAnnouncement();
-  const {currentStudent} = useUser();
+  const {currentStudentInfo} = useUniversal();
   const stateLengthEmpty = data.length === 0;
   const carouselRef = useRef(null);
   const [activeIndex, setActiveIndex] = React.useState(0);
@@ -40,7 +40,7 @@ const HomeAnnouncements = () => {
   return (
     <TabContainer>
       <HeadingTemplate
-        disabled={stateLengthEmpty || currentStudent.email === 'null'}
+        disabled={stateLengthEmpty || currentStudentInfo?.email === undefined}
         navigation="Announcements"
         title="announcements"
       />
@@ -71,8 +71,8 @@ const HomeAnnouncements = () => {
 
 const Container = (props: ReadAnnouncementProps) => {
   const {handleNavigation} = useNav();
-  const {currentStudent} = useUser();
-  const conditionRender = currentStudent.email === 'null';
+  const {currentStudentInfo} = useUniversal();
+  const conditionRender = currentStudentInfo?.email === undefined;
   const loadingInput = '..........';
   const {id, department, photoUrls, postedBy, type} = props;
 

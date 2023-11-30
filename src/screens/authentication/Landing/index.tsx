@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import {ImageBackground, View} from 'react-native';
-import Text from '~/components/Text';
 import {Button} from '~/components/Button';
+import Text from '~/components/Text';
 import {useNav} from '~/contexts/NavigationContext';
-import {useUser} from '~/contexts/UserContext';
 import type {Role} from './types';
+import {useUser} from '~/contexts/UserContext';
 
 const Landing = () => {
   const roles: Role[] = ['student', 'faculty'];

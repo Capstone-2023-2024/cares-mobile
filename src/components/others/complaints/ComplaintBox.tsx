@@ -8,9 +8,9 @@ import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
 import {useUniversal} from '~/contexts/UniversalContext';
-import {useUser} from '~/contexts/UserContext';
 import ProfilePictureContainer from './ProfilePictureContainer';
 import RenderActionButtons from './RenderActionButtons';
+import {useUser} from '~/contexts/UserContext';
 
 const StyledDateTime = ({timestamp}: {timestamp: Date}) => {
   return (
@@ -91,7 +91,6 @@ const ComplaintBox = () => {
           const {message, timestamp, sender, files} = item;
           const newTimestamp = new Date();
           newTimestamp.setTime(timestamp);
-          // console.log({ studentsInfo });
           const targetStudent = studentsInfo?.filter(
             props => sender === props.studentNo,
           )[0];

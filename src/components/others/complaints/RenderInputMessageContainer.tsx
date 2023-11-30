@@ -57,12 +57,15 @@ const RenderInputMessageContainer = () => {
     (higherUpComplaintRecord.length > 0 &&
       higherUpComplaintRecord[0]?.status === 'processing');
 
-  console.log(
-    selectedChatId,
-    selectedChatHead,
-    newConcernDetails,
-    renderCondition,
-  );
+  // console.log({
+  //   queryId,
+  //   adviserInfo,
+  //   currentStudentInfo,
+  //   selectedChatId,
+  //   selectedChatHead,
+  //   newConcernDetails,
+  //   renderCondition,
+  // });
   async function selectMultipleFile() {
     try {
       const results = await DocumentPicker.pick({
@@ -170,7 +173,6 @@ const RenderInputMessageContainer = () => {
           const docRef = complaintDocRef
             .collection('individual')
             .doc(selectedChatId);
-          console.log(complaint);
           try {
             await docRef.update({
               messages: firebase.firestore.FieldValue.arrayUnion(complaint),

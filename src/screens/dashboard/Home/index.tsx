@@ -9,12 +9,13 @@ import {default as Announcements} from '~/components/others/home/Announcements';
 import {default as CalendarOfActivities} from '~/components/others/home/CalendarOfActivities';
 import {default as Usertab} from '~/components/others/home/Usertab';
 import {useNav} from '~/contexts/NavigationContext';
+import {useUniversal} from '~/contexts/UniversalContext';
 import {useUser} from '~/contexts/UserContext';
 
 const Home = () => {
-  const {handleNavigation} = useNav();
   const {role} = useUser();
-  const {currentStudent} = useUser();
+  const {handleNavigation} = useNav();
+  const {adviserInfo, currentStudentInfo} = useUniversal();
 
   function setUpSection() {
     handleNavigation('UserInfo');
@@ -23,14 +24,14 @@ const Home = () => {
     const CONDITION =
       role !== 'faculty' &&
       role !== 'adviser' &&
-      currentStudent.section === undefined;
+      currentStudentInfo?.section === undefined;
     return CONDITION ? (
       <View className="flex-row justify-center bg-yellow-100 p-2">
         <Text className="mr-2 text-xs text-yellow-600">
           Looks like you didn't have your class section set-up.
         </Text>
         <TouchableOpacity
-          disabled={currentStudent.email === 'null'}
+          disabled={currentStudentInfo?.email === 'null'}
           onPress={setUpSection}>
           <Text className="text-xs text-yellow-600 underline">Tap here</Text>
         </TouchableOpacity>
@@ -40,7 +41,15 @@ const Home = () => {
     );
   };
 
-  if (currentStudent.name === undefined && role === null) {
+  if (
+    (role === 'mayor' || role === 'student') &&
+    Object.keys({...currentStudentInfo}).length === 0
+  ) {
+    return <Loading />;
+  } else if (role === 'adviser' && Object.keys({...adviserInfo}).length === 0) {
+    return <Loading />;
+  }
+  if (role === null) {
     return <Loading />;
   }
 

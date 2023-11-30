@@ -1,8 +1,8 @@
 import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import React from 'react';
 import {Alert, Text, ToastAndroid, View} from 'react-native';
-import Heading from '~/components/Heading';
 import {Link} from '~/components/Button';
+import Heading from '~/components/Heading';
 import {useAuth} from '~/contexts/AuthContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {useUser} from '~/contexts/UserContext';

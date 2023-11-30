@@ -4,14 +4,14 @@ import {View} from 'react-native';
 import HeadingTemplate from '~/components/HeadingTemplate';
 import TabContainer from '~/components/TabContainer';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
-import {useUser} from '~/contexts/UserContext';
+import {useUniversal} from '~/contexts/UniversalContext';
 import Text from '~/components/Text';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNav} from '~/contexts/NavigationContext';
 
 const HomeCalendarOfActivities = () => {
   const {data} = useAnnouncement();
-  const {currentStudent} = useUser();
+  const {currentStudentInfo} = useUniversal();
   const carouselRef = useRef(null);
   const restAnnouncements = data
     .filter(props => props.type === 'event')
@@ -52,7 +52,8 @@ const HomeCalendarOfActivities = () => {
     <TabContainer>
       <HeadingTemplate
         disabled={
-          filteredAnnouncement.length === 0 || currentStudent.email === 'null'
+          filteredAnnouncement.length === 0 ||
+          currentStudentInfo?.email === undefined
         }
         title="calendar of activities"
         navigation="CalendarOfActivities"

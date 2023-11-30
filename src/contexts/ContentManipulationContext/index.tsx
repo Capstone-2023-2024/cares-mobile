@@ -12,6 +12,7 @@ import type {
   ContentManipulationProviderProps,
   ContentManipulationProviderStateProps,
 } from './types';
+import {useUser} from '../UserContext';
 
 const contentManupulationInitState: ContentManipulationProviderStateProps = {
   message: '',
@@ -47,9 +48,10 @@ const ContentManipulationContext =
 const ContentManipulationProvider = ({
   children,
 }: ContentManipulationProviderProps) => {
+  const {role} = useUser();
   const [state, setState] = useState(contentManupulationInitState);
   const {currentStudentComplaints} = useComplaints();
-  const {role, currentStudentInfo, queryId} = useUniversal();
+  const {currentStudentInfo, queryId} = useUniversal();
 
   const setMessage = useCallback((value: string) => {
     setState(prevState => ({
@@ -94,7 +96,6 @@ const ContentManipulationProvider = ({
     [],
   );
   async function actionButton(type: ComplaintProps['status']) {
-    console.log({queryId});
     try {
       if (typeof state.selectedChatId === 'string') {
         if (queryId !== null) {
@@ -117,7 +118,7 @@ const ContentManipulationProvider = ({
                     timestamp: new Date().getTime(),
                   },
                 ],
-                recipient: recipientEscalation(role),
+                recipient: role ? recipientEscalation(role) : 'anonymous',
                 status: 'processing',
                 studentNo:
                   currentStudentComplaints?.filter(

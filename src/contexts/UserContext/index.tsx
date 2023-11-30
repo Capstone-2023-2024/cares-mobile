@@ -1,8 +1,4 @@
-import type {
-  ReadStudentInfoProps,
-  SectionType,
-  StudentInfoProps,
-} from '@cares/types/user';
+import type {StudentInfoProps} from '@cares/types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import React, {
@@ -18,40 +14,30 @@ import {Role} from '~/screens/authentication/Landing/types';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import {useAuth} from '../AuthContext';
+import {useUniversal} from '../UniversalContext';
 import type {
   UserContextProps,
   UserProviderProps,
   UserStateProps,
 } from './types';
 
-const initialStudent: Partial<ReadStudentInfoProps> = {};
 const userStateProps: UserStateProps = {
   role: null,
-  currentStudent: {...initialStudent},
 };
 
 const UserContext = createContext<UserContextProps>({
   ...userStateProps,
   handleRole: () => null,
-  setSection: () => null,
 });
 
 function UserProvider({children}: UserProviderProps) {
   const {currentUser} = useAuth();
+  const {currentStudentInfo} = useUniversal();
   const [state, setState] = useState(userStateProps);
 
   const handleRole = useCallback((props: UserStateProps['role']) => {
     setState(prevState => ({...prevState, role: props}));
   }, []);
-
-  function setSection(section: SectionType) {
-    const {currentStudent, ...rest} = state;
-    const newStudent: Partial<ReadStudentInfoProps> = {
-      ...currentStudent,
-      section,
-    };
-    setState({...rest, currentStudent: newStudent});
-  }
 
   useEffect(() => {
     async function checkRoleIfExistInDB(
@@ -171,12 +157,12 @@ function UserProvider({children}: UserProviderProps) {
   }, [currentUser, handleRole]);
   useEffect(() => {
     function oneSignalLogin() {
-      const currentStudentNo = state.currentStudent.studentNo;
+      const currentStudentNo = currentStudentInfo?.studentNo;
       const studentNoExist = currentStudentNo !== undefined;
       studentNoExist && OneSignal.login(currentStudentNo);
     }
     return oneSignalLogin();
-  }, [state.currentStudent.studentNo]);
+  }, [currentStudentInfo?.studentNo]);
   useEffect(() => {
     function setupOneSignalTag() {
       const role = state.role;
@@ -187,7 +173,7 @@ function UserProvider({children}: UserProviderProps) {
   }, [state.role]);
 
   return (
-    <UserContext.Provider value={{...state, handleRole, setSection}}>
+    <UserContext.Provider value={{...state, handleRole}}>
       {children}
     </UserContext.Provider>
   );

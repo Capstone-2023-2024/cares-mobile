@@ -5,6 +5,7 @@ import ContentManipulationProvider from './ContentManipulationContext';
 import ModalProvider from './ModalContext';
 import UniversalProvider from './UniversalContext';
 import UserContext from './UserContext';
+import ComplaintsProvider from './ComplaintContext';
 
 interface BaseProvidersProps {
   children: ReactNode;
@@ -29,7 +30,7 @@ const ComplaintProviders = ({children}: ComplaintProvidersProps) => {
   return (
     <ModalProvider>
       <ContentManipulationProvider>
-        <ComplaintProviders>{children}</ComplaintProviders>
+        <ComplaintsProvider>{children}</ComplaintsProvider>
       </ContentManipulationProvider>
     </ModalProvider>
   );

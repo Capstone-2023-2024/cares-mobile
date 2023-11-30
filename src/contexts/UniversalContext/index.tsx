@@ -68,11 +68,9 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
       setState(prevState => ({...prevState, studentsInfo})),
     [],
   );
-  const setCurrentStudentInfo = useCallback(
-    (props: StudentInfoProps) =>
-      setState(prevState => ({...prevState, currentStudentInfo: props})),
-    [],
-  );
+  const setCurrentStudentInfo = useCallback((props: StudentInfoProps) => {
+    setState(prevState => ({...prevState, currentStudentInfo: props}));
+  }, []);
   const returnComplaintsQuery = useCallback(
     async ({yearLevel, section}: ClassSectionProps) => {
       const thisYear = new Date().getFullYear();
@@ -82,6 +80,7 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
         .where('yearLevel', '==', yearLevel)
         .where('section', '==', section)
         .where('academicYear', '==', formatYearStringify);
+      console.log({nextYear});
 
       try {
         let test = 1;
@@ -122,7 +121,9 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
       const studentQuery = collectionRef('student')
         .where('yearLevel', '==', yearLevel)
         .where('section', '==', section);
+      console.log(adviserInfo?.section, currentStudentInfo?.section);
 
+      void returnComplaintsQuery({yearLevel, section});
       async function getStudentsFromServer() {
         const snapshot = await studentQuery.get();
         const studentsHolder: StudentInfoProps[] = [];
@@ -134,7 +135,6 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
           studentsArrayKey,
           JSON.stringify(studentsHolder),
         );
-        console.log(studentsHolder);
         setStudentsInfo(studentsHolder);
       }
       AsyncStorage.getItem(studentsArrayKey)
@@ -162,7 +162,7 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
     }
   }, [
     setStudentsInfo,
-    // returnComplaintsQuery,
+    returnComplaintsQuery,
     adviserInfo?.yearLevel,
     adviserInfo?.section,
     currentStudentInfo?.yearLevel,

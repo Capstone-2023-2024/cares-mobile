@@ -4,8 +4,8 @@ import {TouchableOpacity, View} from 'react-native';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
 import Text from '~/components/Text';
-import {useUser} from '~/contexts/UserContext';
 import {TurnOverModal} from './TurnOverModal';
+import {useUser} from '~/contexts/UserContext';
 
 /** TODO: Add notification here */
 const RenderActionButtons = ({targetArray}: {targetArray?: ComplaintProps}) => {

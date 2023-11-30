@@ -8,14 +8,14 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import SelectDropdown from 'react-native-select-dropdown';
 import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
-import {useUser} from '~/contexts/UserContext';
+import {useUniversal} from '~/contexts/UniversalContext';
 
 const Announcements = () => {
   const {data, type, handleTypeChange} = useAnnouncement();
   const [modalImage, setModalImage] = useState(false);
   const [photoSelected, setPhotoSelected] = useState('');
   const {params} = useRoute();
-  const {currentStudent} = useUser();
+  const {currentStudentInfo} = useUniversal();
   const [announcementData, setAnnouncementData] = useState([
     ...(typeof params === 'string'
       ? data.filter(({id}) => id === params)
@@ -87,7 +87,7 @@ const Announcements = () => {
         <>
           <View className="mb-4 flex-row items-center justify-evenly">
             <SelectDropdown
-              disabled={currentStudent.email === 'null'}
+              disabled={currentStudentInfo?.email === undefined}
               defaultValue={type}
               defaultButtonText="Choose type"
               buttonStyle={{

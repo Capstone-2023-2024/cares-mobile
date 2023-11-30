@@ -8,6 +8,8 @@ import ChatHeadButton from './ChatHeadButton';
 import type {ComplaintBoxRendererProps} from './ComplaintBoxRenderer';
 import {RecipientType} from '@cares/types/permission';
 import {useUser} from '~/contexts/UserContext';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import Text from '~/components/Text';
 
 interface RenderChatHeadsProps
   extends Omit<ComplaintBoxRendererProps, 'condition' | 'data'> {
@@ -35,8 +37,9 @@ const RenderChatHeads = ({children, ...rest}: RenderChatHeadsProps) => {
     }
     recipients.push('adviser');
   }
-
+  console.log({role});
   function chatHeadOnClick(props: RecipientType) {
+    console.log(props);
     return role !== 'student'
       ? () => {
           selectedChatHead !== 'students' && setSelectedStudent(null);

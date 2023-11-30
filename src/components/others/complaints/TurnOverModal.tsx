@@ -1,8 +1,8 @@
 import type {ComplaintProps} from '@cares/types/complaint';
 import React, {useState} from 'react';
 import {Modal} from 'react-native';
-import {TouchableOpacity, TextInput} from 'react-native-gesture-handler';
-import {TouchableOpacity as VanillaTouchableOpacity} from 'react-native';
+import {TextInput} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import Text from '~/components/Text';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
@@ -24,16 +24,12 @@ const TurnOverModal = () => {
     setShowTurnOverModal(false);
   }
 
-  async function handleTurnOver() {
-    console.log('pressed');
+  function handleTurnOver() {
+    // console.log('pressed');
     setShowTurnOverModal(false);
     setTurnOverMessage(state.turnOverMessage);
 
-    try {
-      await actionButton('turn-over');
-    } catch (err) {
-      console.log(err);
-    }
+    void actionButton('turn-over');
 
     setTurnOverMessage(null);
     setState(prevState => ({...prevState, turnOverMessage: ''}));
@@ -58,7 +54,7 @@ const TurnOverModal = () => {
         value={state.turnOverMessage}
         onChangeText={handleTurnOverMessage}
       />
-      <VanillaTouchableOpacity
+      <TouchableOpacity
         disabled={state.turnOverMessage.trim() === ''}
         className={`${
           state.turnOverMessage.trim() === '' ? 'bg-slate-200' : 'bg-green-500'
@@ -72,7 +68,7 @@ const TurnOverModal = () => {
           } capitalize`}>
           send
         </Text>
-      </VanillaTouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 };

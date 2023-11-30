@@ -11,22 +11,13 @@ import {useUser} from '~/contexts/UserContext';
 import {CURRENT_STUDENT_KEY} from '~/utils/config';
 import {collectionRef} from '~/utils/firebase';
 import type {TextRowType} from './types';
+import {useUniversal} from '~/contexts/UniversalContext';
 
 const UserInfo = () => {
   const {currentUser, signout} = useAuth();
+  const {currentStudentInfo, setCurrentStudentInfo} = useUniversal();
   const [modalVisible, setModalVisible] = useState(false);
-  const {role, currentStudent, setSection} = useUser();
-  const {
-    name,
-    college,
-    yearLevel,
-    schoolYear,
-    curriculum,
-    scholarship,
-    major,
-    gender,
-    age,
-  } = currentStudent;
+  const {role} = useUser();
 
   function handleSignout() {
     OneSignal.logout();
@@ -36,12 +27,13 @@ const UserInfo = () => {
     try {
       await AsyncStorage.setItem(
         CURRENT_STUDENT_KEY,
-        JSON.stringify({...currentStudent, section}),
+        JSON.stringify({...currentStudentInfo, section}),
       );
-      await collectionRef('student').doc(currentStudent.studentNo).update({
+      await collectionRef('student').doc(currentStudentInfo?.studentNo).update({
         section,
       });
-      setSection(section);
+      currentStudentInfo &&
+        setCurrentStudentInfo({...currentStudentInfo, section});
     } catch (err) {
       Alert.alert('Section selection error');
     }
@@ -58,7 +50,7 @@ const UserInfo = () => {
     </>
   );
   const renderStudentUI = () => {
-    const splitName = (name ?? '').split(',');
+    const splitName = (currentStudentInfo?.name ?? '').split(',');
     const splitNameResult = splitName[1]?.trim().split('.');
     const lastName = splitName[0] ?? 'lastname';
     const splitNameResultFirstLength = splitNameResult?.[0]?.length ?? -1;
@@ -76,14 +68,26 @@ const UserInfo = () => {
         <TextRow title="first_name" value={firstName} />
         <TextRow title="middle_initial" value={middleInitial} />
         <TextRow title="last_name" value={lastName} />
-        <TextRow title="college" value={college ?? ''} />
-        <TextRow title="year_level" value={yearLevel ?? ''} />
-        <TextRow title="school_year" value={schoolYear ?? ''} />
-        <TextRow title="curriculum" value={curriculum ?? ''} />
-        <TextRow title="scholarship" value={scholarship ?? ''} />
-        <TextRow title="major" value={major ?? ''} />
-        <TextRow title="sex" value={gender ?? ''} />
-        <TextRow title="age" value={age ?? ''} />
+        <TextRow title="college" value={currentStudentInfo?.college ?? ''} />
+        <TextRow
+          title="year_level"
+          value={currentStudentInfo?.yearLevel ?? ''}
+        />
+        <TextRow
+          title="school_year"
+          value={currentStudentInfo?.schoolYear ?? ''}
+        />
+        <TextRow
+          title="curriculum"
+          value={currentStudentInfo?.curriculum ?? ''}
+        />
+        <TextRow
+          title="scholarship"
+          value={currentStudentInfo?.scholarship ?? ''}
+        />
+        <TextRow title="major" value={currentStudentInfo?.major ?? ''} />
+        <TextRow title="sex" value={currentStudentInfo?.gender ?? ''} />
+        <TextRow title="age" value={currentStudentInfo?.age ?? ''} />
         <View className="self-center">{renderSelectDropDown()}</View>
       </>
     );
@@ -94,10 +98,10 @@ const UserInfo = () => {
     ) : (
       <SelectDropdown
         disabled={
-          currentStudent.section !== undefined ||
-          currentStudent.email === 'null'
+          currentStudentInfo?.section !== undefined ||
+          currentStudentInfo?.email === undefined
         }
-        defaultValue={currentStudent.section}
+        defaultValue={currentStudentInfo?.section}
         buttonTextStyle={{textTransform: 'capitalize'}}
         rowTextStyle={{textTransform: 'capitalize'}}
         defaultButtonText="Choose section"
@@ -153,7 +157,8 @@ const UserInfo = () => {
 
 const Hero = () => {
   const {currentUser} = useAuth();
-  const {role, currentStudent} = useUser();
+  const {currentStudentInfo} = useUniversal();
+  const {role} = useUser();
 
   const renderFacultyUI = () => (
     <View className="ml-2 justify-center">
@@ -165,9 +170,9 @@ const Hero = () => {
 
   const renderStudentUI = () => (
     <View className="ml-3 mt-2">
-      <Text className="text-xl capitalize text-paper">{`${currentStudent.name}`}</Text>
-      <Text className="text-sm text-paper">{`${currentStudent.studentNo}`}</Text>
-      <Text className="text-sm text-paper">{`${currentStudent.email}`}</Text>
+      <Text className="text-xl capitalize text-paper">{`${currentStudentInfo?.name}`}</Text>
+      <Text className="text-sm text-paper">{`${currentStudentInfo?.studentNo}`}</Text>
+      <Text className="text-sm text-paper">{`${currentStudentInfo?.email}`}</Text>
     </View>
   );
 

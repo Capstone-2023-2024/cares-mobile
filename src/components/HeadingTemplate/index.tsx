@@ -2,14 +2,14 @@ import {CommonActions, useNavigation} from '@react-navigation/native';
 import React, {Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SvgContainer from '~/components/SVGContainer';
-import {useUser} from '~/contexts/UserContext';
+import {useUniversal} from '~/contexts/UniversalContext';
 import type {PathListType} from '~/utils/navPaths/types';
 import {arrowUri} from '~/utils/svgIcons';
 import type {HeadingTemplateProps} from '../others/home/Usertab/types';
 
 const HeadingTemplate = (props: HeadingTemplateProps) => {
   const navigate = useNavigation();
-  const {currentStudent} = useUser();
+  const {currentStudentInfo} = useUniversal();
   const {navigation, title} = props;
 
   function handleNavigation(path: PathListType) {
@@ -25,9 +25,9 @@ const HeadingTemplate = (props: HeadingTemplateProps) => {
       <Text className="text-xl font-bold capitalize text-black">{title}</Text>
       <TouchableOpacity
         className={
-          currentStudent.email === 'null' ? 'opacity-25' : 'opacity-100'
+          currentStudentInfo?.email === undefined ? 'opacity-25' : 'opacity-100'
         }
-        disabled={currentStudent.email === 'null'}
+        disabled={currentStudentInfo?.email === undefined}
         onPress={handlePressNavigation}>
         <SvgContainer uri={arrowUri} size="sm" />
       </TouchableOpacity>
