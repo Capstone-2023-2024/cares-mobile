@@ -12,6 +12,7 @@ interface YearLevelSectionProps {
 }
 interface UniversalProviderStateProps {
   role?: CurrentUserRoleType;
+  currentSelectedActivityId: string;
   queryId: string | null;
   mayorInfo?: StudentInfoProps;
   adviserInfo?: ReadAdviserInfoProps;
@@ -21,6 +22,7 @@ interface UniversalProviderStateProps {
 
 interface UniversalContextProps extends UniversalProviderStateProps {
   setRole: (value: UniversalProviderStateProps['role']) => void;
+  setCurrentSelectedActivityId: (value: string) => void;
   setMayorInfo: (value: StudentInfoProps) => void;
   setAdviserInfo: (value: ReadAdviserInfoProps) => void;
   setStudentsInfo: (value: StudentInfoProps[]) => void;

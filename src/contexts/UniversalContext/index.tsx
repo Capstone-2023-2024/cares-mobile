@@ -21,10 +21,12 @@ import type {
 
 const universalInitState: UniversalProviderStateProps = {
   queryId: null,
+  currentSelectedActivityId: '',
 };
 const UniversalContext = createContext<UniversalContextProps>({
   ...universalInitState,
   setRole: () => null,
+  setCurrentSelectedActivityId: () => null,
   setMayorInfo: () => null,
   setAdviserInfo: () => null,
   setStudentsInfo: () => null,
@@ -47,6 +49,11 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
   const setRole = useCallback(
     (role: UniversalProviderStateProps['role']) =>
       setState(prevState => ({...prevState, role})),
+    [],
+  );
+  const setCurrentSelectedActivityId = useCallback(
+    (value: string) =>
+      setState(prevState => ({...prevState, currentSelectedActivityId: value})),
     [],
   );
   const setMayorInfo = useCallback(
@@ -173,6 +180,7 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
       value={{
         ...state,
         setRole,
+        setCurrentSelectedActivityId,
         setMayorInfo,
         setAdviserInfo,
         setStudentsInfo,
