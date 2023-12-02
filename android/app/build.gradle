@@ -2,6 +2,8 @@ apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 apply plugin: 'com.google.gms.google-services'
 
+var nodeModulesPath = '../../../../../node_modules/'
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -9,13 +11,13 @@ apply plugin: 'com.google.gms.google-services'
 react {
     /* Folders */
     //   The root of your project, i.e. where "package.json" lives. Default is '..'
-    // root = file("../")
+    root = file("../../")
     //   The folder where the react-native NPM package is. Default is ../node_modules/react-native
-    // reactNativeDir = file("../../../../node_modules/react-native")
+    reactNativeDir = file("${nodeModulesPath}react-native")
     //   The folder where the react-native Codegen package is. Default is ../node_modules/react-native-codegen
-    // codegenDir = file("../node_modules/react-native-codegen")
+    codegenDir = file("${nodeModulesPath}react-native-codegen")
     //   The cli.js file which is the React Native CLI entrypoint. Default is ../node_modules/react-native/cli.js
-    // cliFile = file("../../../../node_modules/react-native/cli.js")
+    cliFile = file("${nodeModulesPath}react-native/cli.js")
 
     /* Variants */
     //   The list of variants to that are debuggable. For those we're going to
@@ -116,11 +118,17 @@ android {
         //     keyAlias 'dummycareskey'
         //     keyPassword 'dummycares'
         // }
-        debug {
-            storeFile file('dev.keystore')
-            storePassword 'cares123'
-            keyAlias 'dev'
-            keyPassword 'cares123'
+        // debug {
+        //     storeFile file('dev.keystore')
+        //     storePassword 'cares123'
+        //     keyAlias 'dev'
+        //     keyPassword 'cares123'
+        // }
+           debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
         }
     }
     buildTypes {
@@ -173,4 +181,4 @@ dependencies {
     }
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: file("${nodeModulesPath}@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

@@ -1,4 +1,4 @@
-import {WEB_CLIENT_ID} from '@env';
+import {FIRESTORE_WEB_CLIENT_ID} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -25,7 +25,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 const config = {
-  webClientId: WEB_CLIENT_ID,
+  webClientId: FIRESTORE_WEB_CLIENT_ID,
 };
 
 const AuthProvider = ({children}: AuthProviderProps) => {

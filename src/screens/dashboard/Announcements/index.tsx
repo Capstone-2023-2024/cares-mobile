@@ -1,6 +1,6 @@
 import {AnnouncementProps} from '@cares/types/announcement';
 import {getImageFromStorage} from '@cares/utils/media';
-import {FIRESTORE_STORAGE_BUCKET} from '@env';
+import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
 import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {Image, Modal, SectionList, View} from 'react-native';
@@ -137,7 +137,7 @@ const Announcements = () => {
               ? getImageFromStorage({
                   imageName: photoUrls[0] ?? '',
                   ref: 'images',
-                  storageBucket: FIRESTORE_STORAGE_BUCKET,
+                  storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
                 })
               : '';
 

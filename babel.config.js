@@ -7,7 +7,7 @@ module.exports = {
       {
         envName: 'APP_ENV',
         moduleName: '@env',
-        path: '.env',
+        path: '../../../.env',
         blocklist: null,
         allowlist: null,
         safe: true,
@@ -21,7 +21,7 @@ module.exports = {
         root: ['./'],
         alias: {
           '~': './src',
-          '@cares': '../libs/typescript/lib/src',
+          '@cares': '../../libs/typescript/lib/src',
         },
         extensions: [
           '.ios.ts',

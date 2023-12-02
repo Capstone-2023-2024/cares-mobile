@@ -1,6 +1,6 @@
 import type {ReadAnnouncementProps} from '@cares/types/announcement';
 import {getImageFromStorage} from '@cares/utils/media';
-import {FIRESTORE_STORAGE_BUCKET} from '@env';
+import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
 import React, {useRef} from 'react';
 import {Image, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -120,7 +120,7 @@ const Container = (props: ReadAnnouncementProps) => {
                 src={getImageFromStorage({
                   imageName: photoUrls[0] ?? '',
                   ref: 'images',
-                  storageBucket: FIRESTORE_STORAGE_BUCKET,
+                  storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
                 })}
                 resizeMode="cover"
               />

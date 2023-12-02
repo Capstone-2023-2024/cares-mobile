@@ -1,12 +1,13 @@
 rootProject.name = 'cares'
-apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+var nodeModulesPath = '../../../../node_modules/'
+apply from: file("${nodeModulesPath}@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 
 include ':app'
-includeBuild('../node_modules/react-native-gradle-plugin')
+includeBuild("${nodeModulesPath}react-native-gradle-plugin")
 include ':react-native-fs'
 include ':react-native-gesture-handler'
 include ':react-native-screens'
 
-project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
-project(':react-native-screens').projectDir = new File(settingsDir, '../node_modules/react-native-screens/android')
-project(':react-native-safe-area-context').projectDir = new File(settingsDir, '../node_modules/react-native-safe-area-context/android')
+project(':react-native-fs').projectDir = new File(settingsDir, "${nodeModulesPath}react-native-fs/android")
+project(':react-native-screens').projectDir = new File(settingsDir, "${nodeModulesPath}react-native-screens/android")
+project(':react-native-safe-area-context').projectDir = new File(settingsDir, "${nodeModulesPath}react-native-safe-area-context/android")

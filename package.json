@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "cd \"./android\" && gradlew.bat clean",
-    "start": "react-native start --reset-cache",
+    "start": "tsc --build && react-native start --reset-cache",
     "build": "cd \"./android\" && gradlew.bat assembleRelease --info",
     "rmdircmd": "rmdir /s /q node_modules",
     "prune": "git remote prune origin",
@@ -57,6 +57,7 @@
     "@react-native/eslint-config": "^0.72.2",
     "@react-native/metro-config": "^0.73.2",
     "@tsconfig/react-native": "^3.0.0",
+    "@types/jest": "^29.5.10",
     "@types/react": "^18.2.39",
     "@types/react-native-snap-carousel": "^3.8.9",
     "@types/react-test-renderer": "^18.0.0",

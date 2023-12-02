@@ -15,7 +15,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import CalendarActivityButton from '~/components/CalendarActivityButton';
 import Text from '~/components/Text';
 import {useUniversal} from '~/contexts/UniversalContext';
-import {currentMonth} from '~/utils/date';
+import {currentMonth} from '@cares/utils/date';
 
 interface CalendarParamProps {
   id: string;

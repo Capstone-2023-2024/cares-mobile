@@ -1,6 +1,6 @@
 import {setUpPrefix} from '@cares/utils/date';
 import {getImageFromStorage, imageDimension} from '@cares/utils/media';
-import {FIRESTORE_STORAGE_BUCKET} from '@env';
+import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
 import React, {useState} from 'react';
 import {FlatList, Image, Modal, TouchableOpacity, View} from 'react-native';
 import Text from '~/components/Text';
@@ -76,7 +76,7 @@ const ComplaintBox = () => {
             src={getImageFromStorage({
               imageName: formatImageName(state.imageModal),
               ref: 'concerns',
-              storageBucket: FIRESTORE_STORAGE_BUCKET,
+              storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
             })}
             className="h-full w-full"
             source={require('~/assets/error.svg')}
@@ -146,7 +146,7 @@ const ComplaintBox = () => {
                       const source = getImageFromStorage({
                         ref: 'concerns',
                         imageName: formatImageName(item),
-                        storageBucket: FIRESTORE_STORAGE_BUCKET,
+                        storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
                       });
                       return (
                         <TouchableOpacity

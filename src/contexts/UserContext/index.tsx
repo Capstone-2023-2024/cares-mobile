@@ -44,7 +44,7 @@ function UserProvider({children}: UserProviderProps) {
     setState(prevState => ({...prevState, role: props}));
   }, []);
 
-  function setSection(section: SectionType) {
+  function setSection(section?: SectionType) {
     const {currentStudent, ...rest} = state;
     const newStudent: Partial<ReadStudentInfoProps> = {
       ...currentStudent,
