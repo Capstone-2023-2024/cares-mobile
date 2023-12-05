@@ -1,5 +1,5 @@
-import type {ComplaintProps} from '@cares/types/complaint';
-import {recipientEscalation} from '@cares/utils/validation';
+import type {ComplaintProps} from '@cares/common/types/complaint';
+import {recipientEscalation} from '@cares/common/utils/validation';
 import {firebase} from '@react-native-firebase/firestore';
 import React, {createContext, useCallback, useContext, useState} from 'react';
 import {Alert} from 'react-native';

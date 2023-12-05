@@ -1,4 +1,4 @@
-import type {ReadAnnouncementProps} from '@cares/types/announcement';
+import type {ReadAnnouncementProps} from '@cares/common/types/announcement';
 import {View, TouchableOpacity} from 'react-native';
 import {useNav} from '~/contexts/NavigationContext';
 import {useUniversal} from '~/contexts/UniversalContext';

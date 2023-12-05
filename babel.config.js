@@ -21,7 +21,7 @@ module.exports = {
         root: ['./'],
         alias: {
           '~': './src',
-          '@cares': '../../libs/typescript/lib/src',
+          '@cares/common': '../../libs/@cares/common/lib/src',
         },
         extensions: [
           '.ios.ts',

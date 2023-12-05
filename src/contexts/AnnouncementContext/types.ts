@@ -2,7 +2,7 @@ import type {ReactNode} from 'react';
 import type {
   AnnouncementProps,
   ReadAnnouncementProps,
-} from '@cares/types/announcement';
+} from '@cares/common/types/announcement';
 
 export interface AnnouncementStateProps
   extends Pick<AnnouncementProps, 'type' | 'title'> {

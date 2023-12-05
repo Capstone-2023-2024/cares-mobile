@@ -1,4 +1,4 @@
-import type {StudentInfoProps} from '@cares/types/user';
+import type {StudentInfoProps} from '@cares/common/types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {Alert, Modal, TouchableOpacity, View} from 'react-native';

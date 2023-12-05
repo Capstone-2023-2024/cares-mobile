@@ -2,7 +2,7 @@ import type {
   CurrentUserRoleType,
   ReadStudentInfoProps,
   SectionType,
-} from '@cares/types/user';
+} from '@cares/common/types/user';
 import type {ReactNode} from 'react';
 
 export interface UserStateProps {

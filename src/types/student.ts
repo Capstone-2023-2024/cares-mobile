@@ -1,4 +1,4 @@
-import type {StudentInfoProps} from '@cares/types/user';
+import type {StudentInfoProps} from '@cares/common/types/user';
 
 interface StudentCORProps
   extends Omit<

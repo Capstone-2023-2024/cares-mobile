@@ -2,7 +2,7 @@ import type {
   ClassSectionProps,
   ReadAdviserInfoProps,
   StudentInfoProps,
-} from '@cares/types/user';
+} from '@cares/common/types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   createContext,

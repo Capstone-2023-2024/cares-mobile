@@ -1,5 +1,5 @@
-import {setUpPrefix} from '@cares/utils/date';
-import {getImageFromStorage, imageDimension} from '@cares/utils/media';
+import {setUpPrefix} from '@cares/common/utils/date';
+import {getImageFromStorage, imageDimension} from '@cares/common/utils/media';
 import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
 import React, {useState} from 'react';
 import {FlatList, Image, Modal, TouchableOpacity, View} from 'react-native';
@@ -44,8 +44,8 @@ const ComplaintBox = () => {
     selectedChatHead === 'class_section'
       ? classSectionComplaints
       : filterOtherComplaints.length > 0
-      ? filterOtherComplaints[0]?.messages
-      : filterCurrentStudent[0]?.messages;
+        ? filterOtherComplaints[0]?.messages
+        : filterCurrentStudent[0]?.messages;
 
   const targetArray = filterOtherComplaints[0] ?? filterCurrentStudent[0];
 

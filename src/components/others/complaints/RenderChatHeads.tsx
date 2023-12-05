@@ -6,7 +6,7 @@ import {useModal} from '~/contexts/ModalContext';
 import ComplaintBoxRenderer from './ComplaintBoxRenderer';
 import ChatHeadButton from './ChatHeadButton';
 import type {ComplaintBoxRendererProps} from './ComplaintBoxRenderer';
-import {RecipientType} from '@cares/types/permission';
+import {RecipientType} from '@cares/common/types/permission';
 import {useUser} from '~/contexts/UserContext';
 
 interface RenderChatHeadsProps

@@ -3,10 +3,10 @@ import type {
   OptionProps,
   PollEventProps,
   ReadPollEventProps,
-} from '@cares/types/poll';
-import {setUpPrefix} from '@cares/utils/date';
-import {imageDimension} from '@cares/utils/media';
-import {removeObjectWithType} from '@cares/utils/validation';
+} from '@cares/common/types/poll';
+import {setUpPrefix} from '@cares/common/utils/date';
+import {imageDimension} from '@cares/common/utils/media';
+import {removeObjectWithType} from '@cares/common/utils/validation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {

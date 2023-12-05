@@ -1,5 +1,5 @@
-import type {ReadAnnouncementProps} from '@cares/types/announcement';
-import {getImageFromStorage} from '@cares/utils/media';
+import type {ReadAnnouncementProps} from '@cares/common/types/announcement';
+import {getImageFromStorage} from '@cares/common/utils/media';
 import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
 import React, {useRef} from 'react';
 import {Image, View} from 'react-native';

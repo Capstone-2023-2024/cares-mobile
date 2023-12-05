@@ -10,7 +10,7 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
 /** Relative path to packages directory*/
 const watchFolders = [
-  path.resolve(__dirname, '../../libs/typescript/lib/src'),
+  path.resolve(__dirname, '../../libs/@cares/common/lib/src'),
   path.resolve(__dirname, '../../../node_modules'),
 ];
 

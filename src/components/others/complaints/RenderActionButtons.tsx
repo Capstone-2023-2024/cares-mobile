@@ -1,5 +1,5 @@
 import React from 'react';
-import type {ComplaintProps} from '@cares/types/complaint';
+import type {ComplaintProps} from '@cares/common/types/complaint';
 import {TouchableOpacity, View} from 'react-native';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';

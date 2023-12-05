@@ -1,4 +1,4 @@
-import type {ComplaintProps} from '@cares/types/complaint';
+import type {ComplaintProps} from '@cares/common/types/complaint';
 import React, {useState} from 'react';
 import {Modal, View, TouchableOpacity} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';

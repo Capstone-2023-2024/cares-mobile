@@ -3,7 +3,7 @@ import type {
   CurrentUserRoleType,
   ReadAdviserInfoProps,
   StudentInfoProps,
-} from '@cares/types/user';
+} from '@cares/common/types/user';
 import type {ReactNode} from 'react';
 
 interface YearLevelSectionProps {

@@ -1,7 +1,7 @@
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
-import type {CollectionPathType} from '@cares/types/firebase';
-import type {StudentNameResultProps} from '@cares/types/user';
+import type {CollectionPathType} from '@cares/common/types/firebase';
+import type {StudentNameResultProps} from '@cares/common/types/user';
 
 const app = firebase.app();
 const arrayUnion = (data: any) =>

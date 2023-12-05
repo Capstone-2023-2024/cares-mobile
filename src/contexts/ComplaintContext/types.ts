@@ -1,7 +1,7 @@
 import type {
   ReadClassSectionProps,
   ReadComplaintProps,
-} from '@cares/types/complaint';
+} from '@cares/common/types/complaint';
 import type {ReactNode} from 'react';
 
 interface ComplaintsProviderStateProps {

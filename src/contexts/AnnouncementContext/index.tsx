@@ -2,7 +2,7 @@ import React, {createContext, useContext, useEffect, useState} from 'react';
 import type {
   AnnouncementProps,
   ReadAnnouncementProps,
-} from '@cares/types/announcement';
+} from '@cares/common/types/announcement';
 import {collectionRef} from '~/utils/firebase';
 import type {
   AnnouncementContextProps,

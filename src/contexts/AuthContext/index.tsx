@@ -53,9 +53,8 @@ const AuthProvider = ({children}: AuthProviderProps) => {
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      const {additionalUserInfo} = await auth().signInWithCredential(
-        googleCredential,
-      );
+      const {additionalUserInfo} =
+        await auth().signInWithCredential(googleCredential);
 
       const role = await AsyncStorage.getItem('role');
       const profile = additionalUserInfo?.profile;

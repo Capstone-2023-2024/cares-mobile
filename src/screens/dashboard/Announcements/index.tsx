@@ -1,5 +1,5 @@
-import {AnnouncementProps} from '@cares/types/announcement';
-import {getImageFromStorage} from '@cares/utils/media';
+import {AnnouncementProps} from '@cares/common/types/announcement';
+import {getImageFromStorage} from '@cares/common/utils/media';
 import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
 import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';

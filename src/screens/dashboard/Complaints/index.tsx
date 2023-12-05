@@ -1,6 +1,12 @@
-import type {ComplaintBaseProps, ComplaintProps} from '@cares/types/complaint';
-import type {FirestoreDatabaseProps} from '@cares/types/document';
-import type {AdviserInfoProps, StudentInfoProps} from '@cares/types/user';
+import type {
+  ComplaintBaseProps,
+  ComplaintProps,
+} from '@cares/common/types/complaint';
+import type {FirestoreDatabaseProps} from '@cares/common/types/document';
+import type {
+  AdviserInfoProps,
+  StudentInfoProps,
+} from '@cares/common/types/user';
 import React, {useCallback, useEffect} from 'react';
 import {Alert, View} from 'react-native';
 import {OneSignal} from 'react-native-onesignal';
@@ -344,11 +350,9 @@ const MainPage = () => {
               data={currentStudentComplaints
                 ?.filter(props => props.studentNo === selectedStudent)
                 ?.sort((a, b) => b.dateCreated - a.dateCreated)}
-              heading={`${
-                studentsInfo
-                  ?.filter(props => selectedStudent === props.studentNo)[0]
-                  ?.name.split(',')[0]
-              }'s Complaint/Concern(s):`}
+              heading={`${studentsInfo
+                ?.filter(props => selectedStudent === props.studentNo)[0]
+                ?.name.split(',')[0]}'s Complaint/Concern(s):`}
               condition={selectedStudent !== null}
             />
           </>

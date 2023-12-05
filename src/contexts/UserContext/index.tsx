@@ -2,7 +2,7 @@ import type {
   ReadStudentInfoProps,
   SectionType,
   StudentInfoProps,
-} from '@cares/types/user';
+} from '@cares/common/types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import React, {
@@ -115,9 +115,8 @@ function UserProvider({children}: UserProviderProps) {
               currentUser.email,
               'mayor',
             );
-            const studentCache = await AsyncStorage.getItem(
-              CURRENT_STUDENT_KEY,
-            );
+            const studentCache =
+              await AsyncStorage.getItem(CURRENT_STUDENT_KEY);
             if (typeof studentCache === 'string') {
               const parsedStudentCache = JSON.parse(
                 studentCache,

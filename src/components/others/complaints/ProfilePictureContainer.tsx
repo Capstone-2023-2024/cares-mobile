@@ -1,4 +1,4 @@
-import {imageDimension} from '@cares/utils/media';
+import {imageDimension} from '@cares/common/utils/media';
 import React, {type ReactNode} from 'react';
 import {Image, View} from 'react-native';
 import Text from '~/components/Text';

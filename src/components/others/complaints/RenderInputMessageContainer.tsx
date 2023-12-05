@@ -1,5 +1,8 @@
-import type {ComplaintBaseProps, ComplaintProps} from '@cares/types/complaint';
-import type {DocumentProps} from '@cares/types/media';
+import type {
+  ComplaintBaseProps,
+  ComplaintProps,
+} from '@cares/common/types/complaint';
+import type {DocumentProps} from '@cares/common/types/media';
 import {firebase} from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import React, {useState} from 'react';
@@ -40,8 +43,8 @@ const RenderInputMessageContainer = () => {
     selectedChatId === 'class_section'
       ? 'Compose a message to send in your class section'
       : selectedChatHead === null && role !== 'mayor'
-      ? 'Compose a new complaint'
-      : 'Compose a message';
+        ? 'Compose a new complaint'
+        : 'Compose a message';
 
   const complaintRecord = currentStudentComplaints?.filter(
     props => props.id === selectedChatId,

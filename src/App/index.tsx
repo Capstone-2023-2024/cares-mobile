@@ -2,7 +2,6 @@ import {NEXT_PUBLIC_ONESIGNAL_APP_ID} from '@env';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
-import {Alert} from 'react-native';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
 import HeaderDefault from '~/components/Header';
 import {GeneralProviders} from '~/contexts';

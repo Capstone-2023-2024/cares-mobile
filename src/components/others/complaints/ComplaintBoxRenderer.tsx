@@ -1,7 +1,7 @@
 import React from 'react';
-import type {ComplaintProps} from '@cares/types/complaint';
-import type {FirestoreDatabaseProps} from '@cares/types/document';
-import {recipientEscalation} from '@cares/utils/validation';
+import type {ComplaintProps} from '@cares/common/types/complaint';
+import type {FirestoreDatabaseProps} from '@cares/common/types/document';
+import {recipientEscalation} from '@cares/common/utils/validation';
 import {TouchableOpacity, View, FlatList, Alert} from 'react-native';
 import Text from '~/components/Text';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
@@ -128,8 +128,8 @@ const ComplaintBoxRenderer = ({
                       status === 'processing'
                         ? 'text-yellow-500'
                         : status === 'resolved'
-                        ? 'text-green-500'
-                        : 'text-red-500'
+                          ? 'text-green-500'
+                          : 'text-red-500'
                     } pl-2 font-bold capitalize`}>
                     <TurnOverMessage
                       recipient={recipient}

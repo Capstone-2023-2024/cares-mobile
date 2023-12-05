@@ -1,7 +1,7 @@
 import {
   MarkedDatesProps,
   ReadAnnouncementProps,
-} from '@cares/types/announcement';
+} from '@cares/common/types/announcement';
 import {useRoute} from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ListRenderItemInfo, View} from 'react-native';
@@ -15,7 +15,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import CalendarActivityButton from '~/components/CalendarActivityButton';
 import Text from '~/components/Text';
 import {useUniversal} from '~/contexts/UniversalContext';
-import {currentMonth} from '@cares/utils/date';
+import {currentMonth} from '@cares/common/utils/date';
 
 interface CalendarParamProps {
   id: string;
