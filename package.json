@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "cd \"./android\" && gradlew.bat clean",
     "start": "tsc --build && react-native start --reset-cache",
-    "build": "cd \"./android\" && gradlew.bat assembleRelease --info",
+    "build": "cd \"./android\" && gradlew.bat assembleRelease --warning-mode all",
     "rmdircmd": "rmdir /s /q node_modules",
     "prune": "git remote prune origin",
     "android": "react-native run-android",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
-    "@react-native-async-storage/async-storage": "^1.19.8",
+    "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-firebase/app": "^18.6.2",
     "@react-native-firebase/auth": "^18.6.2",
     "@react-native-firebase/firestore": "^18.6.2",
@@ -31,6 +31,7 @@
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "^0.72.7",
+    "react-native-blob-courier": "^4.0.0",
     "react-native-calendars": "^1.1302.0",
     "react-native-document-picker": "^9.0.1",
     "react-native-gesture-handler": "^2.14.0",
@@ -46,7 +47,6 @@
     "react-native-select-dropdown": "^3.4.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-svg": "^13.10.0",
-    "rn-fetch-blob": "^0.12.0",
     "stacktrace-parser": "^0.1.10"
   },
   "devDependencies": {
