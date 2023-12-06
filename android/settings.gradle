@@ -1,5 +1,5 @@
 rootProject.name = 'cares'
-var nodeModulesPath = '../../../../node_modules/'
+var nodeModulesPath = '../node_modules/'
 apply from: file("${nodeModulesPath}@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 
 include ':app'

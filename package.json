@@ -3,17 +3,17 @@
   "version": "0.3.3",
   "private": true,
   "scripts": {
-    "clean": "cd \"./android\" && gradlew.bat clean",
-    "start": "tsc --build && react-native start --reset-cache",
-    "build": "cd \"./android\" && gradlew.bat assembleRelease --info",
-    "rmdircmd": "rmdir /s /q node_modules",
-    "prune": "git remote prune origin",
     "android": "react-native run-android",
+    "build": "cd \"./android\" && gradlew.bat assembleRelease --info",
+    "clean": "cd \"./android\" && gradlew.bat clean",
+    "emulator": "emulator -avd Pixel_4_API_33 -netdelay none -netspeed full",
     "ios": "react-native run-ios",
     "lint": "cls && eslint . --fix && prettier . --write",
-    "test": "jest",
     "prepare": "husky install",
-    "emulator": "emulator -avd Pixel_4_API_33 -netdelay none -netspeed full",
+    "prune": "git remote prune origin",
+    "rmdircmd": "rmdir /s /q node_modules",
+    "start": "tsc --build && react-native start --reset-cache",
+    "test": "jest",
     "upgrade": "react-native upgrade"
   },
   "dependencies": {
@@ -46,7 +46,6 @@
     "react-native-select-dropdown": "^3.4.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-svg": "^13.10.0",
-    "rn-fetch-blob": "^0.12.0",
     "stacktrace-parser": "^0.1.10"
   },
   "devDependencies": {
@@ -74,7 +73,7 @@
     "metro-react-native-babel-preset": "0.73.10",
     "patch-package": "^8.0.0",
     "prettier": "^3.1.0",
-    "prettier-plugin-tailwindcss": "^0.5.7",
+    "prettier-plugin-tailwindcss": "^0.5.9",
     "react-native-dotenv": "^3.4.9",
     "react-native-fs": "^2.20.0",
     "react-test-renderer": "18.2.0",
