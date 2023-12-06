@@ -1,17 +1,24 @@
 import {setUpPrefix} from '@cares/common/utils/date';
 import {getImageFromStorage, imageDimension} from '@cares/common/utils/media';
 import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
+import storage from '@react-native-firebase/storage';
 import React, {useState} from 'react';
-import {FlatList, Image, Modal, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Image,
+  Modal,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Text from '~/components/Text';
 import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
-import {useModal} from '~/contexts/ModalContext';
 import {useUniversal} from '~/contexts/UniversalContext';
+import {useUser} from '~/contexts/UserContext';
 import ProfilePictureContainer from './ProfilePictureContainer';
 import RenderActionButtons from './RenderActionButtons';
-import {useUser} from '~/contexts/UserContext';
-
+import {downloadPhoto} from '~/utils/media';
 const StyledDateTime = ({timestamp}: {timestamp: Date}) => {
   return (
     <Text className="p-4 text-xs font-thin">{setUpPrefix(timestamp)}</Text>
@@ -19,7 +26,6 @@ const StyledDateTime = ({timestamp}: {timestamp: Date}) => {
 };
 
 const ComplaintBox = () => {
-  const {showMayorModal} = useModal();
   const {currentStudentComplaints, otherComplaints, classSectionComplaints} =
     useComplaints();
   const {role} = useUser();
@@ -52,7 +58,11 @@ const ComplaintBox = () => {
   function formatImageName(item: string) {
     return `${currentStudentInfo?.email.replace(/@/, '%40')}%2F${item}`;
   }
-  console.log({showMayorModal});
+
+  // function getFileExtention(fileUrl: string) {
+  //   return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
+  // }
+
   return (
     <View className="flex-1">
       <RenderActionButtons targetArray={targetArray} />
@@ -64,7 +74,20 @@ const ComplaintBox = () => {
           setState(prevState => ({...prevState, imageModal: ''}))
         }>
         <TouchableOpacity
+          activeOpacity={1}
           className="h-screen bg-white"
+          onLongPress={async () => {
+            const reference = storage().ref(
+              `concerns/${currentStudentInfo?.email}/${state.imageModal}`,
+            );
+            try {
+              const url = await reference.getDownloadURL();
+              await downloadPhoto(url);
+              Alert.alert('File Downloaded Successfully.');
+            } catch (err) {
+              Alert.alert('Downloading photo error');
+            }
+          }}
           onPress={() =>
             setState(prevState => ({...prevState, imageModal: ''}))
           }>
@@ -91,7 +114,6 @@ const ComplaintBox = () => {
           const {message, timestamp, sender, files} = item;
           const newTimestamp = new Date();
           newTimestamp.setTime(timestamp);
-          // console.log({ studentsInfo });
           const targetStudent = studentsInfo?.filter(
             props => sender === props.studentNo,
           )[0];

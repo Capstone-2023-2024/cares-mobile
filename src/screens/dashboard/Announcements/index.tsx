@@ -3,12 +3,14 @@ import {getImageFromStorage} from '@cares/common/utils/media';
 import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
 import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Image, Modal, SectionList, View} from 'react-native';
+import {Image, Modal, SectionList, View, Alert} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SelectDropdown from 'react-native-select-dropdown';
 import Text from '~/components/Text';
 import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useUser} from '~/contexts/UserContext';
+import storage from '@react-native-firebase/storage';
+import {downloadPhoto} from '~/utils/media';
 
 interface TypedParamsProps {
   id: string;
@@ -68,7 +70,7 @@ const Announcements = () => {
     ]);
   }
 
-  // function handleTag(text: string) {
+  // function handleTitle(text: string) {
   //   setAnnouncementData([
   //     ...data.filter(data => {
   //       return (
@@ -161,6 +163,16 @@ const Announcements = () => {
                 <View className="" />
               ) : (
                 <TouchableOpacity
+                  onLongPress={async () => {
+                    const reference = storage().ref(`images/${photoUrls[0]}`);
+                    try {
+                      const url = await reference.getDownloadURL();
+                      await downloadPhoto(url);
+                      Alert.alert('File Downloaded Successfully.');
+                    } catch (err) {
+                      Alert.alert('Downloading photo error');
+                    }
+                  }}
                   onPress={() => handlePressImage(true, photoArrayOneSRC)}>
                   <Image
                     className="mx-4 mb-5 mt-1 h-64 w-11/12 rounded-2xl bg-stone-300"

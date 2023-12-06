@@ -77,7 +77,7 @@ interface PollStateProps {
   };
 }
 
-const Poll = (props: ReadPollEventProps) => {
+const Poll = (pollProps: ReadPollEventProps) => {
   const {
     question,
     options,
@@ -87,7 +87,7 @@ const Poll = (props: ReadPollEventProps) => {
     dateOfExpiration,
     postedBy,
     comments,
-  } = props;
+  } = pollProps;
   const {currentUser} = useAuth();
   const {studentsInfo} = useUniversal();
   const [pollState, setPollState] = useState<PollStateProps>({
@@ -155,9 +155,11 @@ const Poll = (props: ReadPollEventProps) => {
   const loadCommentData = useCallback(() => {
     const initCondition =
       pollState.index === undefinedNaN || comments === undefined;
-    const fetchIndex = initCondition ? 0 : pollState.index;
     const commentHolder = comments ?? [];
-    const initCommentData = commentHolder[0] ?? {
+    const fetchIndex = initCondition
+      ? commentHolder.length - 1
+      : pollState.index;
+    const initCommentData = commentHolder[commentHolder.length - 1] ?? {
       value: '',
       commenter: 'NO_EMAIL',
       dateCreated: NaN,
@@ -177,10 +179,10 @@ const Poll = (props: ReadPollEventProps) => {
   /** See More or Hide */
   function paginateComments() {
     setPollState(prevState => {
-      const RESETINDEX = 0;
+      const RESETINDEX = prevState.maxLength - 1;
       const incrementBy = 1;
-      let advanceIndex = prevState.index + incrementBy;
-      const indexCondition = advanceIndex >= prevState.maxLength;
+      let advanceIndex = prevState.index - incrementBy;
+      const indexCondition = advanceIndex <= -1;
       console.log({advanceIndex}, prevState.maxLength);
       const result = indexCondition
         ? {
@@ -416,22 +418,17 @@ const Poll = (props: ReadPollEventProps) => {
           <>
             <FlatList
               ref={flatListRef}
-              className={`${
-                pollState.index === 2 ? 'h-1/3' : 'h-max'
-              } rounded-lg bg-paper/60 p-2`}
-              data={pollState.showComments}
-              onScroll={event => {
-                const contentSize = event.nativeEvent.contentSize;
-                const yPosition = event.nativeEvent.contentOffset.y;
-                // const newIndex = Math.round(yPosition / contentSize.height);
-                console.log({height: contentSize.height, yPosition});
-                // if (newIndex !== pollState.currentIndex) {
-                //   setPollState(prevState => ({
-                //     ...prevState,
-                //     currentIndex: newIndex,
-                //   }));
-                // }
-              }}
+              className={'h-max rounded-lg bg-paper/60 p-2'}
+              data={pollState.showComments.sort(
+                (a, b) => b.dateCreated - a.dateCreated,
+              )}
+              //   onScroll={
+              //     event => {
+              //     const contentSize = event.nativeEvent.contentSize;
+              //     const yPosition = event.nativeEvent.contentOffset.y;
+              //     console.log({height: contentSize.height, yPosition});
+              //   }
+              // }
               renderItem={({item}) => {
                 const {commenter, value, dateCreated} = item;
                 const studentInfo = studentsInfo?.filter(
@@ -473,9 +470,7 @@ const Poll = (props: ReadPollEventProps) => {
               onPress={paginateComments}
               className="mx-auto mt-4 w-max rounded-lg border border-paper  px-2 py-1">
               <Text className="text-center capitalize text-paper">
-                {pollState.index + 1 === pollState.maxLength
-                  ? 'hide'
-                  : 'show more'}
+                {pollState.index - 1 === -1 ? 'hide' : 'show more'}
               </Text>
             </TouchableOpacity>
           </>

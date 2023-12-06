@@ -23,7 +23,6 @@ const AuthContext = createContext<AuthContextType>({
   signout: async () => {},
   onGoogleButtonPress: async () => null,
 });
-
 const config = {
   webClientId: FIRESTORE_WEB_CLIENT_ID,
 };
@@ -77,7 +76,7 @@ const AuthProvider = ({children}: AuthProviderProps) => {
         .update({src});
       return 'SUCCESS';
     } catch (err) {
-      // console.log(err);
+      console.log({err});
       return 'ERROR';
     }
   }

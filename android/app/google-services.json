@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "786929223549",
-    "project_id": "cics-a78de",
-    "storage_bucket": "cics-a78de.appspot.com"
+    "project_number": "42887996077",
+    "project_id": "cares-development-93aaf",
+    "storage_bucket": "cares-development-93aaf.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:786929223549:android:cd2e87ef675a1b7123ae14",
+        "mobilesdk_app_id": "1:42887996077:android:8c6334ce335c46806c1c24",
         "android_client_info": {
           "package_name": "com.cares"
         }
       },
       "oauth_client": [
         {
-          "client_id": "786929223549-j0gpapfqlm22pst6jcardai84j6821e3.apps.googleusercontent.com",
+          "client_id": "42887996077-o74jbqka77hc8p9ec3u6e2h5icbm3ib8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.cares",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "5b14d66febef9c4be1bddeb0aca7298dea472d03"
           }
         },
         {
-          "client_id": "786929223549-qpbb1jebv0gqk6641tcj57k154bjhauu.apps.googleusercontent.com",
+          "client_id": "42887996077-kuhpd2gujdsqglnpg83ml0b5jkf1c44o.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBmfLyOIapqsED4PMta5TL679fSfdlzDMs"
+          "current_key": "AIzaSyAqcYLT_zkJtfmoFLzgUm_iEs_8v18xt9Q"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "786929223549-eqsm6uf50jsriqcs1oncc4lmp80tluj6.apps.googleusercontent.com",
+              "client_id": "42887996077-kuhpd2gujdsqglnpg83ml0b5jkf1c44o.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

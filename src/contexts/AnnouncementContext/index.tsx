@@ -9,6 +9,8 @@ import type {
   AnnouncementProviderProps,
   AnnouncementStateProps,
 } from './types';
+import {currentMonth} from '@cares/common/utils/date';
+import {useUniversal} from '../UniversalContext';
 
 const initState: AnnouncementStateProps = {
   title: '',
@@ -18,11 +20,12 @@ const initState: AnnouncementStateProps = {
 const AnnouncementContext = createContext<AnnouncementContextProps>({
   ...initState,
   handleTypeChange: () => null,
-  handleTag: () => null,
+  handleTitle: () => null,
 });
 
 const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
   const [state, setState] = useState(initState);
+  const {calendar} = useUniversal();
 
   function handleTypeChange(type: string) {
     if (type === 'Event') {
@@ -37,51 +40,29 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
     }
     return setState(prevState => ({...prevState, type: 'recognition'}));
   }
-  function handleTag(tag: AnnouncementStateProps['title']) {
+  function handleTitle(tag: AnnouncementStateProps['title']) {
     setState(prevState => ({...prevState, tag}));
   }
 
   useEffect(() => {
-    const limitNumber = 30;
-    const queryAnnouncement = collectionRef('announcement')
-      // .where('type', '==', state.type)
-      // .where('endDate', '>', new Date().getTime())
-      .orderBy('dateCreated', 'desc')
-      .limit(limitNumber);
+    // const limitNumber = 30;
+    const date = new Date();
+    const month = calendar.month - 1;
+    const year = calendar.year;
+    const {maxDays} = currentMonth({month, year});
+    date.setDate(maxDays);
+    console.log({maxDays, year, month});
+    const endDate = date.getTime();
+    const announcementQuery = collectionRef('announcement')
+      .where('endDate', '<=', endDate)
+      .orderBy('endDate', 'desc');
 
-    // const eventRecognitionWithTagsQuery = collectionRef('announcement')
-    //   .where('type', '==', state.type)
-    //   .where('tags', 'array-contains', state.tag.toLowerCase())
-    //   // .where('endDate', '>', new Date().getTime())
-    //   .orderBy('dateCreated', 'desc')
-    //   .limit(limitNumber);
-
-    // const memoQuery = collectionRef('announcement')
-    //   .where('type', '==', state.type)
-    //   .orderBy('dateCreated', 'desc')
-    //   .limit(limitNumber);
-
-    // const memoWithTagsQuery = collectionRef('announcement')
-    //   .where('type', '==', state.type)
-    //   .where('tags', 'array-contains', state.tag.toLowerCase())
-    //   .orderBy('dateCreated', 'desc')
-    //   .limit(limitNumber);
-
-    // function query() {
-    //   if (state.type === 'university_memorandum' && state.tag.trim() !== '') {
-    //     return memoWithTagsQuery;
-    //   } else if (
-    //     state.type === 'university_memorandum' &&
-    //     state.tag.trim() === ''
-    //   ) {
-    //     return memoQuery;
-    //   } else if (state.tag.trim() !== '') {
-    //     return eventRecognitionWithTagsQuery;
-    //   }
-    //   return eventRecognitionQuery;
-    // }
-    return queryAnnouncement.onSnapshot(snapshot => {
+    return announcementQuery.onSnapshot(snapshot => {
       const announcementHolder: ReadAnnouncementProps[] = [];
+      // console.log({snapshot});
+      if (snapshot === null) {
+        return setState(prevState => ({...prevState, data: []}));
+      }
       snapshot.docs.forEach(doc => {
         const id = doc.id;
         const data = doc.data() as AnnouncementProps;
@@ -90,12 +71,16 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
           ...data,
         });
       });
-      setState(prevState => ({...prevState, data: announcementHolder}));
+      setState(prevState => ({
+        ...prevState,
+        data: announcementHolder,
+      }));
     });
-  }, []);
+  }, [calendar.month, calendar.year]);
+
   return (
     <AnnouncementContext.Provider
-      value={{...state, handleTypeChange, handleTag}}>
+      value={{...state, handleTypeChange, handleTitle}}>
       {children}
     </AnnouncementContext.Provider>
   );

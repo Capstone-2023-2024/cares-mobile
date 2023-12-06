@@ -27,10 +27,6 @@ interface CalendarStateProps extends Omit<CalendarParamProps, 'id'> {
   currentSelectedID: string;
   markedDates: MarkedDates;
   markingType: MarkingTypes;
-  calendar: {
-    month: number;
-    year: number;
-  };
 }
 
 interface ExtendedReactCalendarProps
@@ -41,26 +37,22 @@ interface ExtendedReactCalendarProps
 }
 
 const CalendarOfActivities = () => {
-  const date = new Date();
   const route = useRoute();
   const FLATLIST_COMPONENT_HEIGHT = 120;
   const {setCurrentSelectedActivityId, currentSelectedActivityId} =
     useUniversal();
   const flatListRef = useRef<FlatList | null>(null);
+  const {calendar, setCalendar} = useUniversal();
   const [state, setState] = useState<CalendarStateProps>({
     filteredAnnouncement: [],
     restAnnouncements: [],
     currentSelectedID: '',
     markedDates: {},
     markingType: 'multi-period',
-    calendar: {
-      month: date.getMonth() + 1,
-      year: date.getFullYear(),
-    },
   });
   const currentMonthInfo = currentMonth({
-    month: state.calendar.month - 1,
-    year: state.calendar.year,
+    month: calendar.month - 1,
+    year: calendar.year,
   });
 
   function handleMonthChange(props: DateData) {
@@ -69,31 +61,30 @@ const CalendarOfActivities = () => {
         animated: true,
         index: 0,
       });
+    setCalendar({
+      month: props.month,
+      year: props.year,
+    });
     setState(prevState => {
       const filteredAnnouncement = prevState.restAnnouncements.filter(
         restProps => {
           const endDate = new Date();
-          const currentMonth = props.month - 1;
+          const restCurrentMonth = props.month - 1;
           const currentYear = props.year;
           endDate.setTime(restProps.endDate);
           const endMonth = endDate.getMonth();
           const endYear = endDate.getFullYear();
 
-          return currentMonth === endMonth && currentYear === endYear;
+          return restCurrentMonth === endMonth && currentYear === endYear;
         },
       );
       const markedDates = setMarkedDates(filteredAnnouncement);
-
       return {
         ...prevState,
         filteredAnnouncement,
         markedDates: {
           ...prevState.markedDates,
           ...markedDates,
-        },
-        calendar: {
-          month: props.month,
-          year: props.year,
         },
       };
     });
@@ -215,7 +206,7 @@ const CalendarOfActivities = () => {
             const index = ids.indexOf(currentSelectedActivityId ?? '');
             flatListRef.current?.scrollToIndex({
               animated: true,
-              index,
+              index: index === -1 ? 0 : index,
             });
           }}
           keyExtractor={({id}) => id}

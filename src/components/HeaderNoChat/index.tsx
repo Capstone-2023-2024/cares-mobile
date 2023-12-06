@@ -106,7 +106,7 @@ function Header({}: {withBack?: boolean}) {
         <View className="justify-between">
           <Image
             source={require('~/assets/cares_icon1.png')}
-            className="-ml-2 h-12 w-64"
+            className="h-16 w-36"
             resizeMode="stretch"
           />
         </View>

@@ -19,13 +19,19 @@ import type {
   UniversalProviderStateProps,
 } from './types';
 
+const date = new Date();
 const universalInitState: UniversalProviderStateProps = {
   queryId: null,
   currentSelectedActivityId: '',
+  calendar: {
+    month: date.getMonth() + 1,
+    year: date.getFullYear(),
+  },
 };
 const UniversalContext = createContext<UniversalContextProps>({
   ...universalInitState,
   setRole: () => null,
+  setCalendar: () => null,
   setCurrentSelectedActivityId: () => null,
   setMayorInfo: () => null,
   setAdviserInfo: () => null,
@@ -54,6 +60,11 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
   const setCurrentSelectedActivityId = useCallback(
     (value: string) =>
       setState(prevState => ({...prevState, currentSelectedActivityId: value})),
+    [],
+  );
+  const setCalendar = useCallback(
+    (calendar: UniversalProviderStateProps['calendar']) =>
+      setState(prevState => ({...prevState, calendar})),
     [],
   );
   const setMayorInfo = useCallback(
@@ -180,6 +191,7 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
       value={{
         ...state,
         setRole,
+        setCalendar,
         setCurrentSelectedActivityId,
         setMayorInfo,
         setAdviserInfo,

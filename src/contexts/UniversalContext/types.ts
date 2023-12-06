@@ -18,12 +18,17 @@ interface UniversalProviderStateProps {
   adviserInfo?: ReadAdviserInfoProps;
   studentsInfo?: StudentInfoProps[];
   currentStudentInfo?: StudentInfoProps;
+  calendar: {
+    month: number;
+    year: number;
+  };
 }
 
 interface UniversalContextProps extends UniversalProviderStateProps {
   setRole: (value: UniversalProviderStateProps['role']) => void;
   setCurrentSelectedActivityId: (value: string) => void;
   setMayorInfo: (value: StudentInfoProps) => void;
+  setCalendar: (value: UniversalProviderStateProps['calendar']) => void;
   setAdviserInfo: (value: ReadAdviserInfoProps) => void;
   setStudentsInfo: (value: StudentInfoProps[]) => void;
   setCurrentStudentInfo: (value: StudentInfoProps) => void;

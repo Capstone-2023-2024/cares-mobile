@@ -118,18 +118,18 @@ android {
         //     keyAlias 'dummycareskey'
         //     keyPassword 'dummycares'
         // }
-        // debug {
-        //     storeFile file('dev.keystore')
-        //     storePassword 'cares123'
-        //     keyAlias 'dev'
-        //     keyPassword 'cares123'
-        // }
-           debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+        debug {
+            storeFile file('dev.keystore')
+            storePassword 'cares123'
+            keyAlias 'dev'
+            keyPassword 'cares123'
         }
+        //    debug {
+        //     storeFile file('debug.keystore')
+        //     storePassword 'android'
+        //     keyAlias 'androiddebugkey'
+        //     keyPassword 'android'
+        // }
     }
     buildTypes {
         debug {

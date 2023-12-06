@@ -10,7 +10,7 @@ export interface AnnouncementStateProps
 }
 export interface AnnouncementContextProps extends AnnouncementStateProps {
   handleTypeChange: (value: string) => void;
-  handleTag: (value: AnnouncementStateProps['title']) => void;
+  handleTitle: (value: AnnouncementStateProps['title']) => void;
 }
 export interface AnnouncementProviderProps {
   children: ReactNode;

@@ -1,7 +1,7 @@
 import type {ReadAnnouncementProps} from '@cares/common/types/announcement';
 import {getImageFromStorage} from '@cares/common/utils/media';
 import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Image, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
@@ -12,16 +12,39 @@ import {useAnnouncement} from '~/contexts/AnnouncementContext';
 import {useNav} from '~/contexts/NavigationContext';
 import {useUser} from '~/contexts/UserContext';
 
+interface StateProps {
+  pinned: ReadAnnouncementProps[];
+  unpinned: ReadAnnouncementProps[];
+}
+
 const HomeAnnouncements = () => {
   const {data} = useAnnouncement();
   const {currentStudent} = useUser();
   const stateLengthEmpty = data.length === 0;
   const carouselRef = useRef(null);
   const [activeIndex, setActiveIndex] = React.useState(0);
+  const [state, setState] = useState<StateProps>({
+    unpinned: [],
+    pinned: [],
+  });
+  const limitUnpinned =
+    state.unpinned.length > 5 ? state.unpinned.slice(0, 5) : state.unpinned;
+  const combinedPinned = [...limitUnpinned, ...state.pinned];
+
+  useEffect(() => {
+    function setupAnnouncement() {
+      setState(prevState => ({
+        ...prevState,
+        pinned: data.filter(props => props.state === 'pinned'),
+        unpinned: data.filter(props => props.state === 'unpinned'),
+      }));
+    }
+    return setupAnnouncement();
+  }, [data]);
 
   const pagination = (
     <Pagination
-      dotsLength={data.length}
+      dotsLength={combinedPinned.length}
       activeDotIndex={activeIndex}
       containerStyle={{paddingTop: 1}}
       dotStyle={{
@@ -51,7 +74,7 @@ const HomeAnnouncements = () => {
           <Carousel
             layout={'stack'}
             ref={carouselRef}
-            data={data}
+            data={combinedPinned}
             renderItem={({item}) => <Container {...item} />}
             sliderWidth={500} // Adjust the width as needed
             itemWidth={450} // Adjust the width as needed
@@ -73,7 +96,7 @@ const Container = (props: ReadAnnouncementProps) => {
   const {currentStudent} = useUser();
   const conditionRender = currentStudent.email === 'null';
   const loadingInput = '..........';
-  const {id, department, photoUrls, postedBy, type} = props;
+  const {id, department, photoUrls, postedBy, type, state} = props;
 
   function handlePressReadMore(announcementId: string) {
     handleNavigation('Announcements', announcementId);
@@ -83,7 +106,7 @@ const Container = (props: ReadAnnouncementProps) => {
     <TouchableOpacity
       onPress={() => handlePressReadMore(id)}
       activeOpacity={0.8}>
-      <View className=" mx-10 items-center  overflow-hidden rounded-2xl border-2 bg-paper shadow-md ">
+      <View className=" mx-10 items-center rounded-2xl border-2 bg-paper shadow-md ">
         <View className="mt-2 flex-row items-center">
           {currentStudent.email === 'null' ? (
             <View />
@@ -93,6 +116,11 @@ const Container = (props: ReadAnnouncementProps) => {
               className="-ml-8 h-14 w-14"
               resizeMode="center"
             />
+          )}
+          {state === 'pinned' && (
+            <View className="absolute -left-24 -top-3 h-8 w-12 bg-red-500">
+              <Text className="text-center text-xs text-paper">Pinned</Text>
+            </View>
           )}
           <Text className="absolute -right-24 top-4  mx-auto w-auto flex-col rounded-lg bg-secondary px-2 py-1 text-xs capitalize text-paper">
             {type}

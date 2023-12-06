@@ -34,6 +34,7 @@ const Login = () => {
         case null:
           return;
         default:
+          console.log({message});
           return ToastAndroid.show(
             'Google sign-in cancelled',
             ToastAndroid.SHORT,
