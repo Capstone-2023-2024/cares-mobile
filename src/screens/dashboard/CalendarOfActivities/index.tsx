@@ -137,7 +137,9 @@ const CalendarOfActivities = () => {
       ) as CalendarParamProps;
 
       const markedDatesHolder = setMarkedDates(filteredAnnouncement);
-      setCurrentSelectedActivityId(id);
+      if (id !== undefined) {
+        setCurrentSelectedActivityId(id);
+      }
       setState(prevState => ({
         ...prevState,
         markedDates: {
@@ -212,11 +214,12 @@ const CalendarOfActivities = () => {
           }}
           onLayout={() => {
             const ids = state.filteredAnnouncement.map(props => props.id);
-            const index = ids.indexOf(currentSelectedActivityId ?? '');
-            flatListRef.current?.scrollToIndex({
-              animated: true,
-              index,
-            });
+            const index = ids.indexOf(currentSelectedActivityId ?? '') ?? 0;
+            index >= 0 &&
+              flatListRef.current?.scrollToIndex({
+                animated: true,
+                index,
+              });
           }}
           keyExtractor={({id}) => id}
           renderItem={_renderItem}

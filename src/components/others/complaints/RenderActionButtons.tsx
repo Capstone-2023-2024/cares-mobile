@@ -1,15 +1,17 @@
-import React from 'react';
 import type {ComplaintProps} from '@cares/types/complaint';
+import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
+import Text from '~/components/Text';
+import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
-import {TurnOverModal} from './TurnOverModal';
-import Text from '~/components/Text';
 import {useUser} from '~/contexts/UserContext';
+import {TurnOverModal} from './TurnOverModal';
 
 /** TODO: Add notification here */
 const RenderActionButtons = ({targetArray}: {targetArray?: ComplaintProps}) => {
   const {actionButton} = useContentManipulation();
+  useComplaints();
   const {role} = useUser();
   const {setShowTurnOverModal} = useModal();
 

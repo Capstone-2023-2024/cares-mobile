@@ -56,6 +56,10 @@ const HomeCalendarOfActivities = () => {
         }
         title="calendar of activities"
         navigation="CalendarOfActivities"
+        params={JSON.stringify({
+          filteredAnnouncement,
+          restAnnouncements,
+        })}
       />
       <View className="items-center">
         <Carousel

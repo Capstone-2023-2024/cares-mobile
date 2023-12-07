@@ -49,7 +49,7 @@ const ContentManipulationProvider = ({
   children,
 }: ContentManipulationProviderProps) => {
   const [state, setState] = useState(contentManupulationInitState);
-  const {currentStudentComplaints} = useComplaints();
+  const {currentStudentComplaints, otherComplaints} = useComplaints();
   const {role} = useUser();
   const {currentStudentInfo, queryId} = useUniversal();
 
@@ -96,7 +96,6 @@ const ContentManipulationProvider = ({
     [],
   );
   async function actionButton(type: ComplaintProps['status']) {
-    console.log(queryId);
     try {
       if (typeof state.selectedChatId === 'string') {
         if (queryId !== null) {
@@ -133,6 +132,10 @@ const ContentManipulationProvider = ({
                     props => state.selectedChatId === props.id,
                   )[0]?.studentNo ?? 'null',
               };
+              console.log(
+                {currentStudentComplaints, otherComplaints},
+                state.selectedChatId,
+              );
 
               await targetDoc.update({
                 status: type,

@@ -1,23 +1,18 @@
-import {CommonActions, useNavigation} from '@react-navigation/native';
 import React, {Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SvgContainer from '~/components/SVGContainer';
 import {useUser} from '~/contexts/UserContext';
-import type {PathListType} from '~/utils/navPaths/types';
 import {arrowUri} from '~/utils/svgIcons';
 import type {HeadingTemplateProps} from '../others/home/Usertab/types';
+import {useNav} from '~/contexts/NavigationContext';
 
 const HeadingTemplate = (props: HeadingTemplateProps) => {
-  const navigate = useNavigation();
+  const {handleNavigation} = useNav();
   const {currentStudent} = useUser();
   const {navigation, title} = props;
 
-  function handleNavigation(path: PathListType) {
-    navigate.dispatch(CommonActions.navigate({name: path}));
-  }
-
   function handlePressNavigation() {
-    handleNavigation(navigation);
+    handleNavigation(navigation, props.params);
   }
 
   return (

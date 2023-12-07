@@ -8,4 +8,5 @@ export interface HeadingTemplateProps {
   navigation: PathListType;
   title: string;
   disabled?: boolean;
+  params?: string;
 }
