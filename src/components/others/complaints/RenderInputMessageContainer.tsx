@@ -19,10 +19,18 @@ import {collectionRef} from '~/utils/firebase';
 import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useUniversal} from '~/contexts/UniversalContext';
+import {OneSignal} from 'react-native-onesignal';
+import {
+  NEXT_PUBLIC_ONESIGNAL_APP_ID,
+  NEXT_PUBLIC_ONESIGNAL_DEFAULT_ANDROID_CHANNEL_ID,
+  NEXT_PUBLIC_ONESIGNAL_REST_API_KEY,
+} from '@env';
+import {NotificationProps} from '@cares/common/types/announcement';
 
 /**TODO: Optimized this together with Mayor UI */
 const RenderInputMessageContainer = () => {
-  const {role, currentStudentInfo, queryId} = useUniversal();
+  const {role, currentStudentInfo, adviserInfo, mayorInfo, queryId} =
+    useUniversal();
   const {currentStudentComplaints, otherComplaints} = useComplaints();
   const {
     files,
@@ -106,6 +114,20 @@ const RenderInputMessageContainer = () => {
   async function handleSend() {
     setState(prevState => ({...prevState, sendLoading: true}));
     try {
+      async function notifResponse(notifData: NotificationProps) {
+        return await fetch('https://onesignal.com/api/v1/notifications', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Basic ${NEXT_PUBLIC_ONESIGNAL_REST_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            app_id: `${NEXT_PUBLIC_ONESIGNAL_APP_ID}`,
+            ...notifData,
+          }),
+        });
+      }
       if (
         (message.trim() !== '' || files.length > 0) &&
         currentStudentInfo?.studentNo !== 'null' &&
@@ -162,7 +184,37 @@ const RenderInputMessageContainer = () => {
               );
             }
           } else if (selectedChatId === 'class_section') {
-            await complaintDocRef.collection('group').add(complaint);
+            const section = adviserInfo?.section ?? currentStudentInfo?.section;
+            const yearLevel =
+              adviserInfo?.yearLevel ?? currentStudentInfo?.yearLevel;
+            OneSignal.User.addTag('class_section', `${yearLevel}${section}`);
+            const notifData: NotificationProps = {
+              contents: {
+                en: complaint.message,
+              },
+              headings: {
+                en: `${
+                  currentStudentInfo?.name ?? 'Adviser'
+                } sent a message in your class section`,
+              },
+              filters: [
+                {
+                  field: 'tag',
+                  key: 'class_section',
+                  relation: '=',
+                  value: `${yearLevel}${section}`,
+                },
+              ],
+              priority: 10,
+              name: 'class_section',
+              android_channel_id: `${NEXT_PUBLIC_ONESIGNAL_DEFAULT_ANDROID_CHANNEL_ID}`,
+            };
+
+            const jsonedRes = await (await notifResponse(notifData)).json();
+            await complaintDocRef
+              .collection('group')
+              .add({...complaint, notif_id: jsonedRes});
+
             ToastAndroid.show('message sent!', ToastAndroid.SHORT);
             setState(prevState => ({...prevState, sendLoading: false}));
             return setMessage('');
@@ -171,15 +223,48 @@ const RenderInputMessageContainer = () => {
           const docRef = complaintDocRef
             .collection('individual')
             .doc(selectedChatId);
-          console.log(complaint);
           try {
+            const filterStudentComplaints = currentStudentComplaints.filter(
+              props => props.id === selectedChatId,
+            );
+            const foo = () => {
+              switch (filterStudentComplaints[0]?.recipient) {
+                case 'mayor':
+                  return mayorInfo?.studentNo ?? 'mayor';
+                case 'adviser':
+                  return adviserInfo?.email ?? 'adviser';
+                default:
+                  return filterStudentComplaints[0]?.recipient ?? '';
+              }
+            };
+            const receiver =
+              filterStudentComplaints[0]?.messages.filter(
+                props => props.sender !== complaint.sender,
+              )[0]?.sender ?? foo();
+            const notifData: NotificationProps = {
+              name: 'individual_complaint',
+              contents: {
+                en: complaint.message,
+              },
+              headings: {
+                en: `${currentStudentInfo?.name} sent a message`,
+              },
+              priority: 8,
+              android_channel_id: `${NEXT_PUBLIC_ONESIGNAL_DEFAULT_ANDROID_CHANNEL_ID}`,
+              include_external_user_ids: [receiver],
+            };
+            const jsonRes = await (await notifResponse(notifData)).json();
             await docRef.update({
-              messages: firebase.firestore.FieldValue.arrayUnion(complaint),
+              messages: firebase.firestore.FieldValue.arrayUnion({
+                ...complaint,
+                notif_id: jsonRes.id,
+              }),
             });
             ToastAndroid.show('message sent!', ToastAndroid.SHORT);
             setMessage('');
             return setState(prevState => ({...prevState, sendLoading: false}));
           } catch (err) {
+            console.log({err});
             Alert.alert(
               'Failed in forwarding messages to the existing complaint',
             );

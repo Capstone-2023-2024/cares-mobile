@@ -9,6 +9,7 @@
     "emulator": "emulator -avd Pixel_4_API_33 -netdelay none -netspeed full",
     "ios": "react-native run-ios",
     "lint": "cls && eslint . --fix && prettier . --write",
+    "postinstall": "patch-package",
     "prepare": "husky install",
     "prune": "git remote prune origin",
     "rmdircmd": "rmdir /s /q node_modules",
