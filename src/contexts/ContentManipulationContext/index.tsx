@@ -51,7 +51,7 @@ const ContentManipulationProvider = ({
   const [state, setState] = useState(contentManupulationInitState);
   const {currentStudentComplaints} = useComplaints();
   const {role} = useUser();
-  const {currentStudentInfo, queryId} = useUniversal();
+  const {adviserInfo, currentStudentInfo, queryId} = useUniversal();
 
   const setMessage = useCallback((value: string) => {
     setState(prevState => ({
@@ -120,7 +120,10 @@ const ContentManipulationProvider = ({
                 referenceId: state.selectedChatId,
                 messages: [
                   {
-                    sender: currentStudentInfo?.studentNo ?? role,
+                    sender:
+                      currentStudentInfo?.studentNo ??
+                      adviserInfo?.email ??
+                      'adviser',
                     message: state.turnOverMessage,
                     timestamp: new Date().getTime(),
                   },

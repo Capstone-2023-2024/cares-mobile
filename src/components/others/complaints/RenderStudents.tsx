@@ -17,7 +17,7 @@ const RenderStudents = () => {
   const studentNumbers = [
     ...new Set(currentStudentComplaints.map(props => props.studentNo)),
   ];
-  console.log({stude: studentsInfo?.map(props => props.studentNo)});
+
   const filteredStudentList = studentsInfo?.filter(
     props =>
       props.email !== currentStudentInfo?.email &&
@@ -35,7 +35,7 @@ const RenderStudents = () => {
       }  w-full overflow-x-auto bg-secondary p-2`}>
       {filteredStudentList.length <= 0 ? (
         <View>
-          <Text>No Complaints</Text>
+          <Text className="text-center text-paper">No Complaints</Text>
         </View>
       ) : (
         <FlatList

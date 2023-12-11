@@ -52,6 +52,8 @@ const UniversalContext = createContext<UniversalContextProps>({
 const UniversalProvider = ({children}: UniversalProviderProps) => {
   const [state, setState] = useState(universalInitState);
   const {adviserInfo, currentStudentInfo} = state;
+
+  console.log({UseUniversalState: currentStudentInfo});
   const setRole = useCallback(
     (role: UniversalProviderStateProps['role']) =>
       setState(prevState => ({...prevState, role})),

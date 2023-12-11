@@ -117,7 +117,7 @@ const RenderInputMessageContainer = () => {
           timestamp: new Date().getTime(),
           sender:
             role === 'adviser'
-              ? currentStudentInfo?.email ?? 'adviser'
+              ? adviserInfo?.email ?? 'adviser'
               : currentStudentInfo?.studentNo ?? 'anonymous',
           message,
         };
