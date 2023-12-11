@@ -173,10 +173,12 @@ function UserProvider({children}: UserProviderProps) {
     function oneSignalLogin() {
       const currentStudentNo = state.currentStudent.studentNo;
       const studentNoExist = currentStudentNo !== undefined;
-      studentNoExist && OneSignal.login(currentStudentNo);
+      OneSignal.login(
+        studentNoExist ? currentStudentNo : currentUser?.email ?? 'anonymous',
+      );
     }
     return oneSignalLogin();
-  }, [state.currentStudent.studentNo]);
+  }, [state.currentStudent.studentNo, currentUser?.email]);
   useEffect(() => {
     function setupOneSignalTag() {
       const role = state.role;
