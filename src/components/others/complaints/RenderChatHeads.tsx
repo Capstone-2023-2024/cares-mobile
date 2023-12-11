@@ -1,13 +1,13 @@
+import {RecipientType} from '@cares/common/types/permission';
 import React, {type ReactNode} from 'react';
 import {View} from 'react-native';
 import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
-import ComplaintBoxRenderer from './ComplaintBoxRenderer';
+import {useUser} from '~/contexts/UserContext';
 import ChatHeadButton from './ChatHeadButton';
 import type {ComplaintBoxRendererProps} from './ComplaintBoxRenderer';
-import {RecipientType} from '@cares/common/types/permission';
-import {useUser} from '~/contexts/UserContext';
+import ComplaintBoxRenderer from './ComplaintBoxRenderer';
 
 interface RenderChatHeadsProps
   extends Omit<ComplaintBoxRendererProps, 'condition' | 'data'> {
@@ -35,7 +35,7 @@ const RenderChatHeads = ({children, ...rest}: RenderChatHeadsProps) => {
     }
     recipients.push('adviser');
   }
-
+  // console.log({otherComplaints, currentStudentComplaints});
   function chatHeadOnClick(props: RecipientType) {
     return role !== 'student'
       ? () => {
@@ -71,6 +71,7 @@ const RenderChatHeads = ({children, ...rest}: RenderChatHeadsProps) => {
         })}
         {children}
       </View>
+
       <ComplaintBoxRenderer
         data={otherComplaints
           .filter(props => selectedChatHead === props.recipient)

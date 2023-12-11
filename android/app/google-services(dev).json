@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "42887996077",
+    "project_id": "cares-development-93aaf",
+    "storage_bucket": "cares-development-93aaf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:42887996077:android:8c6334ce335c46806c1c24",
+        "android_client_info": {
+          "package_name": "com.cares"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "42887996077-o74jbqka77hc8p9ec3u6e2h5icbm3ib8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cares",
+            "certificate_hash": "5b14d66febef9c4be1bddeb0aca7298dea472d03"
+          }
+        },
+        {
+          "client_id": "42887996077-kuhpd2gujdsqglnpg83ml0b5jkf1c44o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqcYLT_zkJtfmoFLzgUm_iEs_8v18xt9Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "42887996077-kuhpd2gujdsqglnpg83ml0b5jkf1c44o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

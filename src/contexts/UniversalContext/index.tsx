@@ -101,10 +101,8 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
         .where('academicYear', '==', formatYearStringify);
 
       try {
-        let test = 1;
         const result = await complaintQuery.countFromServer().get();
         if (result.data().count === 0) {
-          console.log((test += 1), 'first');
           const documentRef = await collectionRef('complaints').add({
             time: new Date().getTime(),
             section,
@@ -151,7 +149,6 @@ const UniversalProvider = ({children}: UniversalProviderProps) => {
           studentsArrayKey,
           JSON.stringify(studentsHolder),
         );
-        console.log(studentsHolder);
         setStudentsInfo(studentsHolder);
       }
       AsyncStorage.getItem(studentsArrayKey)

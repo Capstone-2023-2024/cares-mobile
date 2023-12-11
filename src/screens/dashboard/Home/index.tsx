@@ -19,6 +19,14 @@ const Home = () => {
   function setUpSection() {
     handleNavigation('UserInfo');
   }
+
+  // useEffect(() => {
+  //   axiosResponse()
+  //     .then(response => console.log({response}))
+  //     .catch(err => console.log(err));
+  //   return;
+  // }, []);
+
   const renderSectionBannerSetup = () => {
     const CONDITION =
       role !== 'faculty' &&

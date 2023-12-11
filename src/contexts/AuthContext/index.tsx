@@ -70,7 +70,10 @@ const AuthProvider = ({children}: AuthProviderProps) => {
       }
       const src = additionalUserInfo?.profile?.picture;
       const snapshot = await collectionReference.get();
-      const result = snapshot.docs[0];
+      const result = snapshot.docs.filter(
+        doc => doc.data().email === profile?.email,
+      )[0];
+      console.log(profile?.email, result);
       collectionRef(student ? 'student' : 'permission')
         .doc(result?.id)
         .update({src});

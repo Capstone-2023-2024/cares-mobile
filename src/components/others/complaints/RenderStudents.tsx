@@ -17,6 +17,7 @@ const RenderStudents = () => {
   const studentNumbers = [
     ...new Set(currentStudentComplaints.map(props => props.studentNo)),
   ];
+  console.log({stude: studentsInfo?.map(props => props.studentNo)});
   const filteredStudentList = studentsInfo?.filter(
     props =>
       props.email !== currentStudentInfo?.email &&

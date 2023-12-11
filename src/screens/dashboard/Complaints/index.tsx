@@ -25,7 +25,7 @@ import ContentManipulationProvider, {
   useContentManipulation,
 } from '~/contexts/ContentManipulationContext';
 import ModalProvider, {useModal} from '~/contexts/ModalContext';
-import UniversalProvider, {useUniversal} from '~/contexts/UniversalContext';
+import {useUniversal} from '~/contexts/UniversalContext';
 import type {
   UniversalProviderStateProps,
   YearLevelSectionProps,
@@ -45,18 +45,17 @@ interface FetchComplaintCollectionsProps {
 const LIMIT = 15;
 const Complaints = () => {
   return (
-    <UniversalProvider>
-      <ModalProvider>
-        <ContentManipulationProvider>
-          <ComplaintsWrapper />
-        </ContentManipulationProvider>
-      </ModalProvider>
-    </UniversalProvider>
+    <ModalProvider>
+      <ContentManipulationProvider>
+        <ComplaintsWrapper />
+      </ContentManipulationProvider>
+    </ModalProvider>
   );
 };
 // /** User's initial Set-up */
 const ComplaintsWrapper = () => {
   const {currentUser} = useAuth();
+  const {role} = useUser();
   const {setAdviserInfo, setCurrentStudentInfo} = useUniversal();
 
   /**  setCurrentStudentInfo, and setAdviserInfo */
@@ -65,8 +64,8 @@ const ComplaintsWrapper = () => {
       const studentSnapshot = await collectionRef('student')
         .where('email', '==', currentUser.email)
         .get();
-
-      if (!studentSnapshot.empty) {
+      // console.log(role);
+      if (role !== 'adviser') {
         const doc = studentSnapshot.docs[0];
         const data = doc?.data() as StudentInfoProps;
         const {yearLevel, section} = data;
@@ -83,6 +82,7 @@ const ComplaintsWrapper = () => {
           setAdviserInfo({...adviserData, id});
         }
       } else {
+        // console.log(currentUser.email);
         const adviserSnapshot = await collectionRef('adviser')
           .where('email', '==', currentUser.email)
           .get();
@@ -94,7 +94,7 @@ const ComplaintsWrapper = () => {
         }
       }
     }
-  }, [currentUser?.email, setAdviserInfo, setCurrentStudentInfo]);
+  }, [currentUser?.email, setAdviserInfo, setCurrentStudentInfo, role]);
 
   useEffect(() => {
     return void fetchUserInfo();
@@ -240,6 +240,7 @@ const MainPage = () => {
   /** Adviser's Setup for Student concerns, and Mayor's concerns */
   const adviserSetup = useCallback(() => {
     try {
+      // console.log('first');
       return fetchOtherComplaints({
         recipient: 'adviser',
       });
