@@ -9,11 +9,9 @@ import type {
 } from '@cares/common/types/user';
 import React, {useCallback, useEffect} from 'react';
 import {Alert, View} from 'react-native';
-import {OneSignal} from 'react-native-onesignal';
 import {ActivityIndicator} from 'react-native-paper';
 import Header from '~/components/HeaderNoChat';
 import Text from '~/components/Text';
-import ChatHeadButton from '~/components/others/complaints/ChatHeadButton';
 import ComplaintBox from '~/components/others/complaints/ComplaintBox';
 import ComplaintBoxRenderer from '~/components/others/complaints/ComplaintBoxRenderer';
 import RenderChatHeads from '~/components/others/complaints/RenderChatHeads';
@@ -24,7 +22,7 @@ import ComplaintsProvider, {useComplaints} from '~/contexts/ComplaintContext';
 import ContentManipulationProvider, {
   useContentManipulation,
 } from '~/contexts/ContentManipulationContext';
-import ModalProvider, {useModal} from '~/contexts/ModalContext';
+import ModalProvider from '~/contexts/ModalContext';
 import {useUniversal} from '~/contexts/UniversalContext';
 import type {
   UniversalProviderStateProps,
@@ -111,14 +109,7 @@ const MainPage = () => {
     setCurrentStudentComplaints,
     setOtherComplaints,
   } = useComplaints();
-  const {
-    selectedChatHead,
-    selectedStudent,
-    setMessage,
-    setSelectedChatId,
-    setSelectedStudent,
-    setSelectedChatHead,
-  } = useContentManipulation();
+  const {selectedStudent} = useContentManipulation();
   const {
     queryId,
     studentsInfo,
@@ -128,7 +119,6 @@ const MainPage = () => {
     returnComplaintsQuery,
   } = useUniversal();
   const {role} = useUser();
-  const {setShowMayorModal, setShowStudents} = useModal();
 
   const getChattablesForStudent = useCallback(
     async ({yearLevel, section}: YearLevelSectionProps) => {
@@ -246,24 +236,6 @@ const MainPage = () => {
       Alert.alert('err', 'fetch student concerns');
     }
   }, [fetchOtherComplaints]);
-  /** If role is `mayor` it is directed to `adviser`, else if role is `student` it is directed to `mayor` */
-  const renderClassSectionButton = () => {
-    const classSectionName = 'class_section';
-    return (
-      <ChatHeadButton
-        name={classSectionName.replace(/_/g, ' ')}
-        onPress={() => {
-          setSelectedChatHead(classSectionName);
-          setSelectedChatId(classSectionName);
-          setSelectedStudent(null);
-          setShowStudents(false);
-          setShowMayorModal(false);
-          setMessage('');
-        }}
-        condition={selectedChatHead === classSectionName}
-      />
-    );
-  };
 
   /** Set-up for whole class section with same `yearLevel` and `section`*/
   useEffect(() => {
@@ -330,20 +302,7 @@ const MainPage = () => {
       <View className="h-4/5">
         {role !== 'student' ? (
           <>
-            <RenderChatHeads>
-              <ChatHeadButton
-                name={role === 'mayor' ? 'My Classmates' : 'Students'}
-                onPress={() => {
-                  OneSignal.User.pushSubscription;
-                  setSelectedChatHead('students');
-                  setSelectedChatId(null);
-                  setShowStudents(true);
-                  setShowMayorModal(false);
-                }}
-                condition={selectedChatHead === 'students'}
-              />
-              {renderClassSectionButton()}
-            </RenderChatHeads>
+            <RenderChatHeads />
             <RenderStudents />
             <ComplaintBoxRenderer
               data={currentStudentComplaints
@@ -356,7 +315,7 @@ const MainPage = () => {
             />
           </>
         ) : (
-          <RenderChatHeads>{renderClassSectionButton()}</RenderChatHeads>
+          <RenderChatHeads />
         )}
         <ComplaintBox />
       </View>

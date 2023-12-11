@@ -1,6 +1,8 @@
 import {RecipientType} from '@cares/common/types/permission';
-import React, {type ReactNode} from 'react';
+import React from 'react';
 import {View} from 'react-native';
+import {FlatList} from 'react-native-gesture-handler';
+import {OneSignal} from 'react-native-onesignal';
 import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useModal} from '~/contexts/ModalContext';
@@ -10,12 +12,13 @@ import type {ComplaintBoxRendererProps} from './ComplaintBoxRenderer';
 import ComplaintBoxRenderer from './ComplaintBoxRenderer';
 
 interface RenderChatHeadsProps
-  extends Omit<ComplaintBoxRendererProps, 'condition' | 'data'> {
-  children?: ReactNode;
-}
-const RenderChatHeads = ({children, ...rest}: RenderChatHeadsProps) => {
+  extends Omit<ComplaintBoxRendererProps, 'condition' | 'data'> {}
+type RecipientTypeExtended = RecipientType | 'students' | 'class_section';
+
+const RenderChatHeads = ({...rest}: RenderChatHeadsProps) => {
   const {role} = useUser();
   const {otherComplaints} = useComplaints();
+  const {setMessage} = useContentManipulation();
   const {showMayorModal, setShowMayorModal, setShowStudents} = useModal();
   const {
     selectedChatId,
@@ -24,21 +27,31 @@ const RenderChatHeads = ({children, ...rest}: RenderChatHeadsProps) => {
     setSelectedChatId,
     setSelectedChatHead,
   } = useContentManipulation();
-  const recipients = otherComplaints.map(props => props.recipient);
+  const recipients: RecipientTypeExtended[] = otherComplaints.map(
+    props => props.recipient,
+  );
 
-  if (role === 'student') {
-    recipients.push('mayor');
-  } else if (role === 'mayor') {
-    const mayorIndex = recipients.indexOf(role);
-    if (mayorIndex > -1) {
-      recipients.splice(mayorIndex);
-    }
-    recipients.push('adviser');
+  function studentsOnPress() {
+    OneSignal.User.pushSubscription;
+    setSelectedChatHead('students');
+    setSelectedChatId(null);
+    setShowStudents(true);
+    setMessage('');
   }
-  // console.log({otherComplaints, currentStudentComplaints});
+
+  function classSectionOnPress() {
+    setSelectedChatHead('class_section');
+    setSelectedChatId('class_section');
+    setSelectedStudent(null);
+    setShowStudents(false);
+    setShowMayorModal(false);
+    setMessage('');
+  }
+
   function chatHeadOnClick(props: RecipientType) {
     return role !== 'student'
       ? () => {
+          setMessage('');
           selectedChatHead !== 'students' && setSelectedStudent(null);
           setSelectedChatId(null);
           setSelectedChatHead(props);
@@ -46,31 +59,60 @@ const RenderChatHeads = ({children, ...rest}: RenderChatHeadsProps) => {
           setShowMayorModal(true);
         }
       : () => {
+          setMessage('');
           setSelectedChatHead(props);
           setSelectedChatId(null);
           setShowMayorModal(true);
         };
   }
 
+  recipients.push('class_section');
+  console.log(recipients);
+  if (role === 'student') {
+    recipients.push('mayor');
+  } else {
+    if (role !== null && role !== 'faculty') {
+      const roleIndex = recipients.indexOf(role);
+      if (roleIndex > -1) {
+        recipients.splice(roleIndex);
+      }
+      recipients.push('students');
+      role === 'mayor' && recipients.push('adviser');
+    }
+  }
+
   return (
     <View>
-      <View className="flex w-full flex-row justify-evenly overflow-x-auto bg-primary/30 p-4">
-        {[...new Set(recipients)].map(value => {
+      <FlatList
+        horizontal
+        keyExtractor={props => props}
+        data={[...new Set(recipients)].sort((a, b) => a.localeCompare(b))}
+        className="w-full bg-primary/30 p-4"
+        renderItem={({item}) => {
           return (
             <ChatHeadButton
-              key={value}
-              name={value.replace(/_/g, ' ')}
+              key={item}
+              name={
+                item === 'students'
+                  ? `${role === 'mayor' ? 'My Classmates' : 'Students'}`
+                  : item.replace(/_/g, ' ')
+              }
               condition={
                 (typeof selectedChatId === 'string' &&
                   selectedChatId === 'object') ||
-                selectedChatHead === value
+                selectedChatHead === item
               }
-              onPress={chatHeadOnClick(value)}
+              onPress={
+                item === 'students'
+                  ? studentsOnPress
+                  : item === 'class_section'
+                    ? classSectionOnPress
+                    : chatHeadOnClick(item)
+              }
             />
           );
-        })}
-        {children}
-      </View>
+        }}
+      />
 
       <ComplaintBoxRenderer
         data={otherComplaints
