@@ -7,14 +7,14 @@ interface ContentManipulationProviderStateProps {
   message: string;
   files: DocumentPickerResponse[];
   newConcernDetails?: Omit<ComplaintProps, 'messages'>;
-  turnOverMessage: string | null;
+  turnOverMessage: string;
   selectedChatId: string | null;
   selectedStudent: string | null;
   selectedChatHead: 'class_section' | 'students' | CurrentUserRoleType | null;
 }
 interface ContentManipulationContextProps
   extends ContentManipulationProviderStateProps {
-  setTurnOverMessage: (value: string | null) => void;
+  setTurnOverMessage: (value: string) => void;
   setSelectedChatId: (value: string | null) => void;
   setSelectedStudent: (value: string | null) => void;
   setSelectedChatHead: (

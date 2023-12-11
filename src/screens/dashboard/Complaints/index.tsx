@@ -45,11 +45,13 @@ interface FetchComplaintCollectionsProps {
 const LIMIT = 15;
 const Complaints = () => {
   return (
-    <ModalProvider>
-      <ContentManipulationProvider>
-        <ComplaintsWrapper />
-      </ContentManipulationProvider>
-    </ModalProvider>
+    <ComplaintsProvider>
+      <ModalProvider>
+        <ContentManipulationProvider>
+          <ComplaintsWrapper />
+        </ContentManipulationProvider>
+      </ModalProvider>
+    </ComplaintsProvider>
   );
 };
 // /** User's initial Set-up */
@@ -100,11 +102,7 @@ const ComplaintsWrapper = () => {
     return void fetchUserInfo();
   }, [fetchUserInfo]);
 
-  return (
-    <ComplaintsProvider>
-      <MainPage />
-    </ComplaintsProvider>
-  );
+  return <MainPage />;
 };
 const MainPage = () => {
   const {

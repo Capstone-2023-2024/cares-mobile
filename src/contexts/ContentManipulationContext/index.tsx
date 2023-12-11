@@ -75,7 +75,7 @@ const ContentManipulationProvider = ({
     [],
   );
   const setTurnOverMessage = useCallback(
-    (turnOverMessage: string | null) =>
+    (turnOverMessage: string) =>
       setState(prevState => ({...prevState, turnOverMessage})),
     [],
   );
@@ -96,7 +96,6 @@ const ContentManipulationProvider = ({
     [],
   );
   async function actionButton(type: ComplaintProps['status']) {
-    console.log(queryId);
     try {
       if (typeof state.selectedChatId === 'string') {
         if (queryId !== null) {
@@ -133,7 +132,6 @@ const ContentManipulationProvider = ({
                     props => state.selectedChatId === props.id,
                   )[0]?.studentNo ?? 'null',
               };
-
               await targetDoc.update({
                 status: type,
                 turnOvers: firebase.firestore.FieldValue.increment(1),

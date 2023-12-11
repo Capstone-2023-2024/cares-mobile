@@ -1,6 +1,6 @@
 import type {ComplaintProps} from '@cares/common/types/complaint';
-import React, {useState} from 'react';
-import {Modal, View, TouchableOpacity} from 'react-native';
+import React from 'react';
+import {Modal, TouchableOpacity, View} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import Text from '~/components/Text';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
@@ -14,17 +14,11 @@ interface TurnOverMessageProps {
 
 const TurnOverModal = () => {
   const {showTurnOverModal, setShowTurnOverModal} = useModal();
-  const {actionButton, setTurnOverMessage} = useContentManipulation();
-  const [state, setState] = useState({
-    turnOverMessage: '',
-  });
+  const {actionButton, setTurnOverMessage, turnOverMessage} =
+    useContentManipulation();
 
   function closeTurnOverModal() {
     setShowTurnOverModal(false);
-  }
-
-  function handleTurnOverMessage(turnOverMessage: string) {
-    setState(prevState => ({...prevState, turnOverMessage}));
   }
 
   return (
@@ -38,28 +32,22 @@ const TurnOverModal = () => {
         <TextInput
           className="p-2"
           placeholder="Compose a turn-over message to send to your adviser"
-          value={state.turnOverMessage}
-          onChangeText={handleTurnOverMessage}
+          value={turnOverMessage}
+          onChangeText={string => setTurnOverMessage(string)}
         />
         <TouchableOpacity
-          disabled={state.turnOverMessage.trim() === ''}
+          disabled={turnOverMessage.trim() === ''}
           className={`${
-            state.turnOverMessage.trim() === ''
-              ? 'bg-slate-200'
-              : 'bg-green-500'
+            turnOverMessage.trim() === '' ? 'bg-slate-200' : 'bg-green-500'
           } rounded-lg p-2 duration-300 ease-in-out`}
           onPress={() => {
             setShowTurnOverModal(false);
-            setTurnOverMessage(state.turnOverMessage);
-            setTurnOverMessage(null);
-            setState(prevState => ({...prevState, turnOverMessage: ''}));
             void actionButton('turn-over');
+            setTurnOverMessage('');
           }}>
           <Text
             className={`${
-              state.turnOverMessage.trim() === ''
-                ? 'text-slate-300'
-                : 'text-paper'
+              turnOverMessage.trim() === '' ? 'text-slate-300' : 'text-paper'
             } capitalize`}>
             send
           </Text>
