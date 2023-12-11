@@ -147,21 +147,44 @@ const RenderInputMessageContainer = () => {
               messages: [complaint],
               ...newConcernDetails,
             };
-            try {
-              const document = await complaintDocRef
-                .collection('individual')
-                .add(data);
-              setSelectedChatHead(role === 'mayor' ? 'adviser' : 'mayor');
-              setSelectedChatId(document.id);
-              setNewComplaints(undefined);
-              setState(prevState => ({...prevState, sendLoading: false}));
-              return setMessage('');
-            } catch (err) {
-              Alert.alert(
-                'err',
-                'Sending message through complaints => individual',
+            const chatHeadInRole = role === 'mayor' ? 'adviser' : 'mayor';
+            const messagesLastIndex = data.messages.length - 1;
+            const {message, sender} = data.messages[messagesLastIndex];
+            let notifData: NotificationProps = {
+              contents: {
+                en: message,
+              },
+              headings: {
+                en: `${sender} sent you a message`,
+              },
+              priority: 10,
+              name: chatHeadInRole,
+              android_channel_id: `${NEXT_PUBLIC_ONESIGNAL_DEFAULT_ANDROID_CHANNEL_ID}`,
+            };
+            if (chatHeadInRole === 'mayor') {
+              Object.assign(
+                {include_external_user_ids: [mayorInfo?.studentNo ?? '']},
+                notifData,
+              );
+            } else if (chatHeadInRole === 'adviser') {
+              Object.assign(
+                {include_external_user_ids: [adviserInfo?.email ?? '']},
+                notifData,
               );
             }
+
+            let complaintHolder = data;
+            const response = await notification(notifData);
+            complaintHolder.messages[messagesLastIndex].notif_id = response.id;
+            const document = await complaintDocRef
+              .collection('individual')
+              .add(complaintHolder);
+            setSelectedChatHead(chatHeadInRole);
+            setSelectedChatId(document.id);
+            setNewComplaints(undefined);
+            setState(prevState => ({...prevState, sendLoading: false}));
+
+            return setMessage('');
           } else if (selectedChatId === 'class_section') {
             const section = adviserInfo?.section ?? currentStudentInfo?.section;
             const yearLevel =
