@@ -28,7 +28,8 @@ import {notification} from '~/utils/notification';
 /**TODO: Optimized this together with Mayor UI */
 const RenderInputMessageContainer = () => {
   const {role} = useUser();
-  const {currentStudentInfo, adviserInfo, mayorInfo, queryId} = useUniversal();
+  const {currentStudentInfo, adviserInfo, mayorInfo, queryId, studentsInfo} =
+    useUniversal();
   const {currentStudentComplaints, otherComplaints} = useComplaints();
   const {
     files,
@@ -150,24 +151,27 @@ const RenderInputMessageContainer = () => {
             const chatHeadInRole = role === 'mayor' ? 'adviser' : 'mayor';
             const messagesLastIndex = data.messages.length - 1;
             const {message, sender} = data.messages[messagesLastIndex];
+            const senderName =
+              studentsInfo?.filter(props => props.studentNo === sender)[0]
+                .name ?? 'anonymous';
             let notifData: NotificationProps = {
               contents: {
                 en: message,
               },
               headings: {
-                en: `${sender} sent you a message`,
+                en: `${senderName} sent you a message`,
               },
               priority: 10,
               name: chatHeadInRole,
               android_channel_id: `${NEXT_PUBLIC_ONESIGNAL_DEFAULT_ANDROID_CHANNEL_ID}`,
             };
             if (chatHeadInRole === 'mayor') {
-              Object.assign(
+              notifData = Object.assign(
                 {include_external_user_ids: [mayorInfo?.studentNo ?? '']},
                 notifData,
               );
             } else if (chatHeadInRole === 'adviser') {
-              Object.assign(
+              notifData = Object.assign(
                 {include_external_user_ids: [adviserInfo?.email ?? '']},
                 notifData,
               );
@@ -175,7 +179,9 @@ const RenderInputMessageContainer = () => {
 
             let complaintHolder = data;
             const response = await notification(notifData);
-            complaintHolder.messages[messagesLastIndex].notif_id = response.id;
+            response.id.trim() !== '' &&
+              (complaintHolder.messages[messagesLastIndex].notif_id =
+                response.id);
             const document = await complaintDocRef
               .collection('individual')
               .add(complaintHolder);
