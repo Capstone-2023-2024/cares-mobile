@@ -35,6 +35,7 @@ const RenderChatHeads = ({...rest}: RenderChatHeadsProps) => {
     OneSignal.User.pushSubscription;
     setSelectedChatHead('students');
     setSelectedChatId(null);
+    setShowMayorModal(false);
     setShowStudents(true);
     setMessage('');
   }
@@ -56,18 +57,20 @@ const RenderChatHeads = ({...rest}: RenderChatHeadsProps) => {
           setSelectedChatId(null);
           setSelectedChatHead(props);
           setShowStudents(false);
+          setSelectedStudent(null);
           setShowMayorModal(true);
         }
       : () => {
           setMessage('');
           setSelectedChatHead(props);
           setSelectedChatId(null);
+          setShowStudents(false);
           setShowMayorModal(true);
         };
   }
 
   recipients.push('class_section');
-  console.log(recipients);
+  // console.log(recipients);
   if (role === 'student') {
     recipients.push('mayor');
   } else {

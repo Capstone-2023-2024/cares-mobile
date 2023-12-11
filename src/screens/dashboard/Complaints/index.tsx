@@ -228,7 +228,6 @@ const MainPage = () => {
   /** Adviser's Setup for Student concerns, and Mayor's concerns */
   const adviserSetup = useCallback(() => {
     try {
-      // console.log('first');
       return fetchOtherComplaints({
         recipient: 'adviser',
       });

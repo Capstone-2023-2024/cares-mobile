@@ -58,3 +58,9 @@ export function retrieveImageFBStorage(photoUrl: string[]) {
   const FULL_PATH = `${BASE}${BASE_DIVIDER}${STORAGE_BUCKET}${PATH_DIVIDER}images%2F${PATH}${PARAMS}`;
   return FULL_PATH;
 }
+/** Storage reference for uploading images in Complaints */
+function storageReferenceName(email: string, names: string[], index: number) {
+  return `concerns/${email}/${names[index]}`;
+}
+
+export {storageReferenceName};

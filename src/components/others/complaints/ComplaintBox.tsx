@@ -1,7 +1,6 @@
 import {setUpPrefix} from '@cares/common/utils/date';
 import {getImageFromStorage, imageDimension} from '@cares/common/utils/media';
 import {NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET} from '@env';
-import storage from '@react-native-firebase/storage';
 import React, {useState} from 'react';
 import {
   Alert,
@@ -16,9 +15,9 @@ import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useUniversal} from '~/contexts/UniversalContext';
 import {useUser} from '~/contexts/UserContext';
+import {downloadPhoto} from '~/utils/media';
 import ProfilePictureContainer from './ProfilePictureContainer';
 import RenderActionButtons from './RenderActionButtons';
-import {downloadPhoto} from '~/utils/media';
 const StyledDateTime = ({timestamp}: {timestamp: Date}) => {
   return (
     <Text className="p-4 text-xs font-thin">{setUpPrefix(timestamp)}</Text>
@@ -32,9 +31,23 @@ const ComplaintBox = () => {
   const {studentsInfo, adviserInfo, currentStudentInfo} = useUniversal();
   const {selectedChatId, selectedChatHead, selectedStudent} =
     useContentManipulation();
-  const [state, setState] = useState({
+  const [state, setState] = useState<{
+    imageModal: string;
+    targetStudentEmail?: string;
+  }>({
     imageModal: '',
+    targetStudentEmail: '',
   });
+  const mayorAdviser = role === 'adviser' || selectedChatHead === 'students';
+  const filteredStudentComplaints = [
+    ...(mayorAdviser ? currentStudentComplaints : otherComplaints),
+  ];
+  const studentNoReference = filteredStudentComplaints.filter(
+    props => props.id === selectedChatId,
+  )[0]?.studentNo;
+  const studentEmailReference = studentsInfo?.filter(
+    props => studentNoReference === props.studentNo,
+  )[0]?.email;
 
   const currentStudentInfoRoot = currentStudentComplaints.filter(
     props => selectedStudent === props.studentNo,
@@ -55,10 +68,26 @@ const ComplaintBox = () => {
 
   const targetArray = filterOtherComplaints[0] ?? filterCurrentStudent[0];
 
-  function formatImageName(item: string) {
-    return `${currentStudentInfo?.email.replace(/@/, '%40')}%2F${item}`;
-  }
+  function formatImageName(item: string, emailOfSender?: string) {
+    /** MADNESS, optimize this!! */
+    const email =
+      selectedChatHead === 'class_section' && typeof emailOfSender === 'string'
+        ? emailOfSender
+        : mayorAdviser
+          ? studentEmailReference ?? 'studentReferencedEmailForStorage'
+          : emailOfSender === undefined && selectedChatHead === 'class_section'
+            ? 'studentReferencedEmailForStorage'
+            : currentStudentInfo?.email ?? 'emailNotDefined';
 
+    return `${email.replace(/@/, '%40')}%2F${item}`;
+  }
+  const imageName = formatImageName(state.imageModal, state.targetStudentEmail);
+  const src = getImageFromStorage({
+    imageName,
+    ref: 'concerns',
+    storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
+  });
+  // console.log({src});
   // function getFileExtention(fileUrl: string) {
   //   return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
   // }
@@ -77,12 +106,16 @@ const ComplaintBox = () => {
           activeOpacity={1}
           className="h-screen bg-white"
           onLongPress={async () => {
-            const reference = storage().ref(
-              `concerns/${currentStudentInfo?.email}/${state.imageModal}`,
-            );
+            const imageReference = getImageFromStorage({
+              imageName: formatImageName(
+                state.imageModal,
+                state.targetStudentEmail,
+              ),
+              ref: 'concerns',
+              storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
+            });
             try {
-              const url = await reference.getDownloadURL();
-              await downloadPhoto(url);
+              await downloadPhoto(imageReference);
               Alert.alert('File Downloaded Successfully.');
             } catch (err) {
               Alert.alert('Downloading photo error');
@@ -96,11 +129,7 @@ const ComplaintBox = () => {
           </View>
           <Image
             alt=""
-            src={getImageFromStorage({
-              imageName: formatImageName(state.imageModal),
-              ref: 'concerns',
-              storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
-            })}
+            src={src}
             className="h-full w-full"
             source={require('~/assets/error.svg')}
             {...imageDimension(16)}
@@ -167,15 +196,17 @@ const ComplaintBox = () => {
                       const {item} = props;
                       const source = getImageFromStorage({
                         ref: 'concerns',
-                        imageName: formatImageName(item),
+                        imageName: formatImageName(item, targetStudent?.email),
                         storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
                       });
+                      // console.log({source});
                       return (
                         <TouchableOpacity
                           onPress={() =>
                             setState(prevState => ({
                               ...prevState,
                               imageModal: item,
+                              targetStudentEmail: targetStudent?.email,
                             }))
                           }>
                           <Image

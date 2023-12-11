@@ -2,6 +2,7 @@ import {NotificationProps} from '@cares/common/types/announcement';
 import type {
   ComplaintBaseProps,
   ComplaintProps,
+  ReadComplaintProps,
 } from '@cares/common/types/complaint';
 import type {DocumentProps} from '@cares/common/types/media';
 import {NEXT_PUBLIC_ONESIGNAL_DEFAULT_ANDROID_CHANNEL_ID} from '@env';
@@ -23,6 +24,7 @@ import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useUniversal} from '~/contexts/UniversalContext';
 import {useUser} from '~/contexts/UserContext';
 import {collectionRef} from '~/utils/firebase';
+import {storageReferenceName} from '~/utils/image';
 import {notification} from '~/utils/notification';
 
 /**TODO: Optimized this together with Mayor UI */
@@ -46,6 +48,19 @@ const RenderInputMessageContainer = () => {
   const [state, setState] = useState({
     sendLoading: false,
   });
+  const mayorAdviser = role === 'adviser' || selectedChatHead === 'students';
+  const filteredStudentComplaints = [
+    ...(mayorAdviser ? currentStudentComplaints : otherComplaints),
+  ];
+  const studentNoReference = filteredStudentComplaints.filter(
+    props => props.id === selectedChatId,
+  )[0]?.studentNo;
+  const studentEmailReference = studentsInfo?.filter(
+    props => studentNoReference === props.studentNo,
+  )[0]?.email;
+  const email = mayorAdviser
+    ? studentEmailReference ?? 'studentReferencedEmailForStorage'
+    : currentStudentInfo?.email ?? 'emailNotDefined';
   const placeholder =
     selectedChatId === 'class_section'
       ? 'Compose a message to send in your class section'
@@ -85,13 +100,14 @@ const RenderInputMessageContainer = () => {
       }
     }
   }
+
   async function handleUploadImage(names: string[]) {
     try {
       files.forEach(async ({uri}, index) => {
-        Alert.alert(uri.toString(), names.toString());
         const reference = storage().ref(
-          `concerns/${currentStudentInfo?.email}/${names[index]}`,
+          storageReferenceName(email, names, index),
         );
+        console.log({'Email reference for uploading image': email});
         await reference.putFile(uri);
       });
       setFiles([]);
@@ -103,7 +119,7 @@ const RenderInputMessageContainer = () => {
   function handleMessage(props: string) {
     setMessage(props);
   }
-  console.log({selectedChatId});
+  // console.log({selectedChatId});
   /** TODO: Add notification. If sender is anonymous, currentStudentInfo is not loaded properly */
   async function handleSend() {
     setState(prevState => ({...prevState, sendLoading: true}));
@@ -126,13 +142,7 @@ const RenderInputMessageContainer = () => {
           const holder: DocumentProps['files'] = [];
           files.forEach((v, index) => {
             const date = new Date();
-            const ISOString = date
-              .toISOString()
-              .substring(0, 10)
-              .replace(/-/g, '_');
-            const time = date.toTimeString().substring(0, 5).replace(':', '');
-            const divider = '_';
-            const fileName = `${ISOString}${divider}${time}${divider}${index}.png`;
+            const fileName = `${date.getTime()}_${index}.png`;
             holder.push(fileName ?? '');
           });
           complaint = {...complaint, files: holder};
@@ -140,6 +150,7 @@ const RenderInputMessageContainer = () => {
         }
         const complaintDocRef = collectionRef('complaints').doc(queryId);
         if (typeof selectedChatId === 'string') {
+          /** New Complaints here */
           if (
             selectedChatId === 'object' &&
             typeof newConcernDetails === 'object'
@@ -148,6 +159,7 @@ const RenderInputMessageContainer = () => {
               messages: [complaint],
               ...newConcernDetails,
             };
+            console.log({data});
             const chatHeadInRole = role === 'mayor' ? 'adviser' : 'mayor';
             const messagesLastIndex = data.messages.length - 1;
             const {message, sender} = data.messages[messagesLastIndex];
@@ -176,7 +188,7 @@ const RenderInputMessageContainer = () => {
                 notifData,
               );
             }
-
+            console.log('in new complaints');
             let complaintHolder = data;
             const response = await notification(notifData);
             response.id.trim() !== '' &&
@@ -198,7 +210,10 @@ const RenderInputMessageContainer = () => {
             OneSignal.User.addTag('class_section', `${yearLevel}${section}`);
             const notifData: NotificationProps = {
               contents: {
-                en: complaint.message,
+                en:
+                  complaint.message.trim() === ''
+                    ? files.map(props => props.name).toString()
+                    : complaint.message,
               },
               headings: {
                 en: `${
@@ -230,39 +245,37 @@ const RenderInputMessageContainer = () => {
           const docRef = complaintDocRef
             .collection('individual')
             .doc(selectedChatId);
-          const filterStudentComplaints = [
-            ...(role === 'student'
-              ? otherComplaints
-              : currentStudentComplaints),
-          ];
-          const otherSenders = () => {
-            switch (filterStudentComplaints[0]?.recipient) {
-              case 'mayor':
-                return mayorInfo?.studentNo ?? 'mayor';
-              case 'adviser':
-                return adviserInfo?.email ?? 'adviser';
-              default:
-                return filterStudentComplaints[0]?.recipient ?? '';
-            }
-          };
-          const receiver =
-            filterStudentComplaints[0]?.messages.filter(
-              props => props.sender !== complaint.sender,
-            )[0]?.sender ?? otherSenders();
-          console.log({receiver});
+
+          async function receiver() {
+            const complaintRef = (
+              await docRef.get()
+            ).data() as ReadComplaintProps;
+            console.log(complaintRef.turnOvers);
+            const turnOverExists = typeof complaintRef.referenceId === 'string';
+            const recipient = filteredStudentComplaints
+              .filter(props => props.id === selectedChatId)[0]
+              ?.messages.filter(props => props.sender !== complaint.sender)[0]
+              .sender;
+            return turnOverExists ? complaintRef.recipient : recipient;
+          }
           const notifData: NotificationProps = {
             name: 'individual_complaint',
             contents: {
-              en: complaint.message,
+              en:
+                complaint.message.trim() === ''
+                  ? files.map(props => props.name).toString()
+                  : complaint.message,
             },
             headings: {
               en: `${currentStudentInfo?.name} sent a message`,
             },
             priority: 8,
             android_channel_id: `${NEXT_PUBLIC_ONESIGNAL_DEFAULT_ANDROID_CHANNEL_ID}`,
-            include_external_user_ids: [receiver],
+            include_external_user_ids: [await receiver()],
           };
           const response = await notification(notifData);
+
+          console.log(complaint, response, notifData, 'Else');
           await docRef.update({
             messages: firebase.firestore.FieldValue.arrayUnion({
               ...complaint,
@@ -277,8 +290,9 @@ const RenderInputMessageContainer = () => {
         return setState(prevState => ({...prevState, sendLoading: false}));
       }
     } catch (err) {
+      const error = err as Record<any, any>;
       console.log(err);
-      ToastAndroid.show('Error in sending message', ToastAndroid.SHORT);
+      ToastAndroid.show(error.toString(), ToastAndroid.SHORT);
       return setState(prevState => ({...prevState, sendLoading: false}));
     }
   }
