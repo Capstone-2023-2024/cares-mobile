@@ -114,6 +114,7 @@ const ComplaintBox = () => {
               ref: 'concerns',
               storageBucket: NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET,
             });
+            console.log({imageReference});
             try {
               await downloadPhoto(imageReference);
               Alert.alert('File Downloaded Successfully.');

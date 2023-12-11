@@ -5,6 +5,7 @@ import type {
   ReadComplaintProps,
 } from '@cares/common/types/complaint';
 import type {DocumentProps} from '@cares/common/types/media';
+import {imageDimension} from '@cares/common/utils/media';
 import {NEXT_PUBLIC_ONESIGNAL_DEFAULT_ANDROID_CHANNEL_ID} from '@env';
 import {firebase} from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
@@ -16,9 +17,12 @@ import {
   TextInput,
   ToastAndroid,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
+import {FlatList} from 'react-native-gesture-handler';
 import {OneSignal} from 'react-native-onesignal';
+import Text from '~/components/Text';
 import {useComplaints} from '~/contexts/ComplaintContext';
 import {useContentManipulation} from '~/contexts/ContentManipulationContext';
 import {useUniversal} from '~/contexts/UniversalContext';
@@ -82,9 +86,44 @@ const RenderInputMessageContainer = () => {
 
   async function selectMultipleFile() {
     try {
+      // const read = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      //   {
+      //     title: 'Read in storage Permission',
+      //     message: 'Allow Reading of files.',
+      //     buttonNeutral: 'Ask Me Later',
+      //     buttonNegative: 'Cancel',
+      //     buttonPositive: 'OK',
+      //   },
+      // );
+      // const write = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      //   {
+      //     title: 'Write in storage Permission',
+      //     message: 'Allow Writing of files.',
+      //     buttonNeutral: 'Ask Me Later',
+      //     buttonNegative: 'Cancel',
+      //     buttonPositive: 'OK',
+      //   },
+      // );
+      // if (
+      //   read === PermissionsAndroid.RESULTS.GRANTED &&
+      //   write === PermissionsAndroid.RESULTS.GRANTED
+      // ) {
+      //   ToastAndroid.show(
+      //     'You can access storage permissions',
+      //     ToastAndroid.SHORT,
+      //   );
+      // } else {
+      //   return ToastAndroid.show(
+      //     'Storage permission denied',
+      //     ToastAndroid.SHORT,
+      //   );
+      // }
       const results = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
         presentationStyle: 'fullScreen',
+        copyTo: 'cachesDirectory',
         allowMultiSelection: true,
       });
       setFiles(results);
@@ -101,20 +140,29 @@ const RenderInputMessageContainer = () => {
     }
   }
 
-  async function handleUploadImage(names: string[]) {
-    try {
-      files.forEach(async ({uri}, index) => {
-        const reference = storage().ref(
-          storageReferenceName(email, names, index),
+  function handleUploadImage(names: string[]) {
+    files.forEach(async ({fileCopyUri, uri}, index) => {
+      try {
+        const imageReference = storageReferenceName(email, names, index);
+        const reference = storage().ref(imageReference);
+        const task = reference.putFile(
+          fileCopyUri?.replace('file://', '') ?? uri,
         );
-        console.log({'Email reference for uploading image': email});
-        await reference.putFile(uri);
-      });
-      setFiles([]);
-    } catch (err) {
-      ToastAndroid.show('Error', ToastAndroid.SHORT);
-      // console.log(err);
-    }
+        task.on('state_changed', snapshot => {
+          ToastAndroid.show(
+            `${snapshot.bytesTransferred} / ${snapshot.totalBytes} bytes transferred`,
+            ToastAndroid.SHORT,
+          );
+        });
+        await task;
+      } catch (err) {
+        const error = err as Record<any, any>;
+        Alert.alert(error.toString());
+        setFiles([]);
+        // ToastAndroid.show('Error', ToastAndroid.SHORT);
+      }
+    });
+    setFiles([]);
   }
   function handleMessage(props: string) {
     setMessage(props);
@@ -146,7 +194,7 @@ const RenderInputMessageContainer = () => {
             holder.push(fileName ?? '');
           });
           complaint = {...complaint, files: holder};
-          isImage && handleUploadImage(holder);
+          handleUploadImage(holder);
         }
         const complaintDocRef = collectionRef('complaints').doc(queryId);
         if (typeof selectedChatId === 'string') {
@@ -305,35 +353,66 @@ const RenderInputMessageContainer = () => {
         selectedChatHead === 'class_section'
           ? 'block'
           : 'hidden'
-      } h-18 bottom-0 w-full flex-row items-center border-t-2 bg-paper p-2`}>
-      <TouchableOpacity
-        disabled={currentStudentInfo?.email === 'null'}
-        onPress={selectMultipleFile}
-        className="mr-2">
-        <Image
-          source={require('~/assets/add_document.png')}
-          className="h-10 w-10"
-        />
-      </TouchableOpacity>
-      <TextInput
-        value={message}
-        multiline
-        className="mr-2 flex-1 rounded-lg border border-black bg-paper"
-        placeholder={placeholder}
-        onChangeText={handleMessage}
+      } h-18 relative bottom-0 w-full bg-paper`}>
+      <FlatList
+        data={files}
+        horizontal
+        className="absolute -top-24 w-full bg-primary"
+        keyExtractor={props => props.name ?? ''}
+        renderItem={({item}) => {
+          const {name, uri} = item;
+          console.log({uri});
+          return (
+            <View>
+              <Image
+                src={uri}
+                className="h-24 w-24"
+                alt={name ?? ''}
+                source={require('~/assets/error.svg')}
+                {...imageDimension(24)}
+              />
+              <TouchableOpacity
+                className="absolute right-0 top-0 rounded-full bg-red-500 px-2"
+                onPress={() => {
+                  const newFiles = files.filter(props => props.uri !== uri);
+                  setFiles(newFiles);
+                }}>
+                <Text className="text-paper">x</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
       />
-      <TouchableOpacity
-        onPress={() => void handleSend()}
-        className={`${
-          state.sendLoading || (message.trim() === '' && files.length <= 0)
-            ? 'scale-90 opacity-30'
-            : 'scale-95'
-        } duration-100 ease-in-out`}
-        disabled={
-          state.sendLoading || (message.trim() === '' && files.length <= 0)
-        }>
-        <Image source={require('~/assets/send.png')} className="h-9 w-9" />
-      </TouchableOpacity>
+      <View className="flex-row items-center p-2">
+        <TouchableOpacity
+          disabled={currentStudentInfo?.email === 'null'}
+          onPress={selectMultipleFile}
+          className="mr-2">
+          <Image
+            source={require('~/assets/add_document.png')}
+            className="h-10 w-10"
+          />
+        </TouchableOpacity>
+        <TextInput
+          value={message}
+          multiline
+          className="mr-2 flex-1 rounded-lg border border-black bg-paper"
+          placeholder={placeholder}
+          onChangeText={handleMessage}
+        />
+        <TouchableOpacity
+          onPress={() => void handleSend()}
+          className={`${
+            state.sendLoading || (message.trim() === '' && files.length <= 0)
+              ? 'scale-90 opacity-30'
+              : 'scale-95'
+          } duration-100 ease-in-out`}
+          disabled={
+            state.sendLoading || (message.trim() === '' && files.length <= 0)
+          }>
+          <Image source={require('~/assets/send.png')} className="h-9 w-9" />
+        </TouchableOpacity>
+      </View>
     </KeyboardAvoidingView>
   );
 };
