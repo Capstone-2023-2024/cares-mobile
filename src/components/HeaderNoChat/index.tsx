@@ -79,7 +79,7 @@ function Header({}: {withBack?: boolean}) {
           className="flex-1"
           activeOpacity={1}
           onPressOut={closeModal}>
-          <View className="mx-12 my-72 h-64 rounded-2xl border-2 bg-primary p-5 shadow-sm">
+          <View className="mx-8 my-72 h-56 rounded-2xl border-2 bg-primary p-5 shadow-sm">
             <View className="flex-col items-center">
               <Image
                 source={require('~/assets/info.png')}

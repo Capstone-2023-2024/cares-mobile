@@ -154,12 +154,12 @@ const CalendarOfActivities = () => {
       <View className="w-full items-center justify-center bg-stone-300">
         <Image
           source={require('~/assets/calender_of_activities.png')}
-          className="my-4 h-8 w-10/12"
+          className="my-4 h-6 w-10/12"
           resizeMode="stretch"
         />
       </View>
       {state && (
-        <View className="h-10/12 m-auto w-11/12 rounded-2xl">
+        <View className="h-10/12 mx-4 mb-4 mt-2 w-11/12 rounded-2xl">
           <Calendar
             className="rounded-xl border-2"
             theme={{
@@ -195,7 +195,7 @@ const CalendarOfActivities = () => {
           />
         </View>
       )}
-      <View className="mx-4 mb-2 ml-6 h-64 rounded-xl border bg-customADC2D2">
+      <View className="mx-4 h-60 rounded-xl border bg-customADC2D2">
         <View className="border-b ">
           <Text className="mb-4 ml-4 mt-4 font-bold capitalize">
             {currentMonthInfo?.name}
