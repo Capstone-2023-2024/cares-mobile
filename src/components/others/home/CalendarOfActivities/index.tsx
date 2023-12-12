@@ -8,6 +8,7 @@ import {useUser} from '~/contexts/UserContext';
 import Text from '~/components/Text';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNav} from '~/contexts/NavigationContext';
+import {currentMonth} from '@cares/common/utils/date';
 
 const HomeCalendarOfActivities = () => {
   const {data} = useAnnouncement();
@@ -19,15 +20,20 @@ const HomeCalendarOfActivities = () => {
     .sort((a, b) => a.endDate - b.endDate);
   /** FIlter announcement to current Month and Year */
   const filteredAnnouncement = restAnnouncements.filter(props => {
-    const endDate = new Date();
-    const date = new Date();
-    const currentMonth = date.getMonth();
-    const currentYear = date.getFullYear();
-    endDate.setTime(props.endDate);
-    const endMonth = endDate.getMonth();
-    const endYear = endDate.getFullYear();
+    const firstDate = new Date();
+    const lastDate = new Date();
+    const {maxDays} = currentMonth({
+      month: firstDate.getMonth(),
+      year: firstDate.getFullYear(),
+    });
+    firstDate.setDate(1);
+    lastDate.setDate(maxDays);
+    const condition =
+      props.endDate >= firstDate.getTime() &&
+      props.endDate <= lastDate.getTime();
+    console.log({title: props.title, condition});
 
-    return currentMonth === endMonth && currentYear === endYear;
+    return condition;
   });
   const {handleNavigation} = useNav();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -126,7 +132,7 @@ const HomeCalendarOfActivities = () => {
             );
           }}
           loop
-          autoplay
+          // autoplay
           sliderWidth={400} // Adjust the width as needed
           itemWidth={400} // Adjust the width as needed
           autoplayInterval={3000} // Adjust the interval as needed

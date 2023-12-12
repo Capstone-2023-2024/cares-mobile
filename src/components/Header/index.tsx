@@ -27,7 +27,7 @@ function Header({}: {withBack?: boolean}) {
     <View
       className={`${
         route.name.toLowerCase() === 'home' || currentUser === null
-      } relative h-16 flex-row items-center`}>
+      } relative h-16 flex-row items-center border-b`}>
       {route.name.toLowerCase() === 'home'}
       <Modal
         visible={modal}

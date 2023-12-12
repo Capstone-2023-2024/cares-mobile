@@ -20,7 +20,7 @@ const CalendarActivityButton = (props: ReadAnnouncementProps) => {
     <TouchableOpacity
       className={`${
         currentSelectedActivityId === id ? 'bg-secondary' : 'bg-transparent'
-      } h-32`}
+      } h-32 border-b`}
       onPress={() => handleNavigation('Announcements', id)}>
       <View
         className={`${

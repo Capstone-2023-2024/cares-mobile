@@ -399,7 +399,8 @@ const RenderInputMessageContainer = () => {
         </TouchableOpacity>
         {selectedChatHead !== 'adviser' &&
           selectedChatHead !== 'class_section' &&
-          selectedChatHead !== 'mayor' && (
+          selectedChatHead !== 'mayor' &&
+          selectedChatHead !== 'students' && (
             <TouchableOpacity
               disabled={selectedChatId === null}
               onPress={async () => {

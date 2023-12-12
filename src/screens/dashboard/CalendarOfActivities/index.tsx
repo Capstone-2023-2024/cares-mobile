@@ -4,7 +4,7 @@ import {
 } from '@cares/common/types/announcement';
 import {useRoute} from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ListRenderItemInfo, View} from 'react-native';
+import {ListRenderItemInfo, View, Image} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import type {
   DateData,
@@ -151,11 +151,15 @@ const CalendarOfActivities = () => {
 
   return (
     <View className="flex-1">
+      <View className="w-full items-center justify-center bg-stone-300">
+        <Image
+          source={require('~/assets/calender_of_activities.png')}
+          className="my-4 h-8 w-10/12"
+          resizeMode="stretch"
+        />
+      </View>
       {state && (
         <View className="h-10/12 m-auto w-11/12 rounded-2xl">
-          <Text className="mb-8 text-center text-2xl font-bold">
-            Calendar of Activities
-          </Text>
           <Calendar
             className="rounded-xl border-2"
             theme={{
@@ -191,7 +195,7 @@ const CalendarOfActivities = () => {
           />
         </View>
       )}
-      <View className="mx-4 ml-6 h-64 rounded-xl border bg-customADC2D2">
+      <View className="mx-4 mb-2 ml-6 h-64 rounded-xl border bg-customADC2D2">
         <View className="border-b ">
           <Text className="mb-4 ml-4 mt-4 font-bold capitalize">
             {currentMonthInfo?.name}

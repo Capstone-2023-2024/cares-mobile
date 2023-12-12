@@ -164,7 +164,7 @@ const Hero = () => {
   );
 
   const renderStudentUI = () => (
-    <View className="ml-3 mt-2">
+    <View className="ml-2 mt-2">
       <Text className="text-xl capitalize text-paper">{`${currentStudent.name}`}</Text>
       <Text className="text-sm text-paper">{`${currentStudent.studentNo}`}</Text>
       <Text className="text-sm text-paper">{`${currentStudent.email}`}</Text>

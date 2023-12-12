@@ -124,7 +124,7 @@ const Container = (props: ReadAnnouncementProps) => {
               <Text className="text-center text-xs text-paper">Pinned</Text>
             </View>
           )}
-          <Text className="absolute -right-24 top-4  mx-auto w-auto flex-col rounded-lg bg-secondary px-2 py-1 text-xs capitalize text-paper">
+          <Text className="min-w-16 absolute -right-24  top-4 w-20 flex-col rounded-lg bg-secondary py-1 text-center text-xs capitalize text-paper">
             {type}
           </Text>
           <Text className="ml-4 text-center text-base font-bold uppercase text-black">

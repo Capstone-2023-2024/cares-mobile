@@ -138,7 +138,7 @@ const ComplaintBoxRenderer = ({
                     />
                   </Text>
                 </View>
-                <Text className="text-sm text-paper">{`Recent Message: ${selectedMessage?.message.substring(
+                <Text className="text-sm text-paper">{`Recent Message: ${selectedMessage?.message?.substring(
                   0,
                   selectedMessage.message.length > 6
                     ? 4

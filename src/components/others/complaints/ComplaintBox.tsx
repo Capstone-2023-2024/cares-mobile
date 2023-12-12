@@ -139,7 +139,7 @@ const ComplaintBox = () => {
       </Modal>
       <FlatList
         data={renderThisArray}
-        keyExtractor={props => props.timestamp.toExponential()}
+        keyExtractor={props => props.timestamp?.toExponential()}
         renderItem={({item}) => {
           const {message, timestamp, sender, files} = item;
           const newTimestamp = new Date();

@@ -120,11 +120,11 @@ const Announcements = () => {
         </>
       )}
       <SectionList
-        keyExtractor={({id}) => id}
         sections={announcementData.map(({photoUrls, ...rest}) => ({
           title: {photoUrls, department: rest.department, type: rest.type},
           data: [{...rest}],
         }))}
+        keyExtractor={({id}) => id}
         renderSectionHeader={({section}) => {
           const {
             title: {department, photoUrls}, // type
@@ -151,7 +151,7 @@ const Announcements = () => {
                   {`${department.toUpperCase()} Department`}
                   {'\n'}
                   <Text className="text-center font-medium text-black">
-                    Department Head
+                    {section.data.map(props => props.postedBy)}
                   </Text>
                 </Text>
               </View>
@@ -190,7 +190,7 @@ const Announcements = () => {
 };
 
 const Container = (props: AnnouncementProps) => {
-  const {message, postedBy, endDate, type, title, dateCreated} = props;
+  const {message, endDate, type, title, dateCreated} = props;
   const endingDay = new Date();
   const postedDate = new Date();
   endingDay.setTime(endDate);
@@ -236,8 +236,6 @@ const Container = (props: AnnouncementProps) => {
               <Text className=" my-4">{message}</Text>
             </> // Whole Message
           )}
-
-          <Text className="text-center font-semibold text-black">{`Posted by: ${postedBy}`}</Text>
           {type !== 'event' ? (
             <></>
           ) : (
