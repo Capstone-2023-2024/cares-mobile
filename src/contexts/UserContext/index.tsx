@@ -39,7 +39,7 @@ const UserContext = createContext<UserContextProps>({
 function UserProvider({children}: UserProviderProps) {
   const {currentUser} = useAuth();
   const [state, setState] = useState(userStateProps);
-  console.log({UseUserState: state.role});
+  // console.log({UseUserState: state.role});
 
   const handleRole = useCallback((props: UserStateProps['role']) => {
     setState(prevState => ({...prevState, role: props}));

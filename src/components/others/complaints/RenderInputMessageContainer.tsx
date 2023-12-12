@@ -3,6 +3,7 @@ import type {
   ComplaintBaseProps,
   ComplaintProps,
   ReadComplaintProps,
+  StudentRequestProps,
 } from '@cares/common/types/complaint';
 import type {DocumentProps} from '@cares/common/types/media';
 import {imageDimension} from '@cares/common/utils/media';
@@ -49,9 +50,27 @@ const RenderInputMessageContainer = () => {
     setSelectedChatId,
     setSelectedChatHead,
   } = useContentManipulation();
-  const [state, setState] = useState({
+  const EMPTY = 'null';
+  const date = new Date();
+  const [state, setState] = useState<{
+    sendLoading: boolean;
+    studentRequest: StudentRequestProps;
+  }>({
     sendLoading: false,
+    studentRequest: {
+      name: currentStudentInfo?.name ?? EMPTY,
+      signature: '',
+      studentNo: currentStudentInfo?.studentNo ?? EMPTY,
+      yearLevel: currentStudentInfo?.yearLevel ?? EMPTY,
+      section: currentStudentInfo?.section ?? undefined,
+      schoolYear: currentStudentInfo?.schoolYear ?? EMPTY,
+      course: currentStudentInfo?.course ?? EMPTY,
+      program: currentStudentInfo?.major ?? EMPTY,
+      areasOfConcern: 'others',
+      dateCreated: date.getTime(),
+    },
   });
+  const complaintDocRef = collectionRef('complaints').doc(queryId ?? '');
   const mayorAdviser = role === 'adviser' || selectedChatHead === 'students';
   const filteredStudentComplaints = [
     ...(mayorAdviser ? currentStudentComplaints : otherComplaints),
@@ -96,20 +115,7 @@ const RenderInputMessageContainer = () => {
       //     buttonPositive: 'OK',
       //   },
       // );
-      // const write = await PermissionsAndroid.request(
-      //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      //   {
-      //     title: 'Write in storage Permission',
-      //     message: 'Allow Writing of files.',
-      //     buttonNeutral: 'Ask Me Later',
-      //     buttonNegative: 'Cancel',
-      //     buttonPositive: 'OK',
-      //   },
-      // );
-      // if (
-      //   read === PermissionsAndroid.RESULTS.GRANTED &&
-      //   write === PermissionsAndroid.RESULTS.GRANTED
-      // ) {
+      // if (read === PermissionsAndroid.RESULTS.GRANTED) {
       //   ToastAndroid.show(
       //     'You can access storage permissions',
       //     ToastAndroid.SHORT,
@@ -159,7 +165,6 @@ const RenderInputMessageContainer = () => {
         const error = err as Record<any, any>;
         Alert.alert(error.toString());
         setFiles([]);
-        // ToastAndroid.show('Error', ToastAndroid.SHORT);
       }
     });
     setFiles([]);
@@ -167,7 +172,6 @@ const RenderInputMessageContainer = () => {
   function handleMessage(props: string) {
     setMessage(props);
   }
-  // console.log({selectedChatId});
   /** TODO: Add notification. If sender is anonymous, currentStudentInfo is not loaded properly */
   async function handleSend() {
     setState(prevState => ({...prevState, sendLoading: true}));
@@ -196,7 +200,7 @@ const RenderInputMessageContainer = () => {
           complaint = {...complaint, files: holder};
           handleUploadImage(holder);
         }
-        const complaintDocRef = collectionRef('complaints').doc(queryId);
+
         if (typeof selectedChatId === 'string') {
           /** New Complaints here */
           if (
@@ -393,6 +397,28 @@ const RenderInputMessageContainer = () => {
             className="h-10 w-10"
           />
         </TouchableOpacity>
+        {selectedChatHead !== 'adviser' &&
+          selectedChatHead !== 'class_section' &&
+          selectedChatHead !== 'mayor' && (
+            <TouchableOpacity
+              disabled={selectedChatId === null}
+              onPress={async () => {
+                const document = complaintDocRef.collection('individual');
+                const data: ComplaintBaseProps = {
+                  message: state.studentRequest.toString(),
+                  sender: currentStudentInfo?.studentNo ?? '',
+                  timestamp: new Date().getTime(),
+                };
+                document.doc(selectedChatId ?? '').update({
+                  messages: firebase.firestore.FieldValue.arrayUnion({
+                    data,
+                  }),
+                });
+              }}
+              className="mr-2">
+              <Text>Fill Student Request Form</Text>
+            </TouchableOpacity>
+          )}
         <TextInput
           value={message}
           multiline

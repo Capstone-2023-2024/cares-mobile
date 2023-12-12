@@ -12,20 +12,15 @@ import {useUser} from '~/contexts/UserContext';
 import storage from '@react-native-firebase/storage';
 import {downloadPhoto} from '~/utils/media';
 
-interface TypedParamsProps {
-  id: string;
-}
-
 const Announcements = () => {
   const {data, type, handleTypeChange} = useAnnouncement();
   const [modalImage, setModalImage] = useState(false);
   const [photoSelected, setPhotoSelected] = useState('');
   const {params} = useRoute();
   const {currentStudent} = useUser();
-  const typedParam: TypedParamsProps = params as TypedParamsProps;
   const [announcementData, setAnnouncementData] = useState([
-    ...(typeof params === 'object'
-      ? data.filter(({id}) => id === typedParam.id)
+    ...(typeof params === 'string'
+      ? data.filter(({id}) => id === params)
       : data.filter(props => {
           const today = new Date();
           const endDate = new Date();
@@ -33,7 +28,8 @@ const Announcements = () => {
           return props.type === 'event' && endDate.getTime() > today.getTime();
         })),
   ]);
-  console.log({params});
+
+  console.log(announcementData.length);
 
   function handlePressImage(value: boolean, src?: string) {
     setModalImage(value);
@@ -91,7 +87,7 @@ const Announcements = () => {
           <RenderImageInModal src={photoSelected} />
         </View>
       </Modal>
-      {typeof params !== 'object' && (
+      {typeof params !== 'string' && (
         <>
           <View className="mx-10 mb-4 mt-6 flex items-center justify-center rounded-3xl ">
             <Image

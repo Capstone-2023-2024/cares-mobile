@@ -29,7 +29,9 @@ const HomeAnnouncements = () => {
   });
   const limitUnpinned =
     state.unpinned.length > 5 ? state.unpinned.slice(0, 5) : state.unpinned;
-  const combinedPinned = [...limitUnpinned, ...state.pinned];
+  const combinedPinned = [
+    ...(state.pinned.length > 0 ? state.pinned : limitUnpinned),
+  ];
 
   useEffect(() => {
     function setupAnnouncement() {
@@ -158,15 +160,12 @@ const Container = (props: ReadAnnouncementProps) => {
           <View />
         )}
         <TouchableOpacity
-          className="mt-2 self-center"
+          className="my-2 self-center"
           onPress={() => handlePressReadMore(id)}>
           <Text className="justify-center rounded-full border border-black p-1 px-2 text-xs">
             {currentStudent.email === 'null' ? '.....' : 'Read More'}
           </Text>
         </TouchableOpacity>
-        <Text className=" my-2 text-xs">
-          {currentStudent.email === 'null' ? '...' : `Posted by: ${postedBy}`}
-        </Text>
       </View>
     </TouchableOpacity>
   );

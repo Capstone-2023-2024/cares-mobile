@@ -25,8 +25,8 @@ async function downloadPhoto(FILE_URL: string) {
   };
   const {promise} = RNFS.downloadFile(options);
   try {
-    const result = await promise;
-    console.log({result});
+    await promise;
+    // console.log({result});
   } catch (err) {
     console.log(err);
   }

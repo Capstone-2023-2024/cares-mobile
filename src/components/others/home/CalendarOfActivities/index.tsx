@@ -13,6 +13,7 @@ const HomeCalendarOfActivities = () => {
   const {data} = useAnnouncement();
   const {currentStudent} = useUser();
   const carouselRef = useRef(null);
+
   const restAnnouncements = data
     .filter(props => props.type === 'event')
     .sort((a, b) => a.endDate - b.endDate);

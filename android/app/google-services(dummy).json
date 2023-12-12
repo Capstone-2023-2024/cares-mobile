@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "622310668633",
+    "project_id": "cares-dummy",
+    "storage_bucket": "cares-dummy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622310668633:android:fa126219f364c309e77448",
+        "android_client_info": {
+          "package_name": "com.cares"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "622310668633-imintl26ccs3vvdh1gige7h0sbnh7cvl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cares",
+            "certificate_hash": "3638330347fbdf8104c55c7430318b3f7e52668e"
+          }
+        },
+        {
+          "client_id": "622310668633-i7mpvf5v83051snfvqj96vkhd6iverlr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCsEtVJq3ugzBViQ6s2eY-RlIbqKaEc8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "622310668633-i7mpvf5v83051snfvqj96vkhd6iverlr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

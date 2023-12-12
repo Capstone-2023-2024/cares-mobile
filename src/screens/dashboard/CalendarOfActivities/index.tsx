@@ -55,6 +55,10 @@ const CalendarOfActivities = () => {
     year: calendar.year,
   });
 
+  console.log({
+    restAnnouncements: state.restAnnouncements.map(props => props.id),
+    selected: state.filteredAnnouncement.map(props => props.id),
+  });
   function handleMonthChange(props: DateData) {
     state.filteredAnnouncement.length > 0 &&
       flatListRef.current?.scrollToIndex({
@@ -146,9 +150,12 @@ const CalendarOfActivities = () => {
   }, [setFilteredAnnouncementAndAnimation]);
 
   return (
-    <View className="flex-1 bg-stone-300">
+    <View className="flex-1">
       {state && (
-        <View className="h-10/12 m-auto w-11/12 rounded-2xl bg-gray-200">
+        <View className="h-10/12 m-auto w-11/12 rounded-2xl">
+          <Text className="mb-8 text-center text-2xl font-bold">
+            Calendar of Activities
+          </Text>
           <Calendar
             className="rounded-xl border-2"
             theme={{
@@ -161,12 +168,12 @@ const CalendarOfActivities = () => {
               todayTextColor: '#00adf5',
               dayTextColor: '#2d4150',
               textDisabledColor: '#d9e1e8',
-              dotColor: '#000',
+              dotColor: '#050505',
               selectedDotColor: '#ffffff',
-              arrowColor: '#f5f5f5',
+              arrowColor: '#050505',
               disabledArrowColor: '#d9e1e8',
-              monthTextColor: '#000',
-              indicatorColor: '#000',
+              monthTextColor: '#050505',
+              indicatorColor: '#050505',
               textDayFontFamily: 'monospace',
               textMonthFontFamily: 'monospace',
               textDayHeaderFontFamily: 'monospace',

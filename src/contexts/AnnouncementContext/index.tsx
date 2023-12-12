@@ -51,10 +51,9 @@ const AnnouncementProvider = ({children}: AnnouncementProviderProps) => {
     const year = calendar.year;
     const {maxDays} = currentMonth({month, year});
     date.setDate(maxDays);
-    console.log({maxDays, year, month});
-    const endDate = date.getTime();
+    // const endDate = date.getTime();
     const announcementQuery = collectionRef('announcement')
-      .where('endDate', '<=', endDate)
+      // .where('endDate', '<=', endDate)
       .orderBy('endDate', 'desc');
 
     return announcementQuery.onSnapshot(snapshot => {

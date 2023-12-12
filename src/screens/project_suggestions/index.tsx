@@ -183,7 +183,7 @@ const Poll = (pollProps: ReadPollEventProps) => {
       const incrementBy = 1;
       let advanceIndex = prevState.index - incrementBy;
       const indexCondition = advanceIndex <= -1;
-      console.log({advanceIndex}, prevState.maxLength);
+      // console.log({advanceIndex}, prevState.maxLength);
       const result = indexCondition
         ? {
             ...prevState,
